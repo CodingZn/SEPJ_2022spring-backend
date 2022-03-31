@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.bean.UserBean;
+import com.example.demo.bean.Major;
 
 public interface UserService {
 
@@ -9,4 +10,19 @@ public interface UserService {
     String changePassword(String schoolnumber, String newpassword);
     void createAdmin();
 
+
+
+    void deleteMajortest(int majornumber);
+
+    void createMajortest();
+
+    String createMajor(Major major);
+
+    String deleteMajor(int majornumber);
+
+    String getANewMajornumber();
+
+    String[] getAllMajornumbers();
+
+    Major getAMajor(int majornumber);
 }

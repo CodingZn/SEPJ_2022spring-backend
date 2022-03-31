@@ -49,6 +49,8 @@ public class UserController {
             payload.put("schoolnumber",userBean.getSchoolnumber());//学号
             payload.put("name",userBean.getName());//姓名
             payload.put("usertype",userBean.getUsertype());//用户角色
+            if (Objects.equals(password, "fDu666666"))
+                payload.put("initialUser","true");
 
             token = JWTUtils.getToken(payload);
 
@@ -87,15 +89,9 @@ public class UserController {
 
         String token = authentication.substring(7);//截取掉“Bearer ”
 
-        try{
-            DecodedJWT verify = JWTUtils.verify(token);
-            //jwt验证成功
-            //验证character
-            usertype = verify.getClaim("usertype").asString();
-
-        }catch (Exception e) {//无效token
+        usertype = JWTUtils.decodeToGetValue(token, "usertype");
+        if (usertype == null){//token无效情况
             System.out.println("Token is invalid.");
-
             map.put("message","Token is invalid.");
             return new ResponseEntity<Map<String, String>>(map, HttpStatus.UNAUTHORIZED);
         }
@@ -151,25 +147,19 @@ public class UserController {
 
         String token = authentication.substring(7);//截取掉“Bearer ”
 
-        try{
-            DecodedJWT verify = JWTUtils.verify(token);
-            //jwt验证成功
-            //通过jwt获取登录者的学工号
-            schoolnumber = verify.getClaim("schoolnumber").asString();
-
-            System.out.println("schoolnumber_url="+schoolnumber_url);
-            System.out.println("schoolnumber="+schoolnumber);
-
-            if (!Objects.equals(schoolnumber, schoolnumber_url)){//验证jwt中学工号与路径中学工号是否一致
-                System.out.println("Request data don't match.");
-                map.put("message","Request data don't match.");
-                return new ResponseEntity<Map<String, String>>(map , HttpStatus.BAD_REQUEST);
-            }
-
-
-        }catch (Exception e) {//无效token
+        schoolnumber = JWTUtils.decodeToGetValue(token, "schoolnumber");
+        if (schoolnumber == null){
             System.out.println("Token is invalid.");
             map.put("message","Token is invalid.");
+            return new ResponseEntity<Map<String, String>>(map , HttpStatus.BAD_REQUEST);
+        }
+
+        System.out.println("schoolnumber_url="+schoolnumber_url);
+        System.out.println("schoolnumber="+schoolnumber);
+
+        if (!Objects.equals(schoolnumber, schoolnumber_url)){//验证jwt中学工号与路径中学工号是否一致
+            System.out.println("Request data don't match.");
+            map.put("message","Request data don't match.");
             return new ResponseEntity<Map<String, String>>(map , HttpStatus.BAD_REQUEST);
         }
 
@@ -192,5 +182,9 @@ public class UserController {
                 return new ResponseEntity<Map<String, String>>(map, HttpStatus.BAD_REQUEST);
         }
     }
+
+
+
+    /**/
 
 }

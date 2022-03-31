@@ -11,4 +11,7 @@ public interface UserMapper extends JpaRepository<UserBean, String> {
     UserBean findBySchoolnumber(String schoolnumber);
     UserBean findByIdentitynumber(String identitynumber);
     UserBean findByUsertype(String usertype);
+
+
+    
 }

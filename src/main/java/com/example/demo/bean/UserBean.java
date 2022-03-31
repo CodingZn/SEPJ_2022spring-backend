@@ -21,7 +21,7 @@ public class UserBean {
     private String id;
 
     @Column(name = "usertype", length =15, nullable = false)
-    private  String usertype;
+    private String usertype;
     //usertype变量只允许"admin","teacher","student"三种取值，其余均为非法
 
     @Column(name = "schoolnumber", nullable = false)
@@ -41,6 +41,8 @@ public class UserBean {
 
     @Column(name = "password", nullable = false)
     private String password;
+
+
 
     public boolean verifyform(){
         FormVerify check = new FormVerify();

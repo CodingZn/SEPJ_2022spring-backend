@@ -11,7 +11,7 @@ import java.util.Map;
 public class JWTUtils {
     private static final String SING = "s838jjff";
 
-    public  static  String getToken(Map<String, String> map){
+    public  static  String getToken(Map<String, String> map){//生成令牌
         JWTCreator.Builder builder = JWT.create();
 //加入默认payload
         Calendar instance = Calendar.getInstance();
@@ -34,13 +34,20 @@ public class JWTUtils {
     public static DecodedJWT verify(String token){
         return JWT.require(Algorithm.HMAC256(SING)).build().verify(token);
     }
-    /**
-     * 获取token信息方法
-     */
-    /*public static DecodedJWT getTokenInfo(String token){
-        DecodedJWT verify = JWT.require(Algorithm.HMAC256(SING)).build().verify(token);
-        return verify;
-    }*/
+
+    public static String decodeToGetValue(String token, String key){//解码令牌
+        String value;
+        try{
+            DecodedJWT verify = JWTUtils.verify(token);
+
+            value = verify.getClaim(key).asString();
+            return value;
+
+        }catch (Exception e) {//无效token
+
+            return null;
+        }
+    }
 
 
 }
