@@ -16,9 +16,10 @@ import java.util.Objects;
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final MajorMapper majorMapper;
+
     //将DAO(Mapper)层注入Service层
     @Autowired
-    public UserServiceImpl(UserMapper userMapper, MajorMapper majorMapper){
+    public UserServiceImpl(UserMapper userMapper, MajorMapper majorMapper) {
         this.userMapper = userMapper;
         this.majorMapper = majorMapper;
     }
@@ -32,21 +33,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public String register(UserBean userBean) {
         String schoolnumber, newidentitynumber;
-        UserBean a,b;
-        schoolnumber=userBean.getSchoolnumber();
-        newidentitynumber=userBean.getIdentitynumber();
+        UserBean a, b;
+        schoolnumber = userBean.getSchoolnumber();
+        newidentitynumber = userBean.getIdentitynumber();
         a = userMapper.findBySchoolnumber(schoolnumber);
         b = userMapper.findByIdentitynumber(newidentitynumber);
         if (a != null)
             return "SchoolnumberConflict";
         else if (b != null)
             return "IdentitynumberConflict";
-        else{
+        else {
             userBean.setPassword("fDu666666");//统一设置初始密码
-            if (userBean.verifyform()){
+            if (userBean.verifyform()) {
                 userMapper.save(userBean);
                 return "Success";
-            }else
+            } else
                 return "FormError";
 
         }
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void createAdmin() {//判断数据库中是否有管理员，若无，自动生成
         UserBean userbean = userMapper.findByUsertype("admin");
-        if (userbean == null){
+        if (userbean == null) {
             UserBean admin = new UserBean();
             admin.setUsertype("admin");
             admin.setSchoolnumber("10001");
@@ -87,7 +88,6 @@ public class UserServiceImpl implements UserService {
             System.out.println("Successfully created initial administrator!");
         }
     }
-
 
 
     @Override
@@ -117,16 +117,32 @@ public class UserServiceImpl implements UserService {
     @Override
     public String createMajor(Major major) {//创建一个对象，若主键已存在，则修改对象的值
 
-/*在此处增加校验major成员格式的代码，假定传入进来major的成员都不是null。
-* 并修改函数返回值。
-* 成功返回"Success"，
-* 格式错误返回"FormError"，
-* 其他错误返回"UnknownError"。
-* 要求school，name都不能为空字符串。
-* */
+        /*在此处增加校验major成员格式的代码，假定传入进来major的成员都不是null。
+         * 并修改函数返回值。
+         * 成功返回"Success"，
+         * 格式错误返回"FormError"，
+         * 其他错误返回"UnknownError"。
+         * 要求school，name都不能为空字符串。
+         * */
         Major a = majorMapper.save(major);
-        if (a != null) return "success";
-        else return "error";
+
+        if (a == null) {
+            return "UnknownError";
+        }
+
+
+        if (a.getMajornumber() == 0) {
+            return "FormError";
+        }
+        if (a.getName() == null) {
+            return "FormError";
+        }
+        if (a.getSchool() == null) {
+            return "FormError";
+        }
+
+
+        return "Success";
     }
 
     @Override
@@ -134,11 +150,10 @@ public class UserServiceImpl implements UserService {
 
         Major major = majorMapper.findByMajornumber(majornumber);
 
-        if (major != null){
+        if (major != null) {
             majorMapper.delete(major);
             return "success";
-        }
-        else{
+        } else {
             return "nonexistent";
         }
     }
@@ -147,11 +162,15 @@ public class UserServiceImpl implements UserService {
     public String getANewMajornumber() {//返回一个可用的majornumber(str)
         List<Major> majorList = majorMapper.findAll();
         Major maxmajor = majorList.stream().max(Comparator.comparing(Major::getMajornumber)).get();
-/*
-* 在此处增加异常处理：
-* 根据idea提示，如果列表为空，找不到最大majornumber，会抛出异常
-* 在本函数内捕获该异常。出现此异常时，应返回的majornumber为"1"
-* */
+        /*
+         * 在此处增加异常处理：
+         * 根据idea提示，如果列表为空，找不到最大majornumber，会抛出异常
+         * 在本函数内捕获该异常。出现此异常时，应返回的majornumber为"1"
+         * */
+        if (majorList.isEmpty()) {
+            return String.valueOf(1);
+        }
+
         System.out.println("getMaxMajornumber=");
         System.out.println(maxmajor.getMajornumber());
 
@@ -163,16 +182,30 @@ public class UserServiceImpl implements UserService {
 /*
 在此处增加相关代码，要求以String数组的形式，返回表中所有的majornumber
  */
-        return new String[0];
+        List<Major> majorList = majorMapper.findAll();
+
+        String[] majorNumbersArray = new String[majorList.size()];
+
+        for (int i = 0; i < majorList.size(); i++)
+            majorNumbersArray[i] = String.valueOf(majorList.get(i));
+
+        return majorNumbersArray;
     }
 
     @Override
     public Major getAMajor(int majornumber) {
         /*
-        * 在此处增加相关代码，通过majornumber查询major
-        * 若存在此majornumber，返回该major对象，
-        * 若不存在，返回null。
-        * */
+         * 在此处增加相关代码，通过majornumber查询major
+         * 若存在此majornumber，返回该major对象，
+         * 若不存在，返回null。
+         * */
+
+        List<Major> majorList = majorMapper.findAll();
+
+        for (int i = 0; i < majorList.size(); i++)
+            if(majorList.get(i).getMajornumber()==majornumber){
+                return majorList.get(i);
+            }
         return null;
     }
 
