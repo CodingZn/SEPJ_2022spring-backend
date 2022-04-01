@@ -8,10 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -21,7 +18,8 @@ public class MajorController {
     @Autowired//将Service层注入到Controller层
     public MajorController(UserService userService){
         this.userService = userService;
-        userService.createMajortest();
+//        userService.createMajortest();
+        userService.getAllMajornumbers();
     }
 
     /*获取新majornumber*/
@@ -53,7 +51,7 @@ public class MajorController {
 
     /*新增专业*/
     @RequestMapping(value="/major/{majornumber}", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, String>> addMajor(@PathVariable("majornumber") String majornumber,
+    public ResponseEntity<Map<String, String>> addMajor(@PathVariable("majornumber") String majornumber_str,
                                                         @RequestBody Major major,
                                                         @RequestHeader(value="Authentication") String authentication){
         Map<String,String> map = new HashMap<>();
@@ -69,13 +67,27 @@ public class MajorController {
 
         String str;
 
+
         if (Objects.equals(usertype, "admin")){
+            try{
+                int majornumber = Integer.parseInt(majornumber_str);
+                major.setMajornumber(majornumber);
+
+            }catch (NumberFormatException e){//传入majornumber格式不对
+                map.put("message","majornumber格式错误！");
+                return new ResponseEntity<Map<String, String>>(map, HttpStatus.BAD_REQUEST);
+            }
+
             str = userService.createMajor(major);
             switch (str){
-                case "success":
+                case "Success":
                     System.out.println("Successfully added!");
                     map.put("message","Successfully added!");
                     return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
+                case "FormError":
+                    System.out.println("FormError!");
+                    map.put("message","格式错误！");
+                    return new ResponseEntity<Map<String, String>>(map, HttpStatus.BAD_REQUEST);
                 default:
                     System.out.println("Unknown Error");
                     map.put("message","Unknown Error");
@@ -94,7 +106,6 @@ public class MajorController {
     /*删除专业*/
     @RequestMapping(value="/major/{majornumber}", method = RequestMethod.DELETE)
     public ResponseEntity<Map<String, String>> delMajor(@PathVariable("majornumber") String majornumber_str,
-                                                        @RequestBody Major major,
                                                         @RequestHeader(value="Authentication") String authentication){
         Map<String,String> map = new HashMap<>();
 
@@ -145,29 +156,30 @@ public class MajorController {
 
     /*返回所有majornumber*/
     @RequestMapping(value="/majors", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, String[]>> getAllMajornumbers(@RequestHeader(value="Authentication") String authentication){
-        Map<String,String[]> map = new HashMap<>();
+    public ResponseEntity<Map<String, List<String>>> getAllMajornumbers(@RequestHeader(value="Authentication") String authentication){
+        Map<String,List<String>> map = new HashMap<>();
 
-        String []strings;
+        List<String> strings = new ArrayList<>();
         /*对jwt令牌进行验证的操作*/
         String token = authentication.substring(7);//截取掉“Bearer ”
 
         String usertype = JWTUtils.decodeToGetValue(token, "usertype");
         if (usertype == null){//token无效情况
             System.out.println("Token is invalid.");
-            return new ResponseEntity<Map<String, String[]>>(HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<Map<String, List<String>>>(HttpStatus.UNAUTHORIZED);
         }
 
         String str;
         if (Objects.equals(usertype, "admin")){
             strings = userService.getAllMajornumbers();
+            System.out.println("strings="+strings);
             map.put("majornumbers",strings);
-            return new ResponseEntity<Map<String, String[]>>(map, HttpStatus.OK);
+            return new ResponseEntity<Map<String, List<String>>>(map, HttpStatus.OK);
         }
         else{//不是admin
             System.out.println("Request is not from administrator");
 
-            return new ResponseEntity<Map<String, String[]>>(HttpStatus.FORBIDDEN);
+            return new ResponseEntity<Map<String, List<String>>>(HttpStatus.FORBIDDEN);
         }
     }
 
@@ -198,6 +210,7 @@ public class MajorController {
         if (major != null) {
             map.put("name", major.getName());
             map.put("school", major.getSchool());
+            map.put("majornumber",String.valueOf(major.getMajornumber()));
             return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
         } else {
             map.put("message", "不存在此专业！");
@@ -215,11 +228,12 @@ public class MajorController {
         String token = authentication.substring(7);//截取掉“Bearer ”
 
         String usertype = JWTUtils.decodeToGetValue(token, "usertype");
+
         if (usertype == null){//token无效情况
             System.out.println("Token is invalid.");
             map.put("message","Token is invalid.");
             return new ResponseEntity<Map<String, String>>(map, HttpStatus.UNAUTHORIZED);
-        }else if (usertype != "admin"){
+        }else if (!usertype.equals("admin")){
             System.out.println("Request is not from administrator");
             map.put("message","Request is not from administrator");
             return new ResponseEntity<Map<String, String>>(map,HttpStatus.FORBIDDEN);
@@ -235,11 +249,15 @@ public class MajorController {
 
         String str = userService.createMajor(major);
 
-        switch (str){
-            case "success":
-                System.out.println("Successfully changed!");
-                map.put("message","Successfully changed!");
+        switch (str){//createMajor的返回操作解析
+            case "Success":
+                System.out.println("Successfully added!");
+                map.put("message","Successfully added!");
                 return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
+            case "FormError":
+                System.out.println("FormError!");
+                map.put("message","格式错误！");
+                return new ResponseEntity<Map<String, String>>(map, HttpStatus.BAD_REQUEST);
             default:
                 System.out.println("Unknown Error");
                 map.put("message","Unknown Error");
@@ -262,7 +280,7 @@ public class MajorController {
             System.out.println("Token is invalid.");
             map.put("message", "Token is invalid.");
             return new ResponseEntity<Map<String, String>>(map, HttpStatus.UNAUTHORIZED);
-        } else if (usertype != "admin") {
+        } else if (!usertype.equals("admin")) {
             System.out.println("Request is not from administrator");
             map.put("message", "Request is not from administrator");
             return new ResponseEntity<Map<String, String>>(map, HttpStatus.FORBIDDEN);
@@ -282,16 +300,20 @@ public class MajorController {
         if(major.getName() != null) major_old.setName(major.getName());
 
         String str = userService.createMajor(major_old);
-
-        switch (str) {
-            case "success":
-                System.out.println("Successfully changed!");
-                map.put("message", "Successfully changed!");
+System.out.println(str);
+        switch (str){//createMajor的返回操作解析
+            case "Success":
+                System.out.println("Successfully added!");
+                map.put("message","Successfully added!");
                 return new ResponseEntity<Map<String, String>>(map, HttpStatus.OK);
+            case "FormError":
+                System.out.println("FormError!");
+                map.put("message","格式错误！");
+                return new ResponseEntity<Map<String, String>>(map, HttpStatus.BAD_REQUEST);
             default:
                 System.out.println("Unknown Error");
-                map.put("message", "Unknown Error");
-                return new ResponseEntity<Map<String, String>>(map, HttpStatus.BAD_REQUEST);
+                map.put("message","Unknown Error");
+                return new ResponseEntity<Map<String, String>>(map ,HttpStatus.BAD_REQUEST);
         }
 
     }

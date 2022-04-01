@@ -3,6 +3,8 @@ package com.example.demo.service;
 import com.example.demo.bean.UserBean;
 import com.example.demo.bean.Major;
 
+import java.util.List;
+
 public interface UserService {
 
     UserBean login(String schoolnumber, String password);
@@ -22,7 +24,7 @@ public interface UserService {
 
     String getANewMajornumber();
 
-    String[] getAllMajornumbers();
+    List<String> getAllMajornumbers();
 
     Major getAMajor(int majornumber);
 }

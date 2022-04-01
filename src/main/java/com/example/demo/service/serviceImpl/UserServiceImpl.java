@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -117,31 +118,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public String createMajor(Major major) {//创建一个对象，若主键已存在，则修改对象的值
 
-        /*在此处增加校验major成员格式的代码，假定传入进来major的成员都不是null。
-         * 并修改函数返回值。
-         * 成功返回"Success"，
-         * 格式错误返回"FormError"，
-         * 其他错误返回"UnknownError"。
-         * 要求school，name都不能为空字符串。
-         * */
-        Major a = majorMapper.save(major);
-
-        if (a == null) {
+        if (major == null) {
             return "UnknownError";
         }
 
-
-        if (a.getMajornumber() == 0) {
-            return "FormError";
-        }
-        if (a.getName() == "") {
-            return "FormError";
-        }
-        if (a.getSchool() == "") {
+        if (major.getMajornumber() <= 0 || Objects.equals(major.getName(), "") || Objects.equals(major.getSchool(), "")) {
             return "FormError";
         }
 
-
+        Major a = majorMapper.save(major);
         return "Success";
     }
 
@@ -162,11 +147,7 @@ public class UserServiceImpl implements UserService {
     public String getANewMajornumber() {//返回一个可用的majornumber(str)
         List<Major> majorList = majorMapper.findAll();
 
-        /*
-         * 在此处增加异常处理：
-         * 根据idea提示，如果列表为空，找不到最大majornumber，会抛出异常
-         * 在本函数内捕获该异常。出现此异常时，应返回的majornumber为"1"
-         * */
+
         try {
             Major maxmajor = majorList.stream().max(Comparator.comparing(Major::getMajornumber)).get();
             System.out.println("getMaxMajornumber=");
@@ -174,40 +155,25 @@ public class UserServiceImpl implements UserService {
 
             return String.valueOf(maxmajor.getMajornumber() + 1);
         }catch (Exception e){
-            return String.valueOf(1);
+            return "1";
         }
     }
 
     @Override
-    public String[] getAllMajornumbers() {
-/*
-在此处增加相关代码，要求以String数组的形式，返回表中所有的majornumber
- */
+    public List<String> getAllMajornumbers() {
+
         List<Major> majorList = majorMapper.findAll();
 
-        String[] majorNumbersArray = new String[majorList.size()];
+        List<String> a = majorList.stream().map( u -> String.valueOf(u.getMajornumber())).toList();
 
-        for (int i = 0; i < majorList.size(); i++)
-            majorNumbersArray[i] = String.valueOf(majorList.get(i));
+        System.out.println("a"+a);
 
-        return majorNumbersArray;
+        return a;
     }
 
     @Override
     public Major getAMajor(int majornumber) {
-        /*
-         * 在此处增加相关代码，通过majornumber查询major
-         * 若存在此majornumber，返回该major对象，
-         * 若不存在，返回null。
-         * */
-
-        List<Major> majorList = majorMapper.findAll();
-
-        for (int i = 0; i < majorList.size(); i++)
-            if(majorList.get(i).getMajornumber()==majornumber){
-                return majorList.get(i);
-            }
-        return null;
+        return majorMapper.findByMajornumber(majornumber);
     }
 
 

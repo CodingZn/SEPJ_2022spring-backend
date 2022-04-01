@@ -16,7 +16,7 @@ public class JWTUtils {
 //加入默认payload
         Calendar instance = Calendar.getInstance();
         builder.withNotBefore(instance.getTime());//生效时间
-        instance.add(Calendar.MINUTE, 10);
+        instance.add(Calendar.MINUTE, 30);
         builder.withExpiresAt(instance.getTime());//过期时间
 
         map.forEach((k, v)->{
