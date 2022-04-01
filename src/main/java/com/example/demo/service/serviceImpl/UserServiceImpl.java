@@ -134,10 +134,10 @@ public class UserServiceImpl implements UserService {
         if (a.getMajornumber() == 0) {
             return "FormError";
         }
-        if (a.getName() == null) {
+        if (a.getName() == "") {
             return "FormError";
         }
-        if (a.getSchool() == null) {
+        if (a.getSchool() == "") {
             return "FormError";
         }
 
@@ -161,20 +161,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getANewMajornumber() {//返回一个可用的majornumber(str)
         List<Major> majorList = majorMapper.findAll();
-        Major maxmajor = majorList.stream().max(Comparator.comparing(Major::getMajornumber)).get();
+
         /*
          * 在此处增加异常处理：
          * 根据idea提示，如果列表为空，找不到最大majornumber，会抛出异常
          * 在本函数内捕获该异常。出现此异常时，应返回的majornumber为"1"
          * */
-        if (majorList.isEmpty()) {
+        try {
+            Major maxmajor = majorList.stream().max(Comparator.comparing(Major::getMajornumber)).get();
+            System.out.println("getMaxMajornumber=");
+            System.out.println(maxmajor.getMajornumber());
+
+            return String.valueOf(maxmajor.getMajornumber() + 1);
+        }catch (Exception e){
             return String.valueOf(1);
         }
-
-        System.out.println("getMaxMajornumber=");
-        System.out.println(maxmajor.getMajornumber());
-
-        return String.valueOf(maxmajor.getMajornumber() + 1);
     }
 
     @Override
