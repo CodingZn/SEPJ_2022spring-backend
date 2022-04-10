@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
-import com.example.demo.bean.FormVerify;
 import javax.persistence.*;
 
 @Data
@@ -42,15 +41,27 @@ public class UserBean {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "school")
+    private String school;
+
+    @Column(name = "major")
+    private String major;
+
+    @Column(name = "status")
+    private String status;
+
 
 
     public boolean verifyform(){
-        FormVerify check = new FormVerify();
+        UserFormVerify check = new UserFormVerify();
         boolean a, b, c, d;
         a = check.utype_verify(usertype)
                 && check.name_verify(name)
                 && check.id_verify(identitynumber)
-                && check.password_verify(password);
+                && check.password_verify(password)
+                && check.major_verify(major)
+                && check.school_verify(school)
+                && check.status_verify(status);
         b = email == null || check.email_verify(email);
         c = phonenumber == null || check.phone_verify(phonenumber);
 

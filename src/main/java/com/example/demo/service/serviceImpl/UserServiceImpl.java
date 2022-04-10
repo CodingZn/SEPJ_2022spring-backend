@@ -176,5 +176,39 @@ public class UserServiceImpl implements UserService {
         return majorMapper.findByMajornumber(majornumber);
     }
 
+    @Override
+    public List<String> getAllSchoolnumbers() {
+        List<UserBean> userBeanList = userMapper.findAll();
+        List<String> a = userBeanList.stream().map(UserBean::getSchoolnumber).toList();
+        return a;
+    }
+
+    @Override
+    public UserBean getAUser(String schoolnumber) {
+        return userMapper.findBySchoolnumber(schoolnumber);
+    }
+
+    @Override
+    public String deleteUser(String schoolnumber) {
+        UserBean userBean = userMapper.findBySchoolnumber(schoolnumber);
+
+        if (userBean != null) {
+            userMapper.delete(userBean);
+            return "success";
+        } else {
+            return "nonexistent";
+        }
+    }
+
+    @Override
+    public String rewriteUser(UserBean userBean){
+        String id_old = userMapper.findBySchoolnumber(userBean.getSchoolnumber()).getId();
+        userBean.setId(id_old);//保证id不变，是修改而非新增
+        if (userBean.verifyform()) {
+            userMapper.save(userBean);
+            return "Success";
+        } else
+            return "FormError";
+    }
 
 }

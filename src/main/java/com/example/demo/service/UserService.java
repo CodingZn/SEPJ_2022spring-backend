@@ -27,4 +27,12 @@ public interface UserService {
     List<String> getAllMajornumbers();
 
     Major getAMajor(int majornumber);
+
+    List<String> getAllSchoolnumbers();
+
+    UserBean getAUser(String schoolnumber);
+
+    String deleteUser(String schoolnumber);
+
+    String rewriteUser(UserBean userBean);
 }
