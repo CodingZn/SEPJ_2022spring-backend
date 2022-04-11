@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.bean.Classroom;
+import com.example.demo.bean.trivialBeans.Classroom;
 import com.example.demo.mapper.straightMappers.ClassroomMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
