@@ -14,6 +14,7 @@ public class ControllerOperation {
     public static String checkAuthentication(String authentication){
         String token = authentication.substring(7);//截取掉“Bearer ”
         String usertype = JWTUtils.decodeToGetValue(token, "usertype");
+
         if (usertype == null){//token无效情况
             System.out.println("Token is invalid.");
             return "InvalidTokenError";
@@ -22,9 +23,17 @@ public class ControllerOperation {
             System.out.println("Is admin.");
             return "IsAdmin";
         }
+        else if (Objects.equals(usertype, "teacher")){
+            System.out.println("Is teacher.");
+            return "IsTeacher";
+        }
+        else if (Objects.equals(usertype, "student")){
+            System.out.println("Is student.");
+            return "IsStudent";
+        }
         else{
-            System.out.println("Request is not from administrator");
-            return "NotAdmin";
+            System.out.println("Request is not from user");
+            return "NotUser";
         }
     }
 
@@ -56,6 +65,16 @@ public class ControllerOperation {
             case "FormError" -> {
                 System.out.println("FormError!");
                 map.put("message", "输入信息格式错误！");
+                return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+            }
+            case "NotFound" -> {
+                System.out.println("Entry not found!");
+                map.put("message", "无对应信息！");
+                return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+            }
+            case "Conflict" -> {
+                System.out.println("Entry Conflict!");
+                map.put("message", "信息条目冲突！");
                 return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
             }
             default -> {

@@ -5,28 +5,191 @@ import com.example.demo.bean.JWTUtils;
 import com.example.demo.bean.UserBean;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-
-//Control层，与前端联系
 @RestController
 @CrossOrigin("http://localhost:3000")
-public class UserController {
+public class UserController extends BasicController <UserBean>{
     private final UserService userService;
 
-    @Autowired//将Service层注入到Controller层
-    public UserController(UserService userService){
+    @Autowired
+    public UserController(UserService userService) {
         this.userService = userService;
         userService.createAdmin();
     }
 
-    /*查--登录操作*/
+    @Override
+    String auth1() {
+        return "IsAdmin";
+    }
+
+    @Override
+    String auth2() {
+        return "IsTeacher";
+    }
+
+    @Override
+    String auth3() {
+        return "IsStudent";
+    }
+
+    @Override
+    String getIds() {
+        return "schoolnumbers";
+    }
+
+    /*************未使用***************/
+    @Override
+    String getId() {
+        return null;
+    }
+
+    @Override
+    String getANewConcreteId() {
+        return null;
+    }
+
+
+    @Override
+    List<String> getAllConcreteIds(Boolean showall, String name) {
+        return null;
+    }
+
+    /**************继承操作***************/
+
+    /*查--获取一个用户信息*/
+    @Override
+    UserBean getConcreteBean(String id, Boolean showall) {
+        return userService.getAUser(id);
+    }
+    @Override
+    UserBean getConcreteBean(String id, Boolean showall, String name) {
+        return null;
+    }
+
+    @Override
+    @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> getABean(@PathVariable("schoolnumber") String schoolnumber,
+                                                        @RequestHeader(value="Authentication") String authentication) {
+        return super.getABean(schoolnumber, authentication);
+    }
+
+    /*查--返回所有主键值*/
+    @Override
+    List<String> getAllConcreteIds(Boolean showall) {
+        return userService.getAllSchoolnumbers();
+    }
+
+    @Override
+    @RequestMapping(value="/users", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> getAllIds(@RequestHeader(value="Authentication") String authentication) {
+        return super.getAllIds(authentication);
+    }
+
+
+    /*增--新增一个用户*/
+
+    @Override
+    String createAConcreteBean(String id, UserBean bean) {
+        return userService.createAUser(bean);
+    }
+
+    @Override
+    String createAConcreteBean(String id, UserBean bean, String name) {
+        return null;
+    }
+
+    @Override
+    @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createABean(@PathVariable("schoolnumber") String schoolnumber,
+                                                           @RequestBody UserBean userBean,
+                                                           @RequestHeader(value = "Authentication") String authentication) {
+        return super.createABean(schoolnumber, userBean, authentication);
+    }
+
+
+    /*改--重写一个用户,put*/
+
+    @Override
+    String rewriteConcreteBean(String id, UserBean bean) {
+        return null;
+    }
+
+
+    @Override
+    @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.PUT)
+    public ResponseEntity<Map<String, Object>> rewriteABean(@PathVariable("schoolnumber") String schoolnumber,
+                                                            @RequestBody UserBean userBean,
+                                                            @RequestHeader(value="Authentication") String authentication) {
+        return super.rewriteABean(schoolnumber, userBean, authentication);
+    }
+
+    /*改--修改一个用户，patch*/
+    @Override
+    String modifyAConcreteBean(String schoolnumber, UserBean userBean) {
+        UserBean userBean_ori = userService.getAUser(schoolnumber);
+        if (userBean_ori == null)
+            return "NotFound";
+
+        String [] adminauth = {"email", "password", "phonenumber", "name", "school", "major", "status"};
+
+        List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
+        UserBean userBean_modified = BeanTools.modify(userBean_ori, userBean, changeableList);
+        return userService.rewriteUser(userBean_modified);
+
+    }
+
+    @Override
+    String modifyAConcreteBean(String schoolnumber, UserBean userBean, String name) {//teacher and student
+        UserBean userBean_ori = userService.getAUser(schoolnumber);
+        if (userBean_ori == null)
+            return "NotFound";
+        if (!userBean_ori.getSchoolnumber().equals(schoolnumber)){
+            return "NotFound";
+        }
+
+        String [] standard = {"email", "password", "phonenumber"};
+
+        List<String> changeableList = new ArrayList<>(Arrays.asList(standard));
+        UserBean userBean_modified = BeanTools.modify(userBean_ori, userBean, changeableList);
+        return userService.rewriteUser(userBean_modified);
+
+    }
+
+    @Override
+    @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.PATCH)
+    public ResponseEntity<Map<String, Object>> modifyABean(@PathVariable("schoolnumber") String schoolnumber,
+                                                           @RequestBody UserBean userBean,
+                                                           @RequestHeader(value="Authentication") String authentication) {
+        return super.modifyABean(schoolnumber, userBean, authentication);
+    }
+
+
+    /*删--删除用户*/
+    @Override
+    String delConcreteBean(String keyword) {
+        return userService.deleteUser(keyword);
+    }
+
+    @Override
+    String delConcreteBean(String keyword, String name) {
+        return null;
+    }
+
+    @Override
+    @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.DELETE)
+    public ResponseEntity<Map<String, Object>> delBean(@PathVariable("schoolnumber") String schoolnumber,
+                                                       @RequestHeader(value="Authentication") String authentication) {
+        return super.delBean(schoolnumber, authentication);
+    }
+
+    /**************下为特有操作***************/
+
+    /*!!!查==登录操作*/
     @RequestMapping(value="/token", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> login(@RequestBody UserBean user) {
         String schoolnumber, password;
@@ -65,157 +228,6 @@ public class UserController {
 
     }
 
-    /*查--返回所有schoolnumber*/
-    @RequestMapping(value="/users", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getAllSchoolnumbers(@RequestHeader(value="Authentication") String authentication){
-        Map<String, Object> map = new HashMap<>();
-
-        String credit = ControllerOperation.checkAuthentication(authentication);
-
-        if (credit.equals("admin")){//必然成功，未重构
-            List<String> strings = userService.getAllSchoolnumbers();
-            System.out.println("strings="+strings);
-            map.put("schoolnumbers",strings);//change
-            return new ResponseEntity<>(map, HttpStatus.OK);
-        }
-        else{
-            return ControllerOperation.getErrorResponse(credit, map);
-        }
-
-    }
-
-    /*查--获取一个用户信息*/
-    @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getAUser(@PathVariable("schoolnumber") String schoolnumber,
-                                                        @RequestHeader(value="Authentication") String authentication) {
-        Map<String, Object> map = new HashMap<>();
-
-        String credit = ControllerOperation.checkAuthentication(authentication);
-
-        if (credit.equals("admin")){
-            UserBean userBean;
-            userBean = userService.getAUser(schoolnumber);
-
-            return ControllerOperation.getSearchResponse(userBean, map);
-        }
-        else{
-            return ControllerOperation.getErrorResponse(credit, map);
-        }
-    }
-
-    /*增--注册新用户*/
-    @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> createAUser(@PathVariable("schoolnumber") String schoolnumber,
-                                                           @RequestBody UserBean regisuser,
-                                                           @RequestHeader(value = "Authentication") String authentication){
-
-        Map<String, Object> map = new HashMap<>();
-
-        UserBean userBean;
-        regisuser.setSchoolnumber(schoolnumber);//默认使用url提供的学工号
-        userBean = regisuser;
-
-        String credit = ControllerOperation.checkAuthentication(authentication);
-
-        if (credit.equals("admin")){
-            System.out.println(userBean);
-            String result = userService.register(userBean);
-            System.out.println(result);
-
-            switch (result){
-                case "SchoolnumberConflict"://学工号冲突
-                    System.out.println("Schoolnumber Conflict.");
-                    map.put("message","Schoolnumber Conflict.");
-                    return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
-                case "IdentitynumberConflict"://身份证号冲突
-                    System.out.println("Identitynumber Conflict.");
-                    map.put("message","Identitynumber Conflict.");
-                    return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
-
-                default:
-                    return ControllerOperation.getConductResponse(result, map);
-            }
-        }
-        else{
-            return ControllerOperation.getErrorResponse(credit, map);
-        }
-
-    }
-    /*改--重写一个用户,put*/
-    @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.PUT)
-    public ResponseEntity<Map<String, Object>> rewriteAUser(@PathVariable("schoolnumber") String schoolnumber,
-                                                            @RequestBody UserBean userBean,
-                                                            @RequestHeader(value="Authentication") String authentication) {
-        Map<String, Object> map = new HashMap<>();
-
-        String credit = ControllerOperation.checkAuthentication(authentication);
-
-        if (credit.equals("admin")){
-            userBean.setSchoolnumber(schoolnumber);
-            String result = userService.rewriteUser(userBean);
-
-            return ControllerOperation.getConductResponse(result, map);
-
-        }
-        else{
-            return ControllerOperation.getErrorResponse(credit, map);
-        }
-
-
-    }
-
-    /*改--修改一个用户,patch*/
-    @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.PATCH)
-    public ResponseEntity<Map<String, Object>> changeAUser(@PathVariable("schoolnumber") String schoolnumber,
-                                                           @RequestBody UserBean userBean,
-                                                           @RequestHeader(value="Authentication") String authentication) {
-        Map<String, Object> map = new HashMap<>();
-        String schoolnumber_jwt = JWTUtils.decodeToGetValue(authentication.substring(7), "schoolnumber");
-
-        String credit = ControllerOperation.checkAuthentication(authentication);
-
-        if (credit.equals("admin") || Objects.equals(schoolnumber_jwt, schoolnumber)){
-            UserBean userBean_ori = userService.getAUser(schoolnumber);
-
-            String [] adminauth = {"email", "password", "phonenumber", "name", "school", "major", "status"};
-            String [] standard = {"email", "password", "phonenumber"};
-            List<String> changeableList;
-
-            //身份不同，权限（可修改的项）不同
-            if (credit.equals("admin"))
-                changeableList = new ArrayList<>(Arrays.asList(adminauth));
-            else
-                changeableList = new ArrayList<>(Arrays.asList(standard));
-
-            UserBean userBean_modified = BeanTools.modify(userBean_ori, userBean, changeableList);
-
-            String result = userService.rewriteUser(userBean_modified);
-            return ControllerOperation.getConductResponse(result, map);
-        }
-        else{
-            return ControllerOperation.getErrorResponse(credit, map);
-        }
-
-    }
-
-
-    /*删--删除用户*/
-    @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.DELETE)
-    public ResponseEntity<Map<String, Object>> delMajor(@PathVariable("schoolnumber") String schoolnumber,
-                                                        @RequestHeader(value="Authentication") String authentication){
-        Map<String, Object> map = new HashMap<>();
-
-        String credit = ControllerOperation.checkAuthentication(authentication);
-
-        if (credit.equals("admin")){
-            String result = this.userService.deleteUser(schoolnumber);
-            return ControllerOperation.getConductResponse(result, map);
-        }
-        else{
-            return ControllerOperation.getErrorResponse(credit, map);
-        }
-
-    }
 
 
 }

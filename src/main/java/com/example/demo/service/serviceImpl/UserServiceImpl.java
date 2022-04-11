@@ -1,6 +1,8 @@
 package com.example.demo.service.serviceImpl;
 
+import com.example.demo.bean.Lesson;
 import com.example.demo.bean.Major;
+import com.example.demo.mapper.LessonMapper;
 import com.example.demo.mapper.MajorMapper;
 import com.example.demo.service.UserService;
 import com.example.demo.bean.UserBean;
@@ -11,68 +13,19 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final MajorMapper majorMapper;
+    private final LessonMapper lessonMapper;
 
     //将DAO(Mapper)层注入Service层
     @Autowired
-    public UserServiceImpl(UserMapper userMapper, MajorMapper majorMapper) {
+    public UserServiceImpl(UserMapper userMapper, MajorMapper majorMapper, LessonMapper lessonMapper) {
         this.userMapper = userMapper;
         this.majorMapper = majorMapper;
-    }
-
-
-    @Override
-    public UserBean login(String schoolnumber, String password) {
-        return userMapper.findBySchoolnumberAndPassword(schoolnumber, password);
-    }
-
-    @Override
-    public String register(UserBean userBean) {
-        String schoolnumber, newidentitynumber;
-        UserBean a, b;
-        schoolnumber = userBean.getSchoolnumber();
-        newidentitynumber = userBean.getIdentitynumber();
-        a = userMapper.findBySchoolnumber(schoolnumber);
-        b = userMapper.findByIdentitynumber(newidentitynumber);
-        if (a != null)
-            return "SchoolnumberConflict";
-        else if (b != null)
-            return "IdentitynumberConflict";
-        else {
-            userBean.setPassword("fDu666666");//统一设置初始密码
-            if (userBean.verifyform()) {
-                userMapper.save(userBean);
-                return "Success";
-            } else
-                return "FormError";
-
-        }
-
-
-    }
-
-
-    @Override
-    public String changePassword(String schoolnumber, String newpassword) {
-        UserBean userBean;
-        userBean = userMapper.findBySchoolnumber(schoolnumber);
-
-        if (Objects.equals(newpassword, "fDu666666")) {//新密码为初始密码
-            return "NotAllowedPassword";//新密码错误
-        } else if (Objects.equals(userBean.getPassword(), "fDu666666")) {//该用户当前密码为初始密码
-            userBean.setPassword(newpassword);
-            userMapper.save(userBean);
-            return "Success";
-        } else {//用户当前密码不是初始密码
-            userBean.setPassword(newpassword);
-            userMapper.save(userBean);
-            return "Success";
-        }
+        this.lessonMapper = lessonMapper;
     }
 
     @Override
@@ -90,63 +43,74 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-
     @Override
-    public void deleteMajortest(int majornumber) {
-        Major major = majorMapper.findByMajornumber(majornumber);
-        majorMapper.delete(major);
-    }
-
-
-    @Override
-    public void createMajortest() {//测试函数，会在运行开始时自动执行，用以测试
-
-
-        Major major = new Major();
-        major.setSchool("计算机学院");
-        major.setName("计算机科学与技术");
-//        List<Major> majorList = majorMapper.findAll();
-//        Major maxmajor = majorList.stream().max(Comparator.comparing(Major::getMajornumber)).get();
-        major.setMajornumber(10);
-        majorMapper.save(major);
-        int a = major.getMajornumber();
-        System.out.println("created major with number");
-        System.out.println(a);
-
+    public UserBean login(String schoolnumber, String password) {
+        return userMapper.findBySchoolnumberAndPassword(schoolnumber, password);
     }
 
     @Override
-    public String createMajor(Major major) {//创建一个对象，若主键已存在，则修改对象的值
+    public String createAUser(UserBean userBean) {
+        String schoolnumber, newidentitynumber;
+        UserBean a, b;
+        schoolnumber = userBean.getSchoolnumber();
+        newidentitynumber = userBean.getIdentitynumber();
+        a = userMapper.findBySchoolnumber(schoolnumber);
+        b = userMapper.findByIdentitynumber(newidentitynumber);
+        if (a != null)
+            return "Conflict";
+        else if (b != null)
+            return "Conflict";
+        else {
+            userBean.setPassword("fDu666666");//统一设置初始密码
+            if (userBean.verifyform()) {
+                userMapper.save(userBean);
+                return "Success";
+            } else
+                return "FormError";
 
-        if (major == null) {
-            return "UnknownError";
         }
 
-        if (major.getMajornumber() <= 0 || Objects.equals(major.getName(), "") || Objects.equals(major.getSchool(), "")) {
+
+    }
+
+    @Override
+    public List<String> getAllSchoolnumbers() {
+        List<UserBean> userBeanList = userMapper.findAll();
+        return userBeanList.stream().map(UserBean::getSchoolnumber).toList();
+    }
+
+    @Override
+    public UserBean getAUser(String schoolnumber) {
+        return userMapper.findBySchoolnumber(schoolnumber);
+    }
+
+    @Override
+    public String rewriteUser(UserBean userBean){
+        String id_old = userMapper.findBySchoolnumber(userBean.getSchoolnumber()).getId();
+        userBean.setId(id_old);//保证id不变，是修改而非新增
+        if (userBean.verifyform()) {
+            userMapper.save(userBean);
+            return "Success";
+        } else
             return "FormError";
-        }
-
-        Major a = majorMapper.save(major);
-        return "Success";
     }
 
     @Override
-    public String deleteMajor(int majornumber) {//删除一个对象
+    public String deleteUser(String schoolnumber) {
+        UserBean userBean = userMapper.findBySchoolnumber(schoolnumber);
 
-        Major major = majorMapper.findByMajornumber(majornumber);
-
-        if (major != null) {
-            majorMapper.delete(major);
-            return "success";
+        if (userBean != null) {
+            userMapper.delete(userBean);
+            return "Success";
         } else {
-            return "nonexistent";
+            return "NotFound";
         }
     }
+
 
     @Override
     public String getANewMajornumber() {//返回一个可用的majornumber(str)
         List<Major> majorList = majorMapper.findAll();
-
 
         try {
             Major maxmajor = majorList.stream().max(Comparator.comparing(Major::getMajornumber)).get();
@@ -177,38 +141,217 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<String> getAllSchoolnumbers() {
-        List<UserBean> userBeanList = userMapper.findAll();
-        List<String> a = userBeanList.stream().map(UserBean::getSchoolnumber).toList();
-        return a;
-    }
-
-    @Override
-    public UserBean getAUser(String schoolnumber) {
-        return userMapper.findBySchoolnumber(schoolnumber);
-    }
-
-    @Override
-    public String deleteUser(String schoolnumber) {
-        UserBean userBean = userMapper.findBySchoolnumber(schoolnumber);
-
-        if (userBean != null) {
-            userMapper.delete(userBean);
-            return "success";
-        } else {
-            return "nonexistent";
+    public Major getAMajor(String majornumber_str) {
+        Major major;
+        try {
+            int majornumber = Integer.parseInt(majornumber_str);
+            major = getAMajor(majornumber);
+            return major;
+        } catch (NumberFormatException e) {//传入majornumber格式不对
+            return null;
         }
     }
 
     @Override
-    public String rewriteUser(UserBean userBean){
-        String id_old = userMapper.findBySchoolnumber(userBean.getSchoolnumber()).getId();
-        userBean.setId(id_old);//保证id不变，是修改而非新增
-        if (userBean.verifyform()) {
-            userMapper.save(userBean);
+    public String createAMajor(String majornumber_str, Major major) {
+
+        Major major1 = getAMajor(majornumber_str);
+        if (major1 == null) {
+            try{
+                major.setMajornumber(Integer.parseInt(majornumber_str));
+            }
+            catch (Exception e){
+                return "FormError";
+            }
+            if (major.getName().equals("") || major.getSchool().equals(""))  return "FormError";
+            majorMapper.save(major);
             return "Success";
-        } else
-            return "FormError";
+
+        }
+        else{
+            return "Conflict";
+        }
+
+
     }
+
+    @Override
+    public String rewriteAMajor(String majornumber_str, Major major) {//创建一个对象，若主键已存在，则修改对象的值
+        Major major1 = getAMajor(majornumber_str);
+        if (major1 == null) {
+            return "NotFound";
+        }
+
+        if (major.getName().equals("") || major.getSchool().equals(""))
+            return "FormError";
+
+        major.setMajornumber(major1.getMajornumber());
+        majorMapper.save(major);
+        return "Success";
+    }
+
+    @Override
+    public String deleteMajor(int majornumber) {//删除一个对象
+
+        Major major = majorMapper.findByMajornumber(majornumber);
+
+        if (major != null) {
+            majorMapper.delete(major);
+            return "Success";
+        } else {
+            return "NotFound";
+        }
+    }
+
+    @Override
+    public String deleteMajor(String majornumber_str) {
+
+        int majornumber;
+        try {
+            majornumber = Integer.parseInt(majornumber_str);
+        } catch (NumberFormatException e) {//传入majornumber格式不对
+            return "NotFound";
+        }
+        Major major = majorMapper.findByMajornumber(majornumber);
+        if (major != null) {
+            majorMapper.delete(major);
+            return "Success";
+        } else {
+            return "NotFound";
+        }
+    }
+
+
+    @Override
+    public String getANewLessonid() {
+        List<Lesson> lessonList = lessonMapper.findAll();
+
+        try {
+            Lesson maxlesson = lessonList.stream().max(Comparator.comparing(Lesson::getLessonid)).get();
+            System.out.println("getMaxMajornumber=");
+            System.out.println(maxlesson.getLessonid());
+
+            return String.valueOf(maxlesson.getLessonid() + 1);
+        }catch (Exception e){
+            return "1";
+        }
+    }
+
+    @Override
+    public List<String> getAllLessonid() {
+        List<Lesson> lessonList = lessonMapper.findAll();
+
+        List<String> a = lessonList.stream().map( u -> String.valueOf(u.getLessonid())).toList();
+
+        System.out.println("a"+a);
+
+        return a;
+    }
+
+    @Override
+    public List<String> getAllLessonid(String teacherName, boolean showall) {
+        List<Lesson> lessonList = lessonMapper.findAllByTeacherOrStatus(teacherName, "censored");
+        return lessonList.stream().map(u -> String.valueOf(u.getLessonid())).toList();
+    }
+
+    @Override
+    public List<String> getAllLessonid(boolean showAll) {
+        List<Lesson> lessonList = lessonMapper.findAllByStatus("censored");
+        return lessonList.stream().map(u -> String.valueOf(u.getLessonid())).toList();
+    }
+
+    @Override
+    public Lesson getALesson(int lessonid) {
+        return lessonMapper.findByLessonid(lessonid);
+    }
+
+    @Override
+    public Lesson getALesson(String lessonid_str) {
+        Lesson lesson;
+        try {
+            int lessonid = Integer.parseInt(lessonid_str);
+            lesson = getALesson(lessonid);
+            return lesson;
+        } catch (NumberFormatException e) {//传入lessonid格式不对
+            return null;
+        }
+    }
+
+    @Override
+    public String createALesson(String lessonid_str, Lesson lesson) {
+        Lesson lesson1 = getALesson(lessonid_str);
+        if (lesson1 == null){
+            lesson.setLessonid(Integer.parseInt(lessonid_str));
+            if (lesson.getLessonname().equals("") || lesson.getSchool().equals(""))
+                return "FormError";
+            lessonMapper.save(lesson);
+            return "Success";
+        }
+        else return "Conflict";
+    }
+
+    @Override
+    public String rewriteALesson(String lessonid_str, Lesson lesson) {
+
+        Lesson lesson1 = getALesson(lessonid_str);
+        if (lesson1 == null)
+            return "NotFound";
+        else{
+            lesson.setLessonid(lesson1.getLessonid());
+
+            if (lesson.getLessonname().equals("") || lesson.getSchool().equals(""))
+                return "FormError";
+
+            lessonMapper.save(lesson);
+            return "Success";
+        }
+    }
+
+    @Override
+    public String deleteLesson(int lessonid) {
+        Lesson lesson = lessonMapper.findByLessonid(lessonid);
+
+        if (lesson != null) {
+            lessonMapper.delete(lesson);
+            return "Success";
+        } else {
+            return "NotFound";
+        }
+    }
+
+    @Override
+    public String deleteLesson(String lessonid_str) {
+        int lessonid;
+        try {
+            lessonid = Integer.parseInt(lessonid_str);
+        } catch (NumberFormatException e) {//传入 lessonid_str 格式不对
+            return "NotFound";
+        }
+        Lesson lesson = lessonMapper.findByLessonid(lessonid);
+        if (lesson != null) {
+            lessonMapper.delete(lesson);
+            return "Success";
+        } else {
+            return "NotFound";
+        }
+    }
+
+    @Override
+    public String deleteLesson(String lessonid_str, String name) {
+        int lessonid;
+        try {
+            lessonid = Integer.parseInt(lessonid_str);
+        } catch (NumberFormatException e) {//传入 lessonid_str 格式不对
+            return "NotFound";
+        }
+        Lesson lesson = lessonMapper.findByLessonid(lessonid);
+        if (lesson != null && Objects.equals(lesson.getTeacher(), name)) {
+            lessonMapper.delete(lesson);
+            return "Success";
+        } else {
+            return "NotFound";
+        }
+    }
+
 
 }
