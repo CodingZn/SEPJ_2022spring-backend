@@ -4,6 +4,7 @@ import com.example.demo.bean.Lesson;
 import com.example.demo.bean.Major;
 import com.example.demo.mapper.LessonMapper;
 import com.example.demo.mapper.MajorMapper;
+import com.example.demo.mapper.straightMappers.ClassroomMapper;
 import com.example.demo.service.UserService;
 import com.example.demo.bean.UserBean;
 import com.example.demo.mapper.UserMapper;
@@ -19,13 +20,17 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final MajorMapper majorMapper;
     private final LessonMapper lessonMapper;
+    private final ClassroomMapper classroomMapper;
+    DependValueVerify dependValueVerify;
 
     //将DAO(Mapper)层注入Service层
     @Autowired
-    public UserServiceImpl(UserMapper userMapper, MajorMapper majorMapper, LessonMapper lessonMapper) {
+    public UserServiceImpl(UserMapper userMapper, MajorMapper majorMapper, LessonMapper lessonMapper, ClassroomMapper classroomMapper) {
         this.userMapper = userMapper;
         this.majorMapper = majorMapper;
         this.lessonMapper = lessonMapper;
+        this.classroomMapper = classroomMapper;
+        dependValueVerify = new DependValueVerify(majorMapper, userMapper, lessonMapper, classroomMapper);
     }
 
     @Override
@@ -62,11 +67,18 @@ public class UserServiceImpl implements UserService {
             return "Conflict";
         else {
             userBean.setPassword("fDu666666");//统一设置初始密码
-            if (userBean.verifyform()) {
+            //检查数据格式与依赖属性
+            if (!userBean.verifyform()) {
+                return "FormError";
+            }
+            else if (!dependValueVerify.userDependCheck(userBean)){
+                return "DependError";
+            }
+            else{
                 userMapper.save(userBean);
                 return "Success";
-            } else
-                return "FormError";
+            }
+
 
         }
 
@@ -88,11 +100,16 @@ public class UserServiceImpl implements UserService {
     public String rewriteUser(UserBean userBean){
         String id_old = userMapper.findBySchoolnumber(userBean.getSchoolnumber()).getId();
         userBean.setId(id_old);//保证id不变，是修改而非新增
-        if (userBean.verifyform()) {
+        if (!userBean.verifyform()) {
+            return "FormError";
+        }
+        else if (!dependValueVerify.userDependCheck(userBean)){
+            return "DependError";
+        }
+        else{
             userMapper.save(userBean);
             return "Success";
-        } else
-            return "FormError";
+        }
     }
 
     @Override
@@ -182,7 +199,7 @@ public class UserServiceImpl implements UserService {
             return "NotFound";
         }
 
-        if (major.getName().equals("") || major.getSchool().equals(""))
+        if (major.getName().equals("") || !major.getSchool().equals(""))
             return "FormError";
 
         major.setMajornumber(major1.getMajornumber());
@@ -282,10 +299,14 @@ public class UserServiceImpl implements UserService {
         Lesson lesson1 = getALesson(lessonid_str);
         if (lesson1 == null){
             lesson.setLessonid(Integer.parseInt(lessonid_str));
-            if (lesson.getLessonname().equals("") || lesson.getSchool().equals(""))
+            if ((lesson.getLessonname().equals("") || lesson.getSchool().equals("")))
                 return "FormError";
-            lessonMapper.save(lesson);
-            return "Success";
+            else if (!dependValueVerify.lessonDependCheck(lesson))
+                return "DependError";
+            else{
+                lessonMapper.save(lesson);
+                return "Success";
+            }
         }
         else return "Conflict";
     }
@@ -297,13 +318,15 @@ public class UserServiceImpl implements UserService {
         if (lesson1 == null)
             return "NotFound";
         else{
-            lesson.setLessonid(lesson1.getLessonid());
-
-            if (lesson.getLessonname().equals("") || lesson.getSchool().equals(""))
+            lesson.setLessonid(Integer.parseInt(lessonid_str));
+            if ((lesson.getLessonname().equals("") || lesson.getSchool().equals("")))
                 return "FormError";
-
-            lessonMapper.save(lesson);
-            return "Success";
+            else if (!dependValueVerify.lessonDependCheck(lesson))
+                return "DependError";
+            else{
+                lessonMapper.save(lesson);
+                return "Success";
+            }
         }
     }
 

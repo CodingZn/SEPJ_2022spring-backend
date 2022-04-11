@@ -67,6 +67,11 @@ public class ControllerOperation {
                 map.put("message", "输入信息格式错误！");
                 return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
             }
+            case "DependError" -> {
+                System.out.println("DependError!");
+                map.put("message", "输入信息含有不存在的依赖属性！");
+                return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+            }
             case "NotFound" -> {
                 System.out.println("Entry not found!");
                 map.put("message", "无对应信息！");

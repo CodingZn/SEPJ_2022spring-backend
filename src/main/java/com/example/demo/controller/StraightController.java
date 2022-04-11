@@ -2,12 +2,13 @@ package com.example.demo.controller;
 
 import com.example.demo.bean.trivialBeans.Classroom;
 import com.example.demo.bean.trivialBeans.Classtime;
-import com.example.demo.bean.trivialBeans.UltimateControls;
+import com.example.demo.bean.trivialBeans.Ultimatecontrol;
 import com.example.demo.mapper.straightMappers.ClassroomMapper;
+import com.example.demo.mapper.straightMappers.ClasstimeMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,10 +17,16 @@ import java.util.Map;
 @CrossOrigin("http://localhost:3000")
 public class StraightController {
 
-    private final ClassroomMapper straightMapper;
 
-    public StraightController(ClassroomMapper classroomMapper) {
-        this.straightMapper = classroomMapper;
+    private final ClassroomMapper classroomMapper;
+    private final ClasstimeMapper classtimeMapper;
+
+    private final Ultimatecontrol ultimatecontrol;
+
+    public StraightController(ClassroomMapper classroomMapper, ClasstimeMapper classtimeMapper, Ultimatecontrol ultimatecontrol) {
+        this.classroomMapper = classroomMapper;
+        this.classtimeMapper = classtimeMapper;
+        this.ultimatecontrol = ultimatecontrol;
     }
 
     @RequestMapping(value="/classrooms", method = RequestMethod.POST)
@@ -29,10 +36,7 @@ public class StraightController {
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         if (credit.equals("IsAdmin")){
-            /*
-            * 在此增加相关代码，直接调用mapper层方法，
-            * 将形参中classroomList中所有的classroom对象写入到数据库中
-            * */
+            classroomMapper.saveAll(classroomList);
 
             return ControllerOperation.getConductResponse("Success", map);
         }
@@ -48,10 +52,9 @@ public class StraightController {
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         if (credit.equals("IsAdmin")){
-            /*
-             * 在此增加相关代码，将形参中classroom的name属性设置为参数中的name
-             * 然后将classroom通过mapper层里的save方法写入到数据库中
-             * */
+
+            classroom.setName(name);
+            classroomMapper.save(classroom);
 
             return ControllerOperation.getConductResponse("Success", map);
         }
@@ -65,11 +68,10 @@ public class StraightController {
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         if (credit.equals("IsAdmin")){
-            List<Classroom> a = new ArrayList<>();
-            /*
-             * 在此增加相关代码，把数据库中所有的classroom对象写入到以上list里面
-             * */
-            map.put("classrooms", a);
+
+            List<Classroom> classroomList = classroomMapper.findAll();
+
+            map.put("classrooms", classroomList);
             return ControllerOperation.getConductResponse("Success", map);
         }
         else
@@ -83,9 +85,7 @@ public class StraightController {
         String credit = ControllerOperation.checkAuthentication(authentication);
         if (credit.equals("IsAdmin")){
 
-            /*
-             * 在此增加相关代码，把数据库中所有的classroom对象清空
-             * */
+            classroomMapper.deleteAll();
 
             return ControllerOperation.getConductResponse("Success", map);
         }
@@ -103,10 +103,8 @@ public class StraightController {
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         if (credit.equals("IsAdmin")){
-            /*
-             * 在此增加相关代码，直接调用mapper层方法，
-             * 将形参中classtimeList中所有的classtime对象写入到数据库中
-             * */
+
+            classtimeMapper.saveAll(classtimeList);
 
             return ControllerOperation.getConductResponse("Success", map);
         }
@@ -120,10 +118,8 @@ public class StraightController {
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         if (credit.equals("IsAdmin")){
-            List<Classtime> a = new ArrayList<>();
-            /*
-             * 在此增加相关代码，把数据库中所有的classtime对象写入到以上list里面
-             * */
+            List<Classtime> a = classtimeMapper.findAll();
+
             map.put("classrooms", a);
             return ControllerOperation.getConductResponse("Success", map);
         }
@@ -138,9 +134,7 @@ public class StraightController {
         String credit = ControllerOperation.checkAuthentication(authentication);
         if (credit.equals("IsAdmin")){
 
-            /*
-             * 在此增加相关代码，把数据库中所有的classtime对象清空
-             * */
+            classtimeMapper.deleteAll();
 
             return ControllerOperation.getConductResponse("Success", map);
         }
@@ -154,7 +148,7 @@ public class StraightController {
     @RequestMapping(value="/controls/{name}", method = RequestMethod.PATCH)
     public ResponseEntity<Map<String, Object>> changeControl (@RequestHeader("Authentication") String authentication,
                                                               @RequestParam("name") String name,
-                                                              @RequestBody UltimateControls control) {
+                                                              @RequestBody Ultimatecontrol control) {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
@@ -164,6 +158,8 @@ public class StraightController {
              * 在此增加相关代码，将形参中 control 的 name 属性设置为参数中的 name
              * 然后将 control 通过 mapper 层里的 save 方法写入到数据库中
              * */
+
+
 
             return ControllerOperation.getConductResponse("Success", map);
         }

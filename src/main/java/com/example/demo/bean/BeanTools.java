@@ -28,7 +28,7 @@ public class BeanTools {
 
     }
 
-    public static<T> void set(T bean,String name,Object value) throws Exception {
+    private static <T> void set(T bean,String name,Object value) throws Exception {
         Method method = bean.getClass().getMethod(name,Class.forName(value.getClass().getCanonicalName()));
         method.invoke(bean, value);
 
@@ -36,9 +36,11 @@ public class BeanTools {
     }
     //"set"+name.substring(0, 1).toUpperCase() + name.substring(1)
 
-    public static<T> Object get(T bean,String name) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    private static<T> Object get(T bean,String name) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = bean.getClass().getMethod(name);
         return method.invoke(bean);
     }
     //"get"+name.substring(0, 1).toUpperCase() + name.substring(1)
+
+
 }

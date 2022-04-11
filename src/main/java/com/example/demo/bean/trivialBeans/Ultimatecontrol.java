@@ -1,5 +1,4 @@
 package com.example.demo.bean.trivialBeans;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,16 +11,13 @@ import javax.persistence.Table;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "classroom")
+@Table(name = "controls")
 @Entity
-public class Classroom {
-
+public class Ultimatecontrol {
     @Id
     @Column
     private String name;
 
     @Column
     private String status;
-
-
 }
