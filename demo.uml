@@ -3,57 +3,57 @@
   <ID>JAVA</ID>
   <OriginalElement>E:/AllProjects/IntelliJProjects/demo/src/main/java/com/example/demo</OriginalElement>
   <nodes>
-    <node x="224.0" y="0.0">com.example.demo.bean.Lesson</node>
-    <node x="746.0" y="497.0">com.example.demo.bean.trivialBeans.Ultimatectrl</node>
-    <node x="430.0" y="68.0">com.example.demo.service.serviceImpl.UserServiceImpl</node>
-    <node x="0.0" y="497.0">com.example.demo.bean.UserFormVerify</node>
-    <node x="540.0" y="329.0">com.example.demo.controller.MajorController</node>
-    <node x="242.0" y="497.0">com.example.demo.bean.Major</node>
-    <node x="412.0" y="837.0">com.example.demo.mapper.MajorMapper</node>
-    <node x="716.0" y="764.0">com.example.demo.DemoApplication</node>
-    <node x="494.0" y="764.0">com.example.demo.mapper.straightMappers.ClassroomMapper</node>
-    <node x="0.0" y="764.0">com.example.demo.mapper.straightMappers.UltimatecontrolMapper</node>
-    <node x="169.0" y="642.0">com.example.demo.bean.trivialBeans.Classtime</node>
-    <node x="603.0" y="837.0">com.example.demo.mapper.UserMapper</node>
-    <node x="0.0" y="0.0">com.example.demo.bean.UserBean</node>
-    <node x="216.0" y="837.0">com.example.demo.mapper.LessonMapper</node>
-    <node x="435.0" y="497.0">com.example.demo.controller.StraightController</node>
-    <node x="259.0" y="764.0">com.example.demo.controller.ControllerOperation</node>
-    <node x="503.5" y="0.0">com.example.demo.service.UserService</node>
-    <node x="0.0" y="837.0">com.example.demo.mapper.straightMappers.ClasstimeMapper</node>
-    <node x="0.0" y="642.0">com.example.demo.bean.trivialBeans.Classroom</node>
-    <node x="0.0" y="329.0">com.example.demo.service.serviceImpl.DependValueVerify</node>
-    <node x="334.0" y="642.0">com.example.demo.controller.UltimateController</node>
-    <node x="769.0" y="329.0">com.example.demo.controller.UserController</node>
-    <node x="707.0" y="642.0">com.example.demo.bean.JWTUtils</node>
-    <node x="784.0" y="837.0">com.example.demo.bean.BeanTools</node>
-    <node x="311.0" y="329.0">com.example.demo.controller.LessonController</node>
-    <node x="543.5" y="423.0">com.example.demo.controller.BasicController</node>
+    <node x="452.0488888888889" y="562.0">com.example.demo.bean.Lesson</node>
+    <node x="-266.7088888888889" y="327.02333333333326">com.example.demo.bean.trivialBeans.Ultimatectrl</node>
+    <node x="493.5" y="326.0233333333333">com.example.demo.service.serviceImpl.UserServiceImpl</node>
+    <node x="1079.6755555555555" y="654.0">com.example.demo.bean.UserFormVerify</node>
+    <node x="537.0" y="133.6844444444444">com.example.demo.controller.MajorController</node>
+    <node x="652.0488888888889" y="562.0">com.example.demo.bean.Major</node>
+    <node x="653.0488888888889" y="499.0233333333333">com.example.demo.mapper.MajorMapper</node>
+    <node x="-50.27111111111117" y="690.0">com.example.demo.DemoApplication</node>
+    <node x="-28.771111111111168" y="263.7233333333333">com.example.demo.mapper.straightMappers.ClassroomMapper</node>
+    <node x="-306.7088888888889" y="263.7233333333333">com.example.demo.mapper.straightMappers.UltimatecontrolMapper</node>
+    <node x="203.01111111111112" y="327.02333333333326">com.example.demo.bean.trivialBeans.Classtime</node>
+    <node x="844.0488888888889" y="499.0233333333333">com.example.demo.mapper.UserMapper</node>
+    <node x="822.548888888889" y="562.0">com.example.demo.bean.UserBean</node>
+    <node x="457.0488888888889" y="499.0233333333333">com.example.demo.mapper.LessonMapper</node>
+    <node x="29.720000000000027" y="133.6844444444444">com.example.demo.controller.StraightController</node>
+    <node x="1094.2444444444448" y="105.10499999999999">com.example.demo.controller.ControllerOperation</node>
+    <node x="567.0" y="248.0233333333333">com.example.demo.service.UserService</node>
+    <node x="177.51111111111112" y="263.7233333333333">com.example.demo.mapper.straightMappers.ClasstimeMapper</node>
+    <node x="-2.2711111111111677" y="327.02333333333326">com.example.demo.bean.trivialBeans.Classroom</node>
+    <node x="1010.6755555555555" y="313.3422222222222">com.example.demo.service.serviceImpl.DependValueVerify</node>
+    <node x="-343.8622222222222" y="133.6844444444444">com.example.demo.controller.UltimateController</node>
+    <node x="746.0" y="133.6844444444444">com.example.demo.controller.UserController</node>
+    <node x="1163.9333333333336" y="159.04666666666662">com.example.demo.bean.JWTUtils</node>
+    <node x="1131.3288888888892" y="562.0">com.example.demo.bean.BeanTools</node>
+    <node x="328.0" y="133.6844444444444">com.example.demo.controller.LessonController</node>
+    <node x="540.5" y="55.68444444444441">com.example.demo.controller.BasicController</node>
   </nodes>
   <notes />
   <edges>
     <edge source="com.example.demo.service.serviceImpl.UserServiceImpl" target="com.example.demo.service.UserService" relationship="REALIZATION">
-      <point x="0.0" y="-0.0" />
-      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-61.5" />
+      <point x="0.0" y="14.0" />
     </edge>
     <edge source="com.example.demo.controller.MajorController" target="com.example.demo.controller.BasicController" relationship="GENERALIZATION">
-      <point x="0.0" y="-0.0" />
-      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-27.0" />
+      <point x="0.0" y="14.0" />
     </edge>
     <edge source="com.example.demo.controller.UserController" target="com.example.demo.controller.BasicController" relationship="GENERALIZATION">
-      <point x="0.0" y="-0.0" />
-      <point x="863.5" y="403.0" />
-      <point x="634.5" y="403.0" />
-      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-27.0" />
+      <point x="840.5" y="108.68444444444441" />
+      <point x="631.5" y="108.68444444444441" />
+      <point x="0.0" y="14.0" />
     </edge>
     <edge source="com.example.demo.controller.LessonController" target="com.example.demo.controller.BasicController" relationship="GENERALIZATION">
-      <point x="0.0" y="-0.0" />
-      <point x="405.5" y="403.0" />
-      <point x="634.5" y="403.0" />
-      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-27.0" />
+      <point x="422.5" y="108.68444444444441" />
+      <point x="631.5" y="108.68444444444441" />
+      <point x="0.0" y="14.0" />
     </edge>
   </edges>
-  <settings layout="泛型" zoom="0.7627118644067796" showDependencies="true" x="479.0" y="432.5" />
+  <settings layout="分层" zoom="0.7550335570469798" showDependencies="true" x="548.1111111111112" y="437.0" />
   <SelectedNodes />
   <Categories>
     <Category>字段</Category>
