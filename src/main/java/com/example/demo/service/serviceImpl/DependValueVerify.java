@@ -9,6 +9,10 @@ import com.example.demo.mapper.straightMappers.ClassroomMapper;
 
 
 public class DependValueVerify {
+
+    /* 类功能：对实体成员中的依赖属性进行验证，对不合法的数据做出拦截 */
+
+
     private final MajorMapper majorMapper;
     private final UserMapper userMapper;
     private final LessonMapper lessonMapper;
@@ -22,7 +26,9 @@ public class DependValueVerify {
         this.classroomMapper = classroomMapper;
     }
 
-    //Lesson check
+
+    /*************课程检查****************/
+
     public boolean lessonDependCheck(Lesson lesson){
         return lessonPeriodVerify(lesson.getPeriod())&&
                 lessonPlaceVerify(lesson.getPlace()) &&
@@ -53,7 +59,9 @@ public class DependValueVerify {
         return period.matches(REGEX_LESSON_PERIOD);
     }
 
-    //User check
+
+    /*************用户检查****************/
+
     public boolean userDependCheck(UserBean userBean){
         return userMajorVerify(userBean.getMajor()) &&
                 userSchoolVerify(userBean.getSchool());
