@@ -20,7 +20,6 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final MajorMapper majorMapper;
     private final LessonMapper lessonMapper;
-    private final ClassroomMapper classroomMapper;
     DependValueVerify dependValueVerify;
 
     //将DAO(Mapper)层注入Service层
@@ -29,7 +28,6 @@ public class UserServiceImpl implements UserService {
         this.userMapper = userMapper;
         this.majorMapper = majorMapper;
         this.lessonMapper = lessonMapper;
-        this.classroomMapper = classroomMapper;
         dependValueVerify = new DependValueVerify(majorMapper, userMapper, lessonMapper, classroomMapper);
     }
 
@@ -128,16 +126,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public String getANewMajornumber() {//返回一个可用的majornumber(str)
         List<Major> majorList = majorMapper.findAll();
-
-        try {
-            Major maxmajor = majorList.stream().max(Comparator.comparing(Major::getMajornumber)).get();
+        Major maxmajor;
+        if (majorList.stream().max(Comparator.comparing(Major::getMajornumber)).isPresent()){
+            maxmajor = majorList.stream().max(Comparator.comparing(Major::getMajornumber)).get();
             System.out.println("getMaxMajornumber=");
             System.out.println(maxmajor.getMajornumber());
-
             return String.valueOf(maxmajor.getMajornumber() + 1);
-        }catch (Exception e){
-            return "1";
         }
+        else return "1";
+
+
+
     }
 
     @Override
@@ -243,15 +242,17 @@ public class UserServiceImpl implements UserService {
     public String getANewLessonid() {
         List<Lesson> lessonList = lessonMapper.findAll();
 
-        try {
-            Lesson maxlesson = lessonList.stream().max(Comparator.comparing(Lesson::getLessonid)).get();
+        Lesson maxlesson;
+        if (lessonList.stream().max(Comparator.comparing(Lesson::getLessonid)).isPresent()){
+            maxlesson = lessonList.stream().max(Comparator.comparing(Lesson::getLessonid)).get();
             System.out.println("getMaxMajornumber=");
             System.out.println(maxlesson.getLessonid());
 
             return String.valueOf(maxlesson.getLessonid() + 1);
-        }catch (Exception e){
-            return "1";
         }
+        else
+            return "1";
+
     }
 
     @Override
