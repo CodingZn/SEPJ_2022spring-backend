@@ -64,16 +64,39 @@ public class StraightController {
     }
 
     @RequestMapping(value="/classrooms", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getClassrooms(@RequestHeader("Authentication") String authentication) {
+    public ResponseEntity<Map<String, Object>> getAllClassroomName(@RequestHeader("Authentication") String authentication) {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         if (credit.equals("IsAdmin")){
 
             List<Classroom> classroomList = classroomMapper.findAll();
+            List<String> classroomNameList = classroomList.stream().map(Classroom::getName).toList();
 
-            map.put("classrooms", classroomList);
+            map.put("names", classroomNameList);
             return ControllerOperation.getConductResponse("Success", map);
+        }
+        else
+            return ControllerOperation.getErrorResponse(credit, map);
+    }
+
+    @RequestMapping(value="/classroom/{name}", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> getAClassroom(@RequestHeader("Authentication") String authentication,
+                                                             @PathVariable("name") String name) {
+        Map<String, Object> map = new HashMap<>();
+
+        String credit = ControllerOperation.checkAuthentication(authentication);
+        if (credit.equals("IsAdmin")){
+
+            Classroom classroom = classroomMapper.findByName(name);
+
+            if (classroom != null){
+                map.put("classroom", classroom);
+                return ControllerOperation.getConductResponse("Success", map);
+            }
+            else
+                return ControllerOperation.getConductResponse("NotFound", map);
+
         }
         else
             return ControllerOperation.getErrorResponse(credit, map);
@@ -115,6 +138,28 @@ public class StraightController {
             return ControllerOperation.getErrorResponse(credit, map);
     }
 
+    @RequestMapping(value="/classtime/{name}", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> getAClasstime(@RequestHeader("Authentication") String authentication,
+                                                             @PathVariable("name") String name) {
+        Map<String, Object> map = new HashMap<>();
+
+        String credit = ControllerOperation.checkAuthentication(authentication);
+        if (credit.equals("IsAdmin")){
+
+            Classtime classtime = classtimeMapper.findByName(name);
+
+            if (classtime != null){
+                map.put("classtime", classtime);
+                return ControllerOperation.getConductResponse("Success", map);
+            }
+            else
+                return ControllerOperation.getConductResponse("NotFound", map);
+
+        }
+        else
+            return ControllerOperation.getErrorResponse(credit, map);
+    }
+
     @RequestMapping(value="/classtimes", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getClasstimes(@RequestHeader("Authentication") String authentication) {
         Map<String, Object> map = new HashMap<>();
@@ -123,7 +168,10 @@ public class StraightController {
         if (credit.equals("IsAdmin")){
             List<Classtime> a = classtimeMapper.findAll();
 
-            map.put("classrooms", a);
+            List<Classtime> classtimeList = classtimeMapper.findAll();
+            List<String> classtimeNameList = classtimeList.stream().map(Classtime::getName).toList();
+
+            map.put("names", classtimeNameList);
             return ControllerOperation.getConductResponse("Success", map);
         }
         else
