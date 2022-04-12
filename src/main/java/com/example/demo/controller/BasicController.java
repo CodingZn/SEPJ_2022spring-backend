@@ -42,13 +42,16 @@ public abstract class BasicController <T>{
 
 
         if (credit.equals(auth1())){//一定成功，不做封装
-            String newMajornumber = getANewConcreteId();
+            String newConcreteId = getANewConcreteId();
 
-            map.put(getId(), newMajornumber);
+            map.put(getId(), newConcreteId);
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
         else if (credit.equals(auth2())){
-            return ControllerOperation.getErrorResponse(credit, map);
+            String newConcreteId = getANewConcreteId();
+
+            map.put(getId(), newConcreteId);
+            return new ResponseEntity<>(map, HttpStatus.OK);
         }
         else if (credit.equals(auth3())){
             return ControllerOperation.getErrorResponse(credit, map);
@@ -195,6 +198,7 @@ public abstract class BasicController <T>{
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         String name = JWTUtils.decodeToGetValue(authentication.substring(7), "name");
+        System.out.println(credit);
         if (credit.equals(auth1())){
 
             String result = modifyAConcreteBean(id, bean);
@@ -208,7 +212,9 @@ public abstract class BasicController <T>{
             return ControllerOperation.getConductResponse(result, map);
         }
         else if (credit.equals(auth3())){
-            return ControllerOperation.getErrorResponse(credit, map);
+            String result = modifyAConcreteBean(id, bean, name);
+
+            return ControllerOperation.getConductResponse(result, map);
         }
         else{
             return ControllerOperation.getErrorResponse(credit, map);

@@ -69,7 +69,7 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     List<String> getAllConcreteIds(Boolean showall, String name) {
-        return null;
+        return userService.getAllMajornumbers();
     }
 
 
@@ -77,6 +77,7 @@ public class MajorController extends BasicController<Major> {
     @Override
     @RequestMapping(value="/majors", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllIds(@RequestHeader(value="Authentication") String authentication) {
+        System.out.println("111");
         return super.getAllIds(authentication);
     }
 
@@ -88,8 +89,8 @@ public class MajorController extends BasicController<Major> {
     }
 
     @Override
-    Major getConcreteBean(String id, Boolean showall, String name) {
-        return null;
+    Major getConcreteBean(String id, Boolean showall, String name) {//教师操作
+        return userService.getAMajor(id);
     }
 
     @Override

@@ -30,7 +30,7 @@ public class UltimateController {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin")){
+        if (credit.equals("IsAdmin") || credit.equals("IsTeacher") || credit.equals("IsStudent")){
 
             Ultimatectrl ultimatectrl = ultimatecontrolMapper.findByName(name);
             return ControllerOperation.getSearchResponse(ultimatectrl, map);

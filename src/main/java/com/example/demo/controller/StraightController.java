@@ -74,7 +74,7 @@ public class StraightController {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin")){
+        if (credit.equals("IsAdmin") || credit.equals("IsTeacher")){
 
             List<Classroom> classroomList = classroomMapper.findAll();
             List<String> classroomNameList = classroomList.stream().map(Classroom::getName).toList();
@@ -93,7 +93,7 @@ public class StraightController {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin")){
+        if (credit.equals("IsAdmin") || credit.equals("IsTeacher")){
 
             Classroom classroom = classroomMapper.findByName(name);
             return ControllerOperation.getSearchResponse(classroom, map);
@@ -140,14 +140,14 @@ public class StraightController {
             return ControllerOperation.getErrorResponse(credit, map);
     }
 
-    /*查--获取所有上课时间对象*/
+    /*查--获取一个上课时间对象*/
     @RequestMapping(value="/classtime/{name}", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAClasstime(@RequestHeader("Authentication") String authentication,
                                                              @PathVariable("name") String name) {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin")){
+        if (credit.equals("IsAdmin") || credit.equals("IsTeacher")){
 
             Classtime classtime = classtimeMapper.findByName(name);
 
@@ -163,7 +163,7 @@ public class StraightController {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin")){
+        if (credit.equals("IsAdmin") || credit.equals("IsTeacher")){
             List<Classtime> a = classtimeMapper.findAll();
 
             List<Classtime> classtimeList = classtimeMapper.findAll();

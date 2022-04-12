@@ -68,7 +68,7 @@ public class UserController extends BasicController <UserBean>{
     }
     @Override
     UserBean getConcreteBean(String id, Boolean showall, String name) {
-        return null;
+        return userService.getAUser(id);
     }
 
     @Override
@@ -145,17 +145,19 @@ public class UserController extends BasicController <UserBean>{
 
     @Override
     String modifyAConcreteBean(String schoolnumber, UserBean userBean, String name) {//teacher and student
+
         UserBean userBean_ori = userService.getAUser(schoolnumber);
         if (userBean_ori == null)
             return "NotFound";
         if (!userBean_ori.getSchoolnumber().equals(schoolnumber)){
             return "NotFound";
         }
-
+        System.out.println("2");
         String [] standard = {"email", "password", "phonenumber"};
 
         List<String> changeableList = new ArrayList<>(Arrays.asList(standard));
         UserBean userBean_modified = BeanTools.modify(userBean_ori, userBean, changeableList);
+        System.out.println("3");
         return userService.rewriteUser(userBean_modified);
 
     }

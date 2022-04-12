@@ -119,7 +119,7 @@ public class LessonController extends BasicController<Lesson> {
     }
 
     @Override
-    String createAConcreteBean(String lessonid, Lesson lesson, String name) {
+    String createAConcreteBean(String lessonid, Lesson lesson, String name) {//教师操作
         lesson.setTeacher(name);
         lesson.setStatus("pending");
         return userService.createALesson(lessonid, lesson);

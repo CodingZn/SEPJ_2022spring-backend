@@ -96,20 +96,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String rewriteUser(UserBean userBean){
-        System.out.println("label0");
+
         String id_old = userMapper.findBySchoolnumber(userBean.getSchoolnumber()).getId();
-        System.out.println("label1");
         userBean.setId(id_old);//保证id不变，是修改而非新增
         if (!userBean.verifyform()) {
-            System.out.println("label2");
             return "FormError";
         }
         else if (!dependValueVerify.userDependCheck(userBean)){
-            System.out.println("label3");
             return "DependError";
         }
         else{
-            System.out.println("label4");
             userMapper.save(userBean);
             return "Success";
         }
