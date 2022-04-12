@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.bean.BeanTools;
-import com.example.demo.bean.JWTUtils;
 import com.example.demo.bean.Lesson;
-import com.example.demo.bean.Major;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +43,8 @@ public class LessonController extends BasicController<Lesson> {
     String getId() {
         return "lessonid";
     }
+
+    /* 该类中所有的方法都来自继承 */
 
     /*查--获取新 lessonid */
     @Override

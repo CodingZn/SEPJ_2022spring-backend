@@ -11,8 +11,11 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ControllerOperation {
+
+    /*这个类封装了一些 Controller 层中的通用操作，以静态方法进行调用*/
+
     public static String checkAuthentication(String authentication){
-        String token = authentication.substring(7);//截取掉“Bearer ”
+        String token = authentication.substring(7);//截取掉请求头中的 “Bearer ”
         String usertype = JWTUtils.decodeToGetValue(token, "usertype");
 
         if (usertype == null){//token无效情况
@@ -31,12 +34,13 @@ public class ControllerOperation {
             System.out.println("Is student.");
             return "IsStudent";
         }
-        else{
+        else{//未知错误，请求头中没有用户类型
             System.out.println("Request is not from user");
             return "NotUser";
         }
     }
 
+    //令牌权限与用户发起的请求不符时的顶层返回函数
     public static ResponseEntity<Map<String, Object>> getErrorResponse(String result, Map<String, Object> map){
         if (result.equals("InvalidTokenError")){//token无效情况
             System.out.println("Token is invalid.");
@@ -55,6 +59,7 @@ public class ControllerOperation {
         }
     }
 
+    //执行操作后（不包括查找）的顶层返回函数，根据 Service 层函数返回值控制路径
     public static ResponseEntity<Map<String, Object>> getConductResponse(String result, Map<String, Object> map){
         switch (result) {
             case "Success" -> {
@@ -90,6 +95,7 @@ public class ControllerOperation {
         }
     }
 
+    //执行查找操作后的顶层返回函数，根据实体对象是否为空控制路径
     public static <T> ResponseEntity<Map<String, Object>> getSearchResponse(T entity, Map<String, Object> map){
         //实体不为null即为查找成功
         if (entity != null) {

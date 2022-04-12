@@ -14,18 +14,22 @@ import java.util.*;
 @CrossOrigin("http://localhost:3000")
 public class StraightController {
 
+    /* 直属控制类，直接调用 Mapper 层，
+    * 因为操作较简单没有继承抽象类
+    * 后续可能随着要求变更而继承抽象类 */
 
     private final ClassroomMapper classroomMapper;
     private final ClasstimeMapper classtimeMapper;
 
-//    private final Ultimatectrl ultimatecontrol;
-
     public StraightController(ClassroomMapper classroomMapper, ClasstimeMapper classtimeMapper) {
         this.classroomMapper = classroomMapper;
         this.classtimeMapper = classtimeMapper;
-//        this.ultimatecontrol = ultimatecontrol;
     }
 
+
+    /***********教室操作************/
+
+    /*增--初始化教室*/
     @RequestMapping(value="/classrooms", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> initializeClassrooms(@RequestHeader("Authentication") String authentication,
                                                                     @RequestBody JSONArray jsonArray) {
@@ -41,6 +45,7 @@ public class StraightController {
             return ControllerOperation.getErrorResponse(credit, map);
     }
 
+    /*改--修改单个教室状态*/
     @RequestMapping(value="/classroom/{name}", method = RequestMethod.PUT)
     public ResponseEntity<Map<String, Object>> setClassroomsStatus(@RequestHeader("Authentication") String authentication,
                                                                     @PathVariable("name") String name,
@@ -63,6 +68,7 @@ public class StraightController {
             return ControllerOperation.getErrorResponse(credit, map);
     }
 
+    /*查--获取所有教室名*/
     @RequestMapping(value="/classrooms", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllClassroomName(@RequestHeader("Authentication") String authentication) {
         Map<String, Object> map = new HashMap<>();
@@ -80,6 +86,7 @@ public class StraightController {
             return ControllerOperation.getErrorResponse(credit, map);
     }
 
+    /*查--获取单个教室*/
     @RequestMapping(value="/classroom/{name}", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAClassroom(@RequestHeader("Authentication") String authentication,
                                                              @PathVariable("name") String name) {
@@ -95,6 +102,7 @@ public class StraightController {
             return ControllerOperation.getErrorResponse(credit, map);
     }
 
+    /*删--删除所有教室*/
     @RequestMapping(value="/classrooms", method = RequestMethod.DELETE)
     public ResponseEntity<Map<String, Object>> delClassrooms(@RequestHeader("Authentication") String authentication) {
         Map<String, Object> map = new HashMap<>();
@@ -111,8 +119,9 @@ public class StraightController {
     }
 
 
-    /***********************/
+    /***********上课时间操作************/
 
+    /*增--初始化上课时间*/
     @RequestMapping(value="/classtimes", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> initializeClasstimes(@RequestHeader("Authentication") String authentication,
                                                                     @RequestBody JSONArray jsonArray) {//paramater to be changed
@@ -131,6 +140,7 @@ public class StraightController {
             return ControllerOperation.getErrorResponse(credit, map);
     }
 
+    /*查--获取所有上课时间对象*/
     @RequestMapping(value="/classtime/{name}", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAClasstime(@RequestHeader("Authentication") String authentication,
                                                              @PathVariable("name") String name) {
@@ -147,6 +157,7 @@ public class StraightController {
             return ControllerOperation.getErrorResponse(credit, map);
     }
 
+    /*查--获取所有上课时间段*/
     @RequestMapping(value="/classtimes", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getClasstimes(@RequestHeader("Authentication") String authentication) {
         Map<String, Object> map = new HashMap<>();
@@ -165,6 +176,7 @@ public class StraightController {
             return ControllerOperation.getErrorResponse(credit, map);
     }
 
+    /*删--删除所有上课时间对象*/
     @RequestMapping(value="/classtimes", method = RequestMethod.DELETE)
     public ResponseEntity<Map<String, Object>> delClasstimes(@RequestHeader("Authentication") String authentication) {
         Map<String, Object> map = new HashMap<>();

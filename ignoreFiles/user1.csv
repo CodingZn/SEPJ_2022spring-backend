@@ -1,7 +1,0 @@
-id,email,identitynumber,name,password,phonenumber,schoolnumber,usertype,school,major,status
-8af57ce97fa6feb1017fa6feb4820000,,3.10101E+17,admin,admin666,,10001,admin,,,enabled
-8af57ce97fa708f7017fa710152c0001,,1E+17,彭鑫,fDu666666,15512340001,20000001,teacher,,,enabled
-8af57ce97fe5e1c3017fe5e6285f0000,,3.10101E+17,朱东�?fDu666666,,20000002,teacher,,,enabled,
-8af57ce9801412c301801431ba4e0000,,1E+17,辛天�?fDu666666,13210001008,200000,student,软件学院,软件工程,enabled,
-8af57ce98019da04018019da3c5a0000,,1E+17,黄语�?fDu666666,18503928930,200004,student,材料科学�?材料物理,disabled,,
-8af57ce98019da04018019ddf3e30001,,1E+17,徐馨�?fDu666666,18512928930,200005,student,生命科学学院,生物技�?disabled,,

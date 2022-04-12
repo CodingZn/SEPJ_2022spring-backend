@@ -14,14 +14,23 @@ import java.util.*;
 @CrossOrigin("http://localhost:3000")
 public abstract class BasicController <T>{
 
+    /* 根据 Controller 层共同属性控制出来的抽象类，
+    * 包括了基本的增删改查操作，与前端抽象类保持一致
+    * 其中的抽象方法即为各类间的不同之处 */
+
+    /* 令牌权限 */
     abstract String auth1();//admin authority
 
     abstract String auth2();//teacher authority
 
     abstract String auth3();//student authority
 
+
+    /* 请求中的相关参数 */
+
     abstract String getIds();
     abstract String getId();
+
 
     /*查--获取新id*/
     abstract String getANewConcreteId();

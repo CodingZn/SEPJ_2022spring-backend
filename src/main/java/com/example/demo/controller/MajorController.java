@@ -45,7 +45,7 @@ public class MajorController extends BasicController<Major> {
     }
 
 
-    /**************继承操作***************/
+    /* 该类中所有的方法都来自继承 */
 
 
     /*查--获取新majornumber*/

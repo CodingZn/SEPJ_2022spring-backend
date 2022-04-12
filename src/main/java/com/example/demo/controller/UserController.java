@@ -187,7 +187,7 @@ public class UserController extends BasicController <UserBean>{
         return super.delBean(schoolnumber, authentication);
     }
 
-    /**************下为特有操作***************/
+    /**************特有操作***************/
 
     /*!!!查==登录操作*/
     @RequestMapping(value="/token", method = RequestMethod.POST)
