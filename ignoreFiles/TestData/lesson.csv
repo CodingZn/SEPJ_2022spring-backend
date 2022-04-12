@@ -1,0 +1,3 @@
+﻿lessonid,lessonname,school,hour,credit,teacher,introduction,period,place,capacity,status
+4,数字逻辑与部件设计,软件学院,3,3,朱东来,必修,"一6,一7,一8",H2101,100,censored
+5,离散数学,软件学院,3,4,朱东来,软件工程专业必修课,"三1,三2,一1,一2",H2103,250,pending
