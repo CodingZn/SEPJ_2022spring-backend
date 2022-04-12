@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>E:/AllProjects/IntelliJProjects/demo/src/main/java/com/example/demo</OriginalElement>
+  <nodes>
+    <node x="224.0" y="0.0">com.example.demo.bean.Lesson</node>
+    <node x="746.0" y="497.0">com.example.demo.bean.trivialBeans.Ultimatectrl</node>
+    <node x="430.0" y="68.0">com.example.demo.service.serviceImpl.UserServiceImpl</node>
+    <node x="0.0" y="497.0">com.example.demo.bean.UserFormVerify</node>
+    <node x="540.0" y="329.0">com.example.demo.controller.MajorController</node>
+    <node x="242.0" y="497.0">com.example.demo.bean.Major</node>
+    <node x="412.0" y="837.0">com.example.demo.mapper.MajorMapper</node>
+    <node x="716.0" y="764.0">com.example.demo.DemoApplication</node>
+    <node x="494.0" y="764.0">com.example.demo.mapper.straightMappers.ClassroomMapper</node>
+    <node x="0.0" y="764.0">com.example.demo.mapper.straightMappers.UltimatecontrolMapper</node>
+    <node x="169.0" y="642.0">com.example.demo.bean.trivialBeans.Classtime</node>
+    <node x="603.0" y="837.0">com.example.demo.mapper.UserMapper</node>
+    <node x="0.0" y="0.0">com.example.demo.bean.UserBean</node>
+    <node x="216.0" y="837.0">com.example.demo.mapper.LessonMapper</node>
+    <node x="435.0" y="497.0">com.example.demo.controller.StraightController</node>
+    <node x="259.0" y="764.0">com.example.demo.controller.ControllerOperation</node>
+    <node x="503.5" y="0.0">com.example.demo.service.UserService</node>
+    <node x="0.0" y="837.0">com.example.demo.mapper.straightMappers.ClasstimeMapper</node>
+    <node x="0.0" y="642.0">com.example.demo.bean.trivialBeans.Classroom</node>
+    <node x="0.0" y="329.0">com.example.demo.service.serviceImpl.DependValueVerify</node>
+    <node x="334.0" y="642.0">com.example.demo.controller.UltimateController</node>
+    <node x="769.0" y="329.0">com.example.demo.controller.UserController</node>
+    <node x="707.0" y="642.0">com.example.demo.bean.JWTUtils</node>
+    <node x="784.0" y="837.0">com.example.demo.bean.BeanTools</node>
+    <node x="311.0" y="329.0">com.example.demo.controller.LessonController</node>
+    <node x="543.5" y="423.0">com.example.demo.controller.BasicController</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.example.demo.service.serviceImpl.UserServiceImpl" target="com.example.demo.service.UserService" relationship="REALIZATION">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="com.example.demo.controller.MajorController" target="com.example.demo.controller.BasicController" relationship="GENERALIZATION">
+      <point x="0.0" y="-0.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="com.example.demo.controller.UserController" target="com.example.demo.controller.BasicController" relationship="GENERALIZATION">
+      <point x="0.0" y="-0.0" />
+      <point x="863.5" y="403.0" />
+      <point x="634.5" y="403.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+    <edge source="com.example.demo.controller.LessonController" target="com.example.demo.controller.BasicController" relationship="GENERALIZATION">
+      <point x="0.0" y="-0.0" />
+      <point x="405.5" y="403.0" />
+      <point x="634.5" y="403.0" />
+      <point x="0.0" y="-0.0" />
+    </edge>
+  </edges>
+  <settings layout="泛型" zoom="0.7627118644067796" showDependencies="true" x="479.0" y="432.5" />
+  <SelectedNodes />
+  <Categories>
+    <Category>字段</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
