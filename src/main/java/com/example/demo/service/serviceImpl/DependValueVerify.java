@@ -31,19 +31,24 @@ public class DependValueVerify {
     }
 
     private  boolean lessonSchoolVerify(String school){
-        return majorMapper.findBySchool(school) != null;
+        System.out.println(majorMapper.findFirstBySchool(school));
+        return majorMapper.findFirstBySchool(school) != null;
     }
 
     private boolean lessonTeacherVerify(String teacher){
-        return userMapper.findByUsertypeAndName("teacher", teacher) != null;
+        System.out.println(userMapper.findFirstByUsertypeAndName("teacher", teacher));
+        return userMapper.findFirstByUsertypeAndName("teacher", teacher) != null;
     }
 
     private  boolean lessonPlaceVerify(String place){
-        return classroomMapper.findByNameAndStatus(place, "censored") != null;
+        System.out.println(place);
+        System.out.println(classroomMapper.findByNameAndStatus(place, "enabled"));
+        return classroomMapper.findByNameAndStatus(place, "enabled") != null;
     }
 
     private boolean lessonPeriodVerify(String period){
         final String REGEX_LESSON_PERIOD = "([一二三四五六日]([1-9]|1[0-4]),)*([一二三四五六日]([1-9]|1[0-4]))+";
+        System.out.println(period.matches(REGEX_LESSON_PERIOD));
 
         return period.matches(REGEX_LESSON_PERIOD);
     }
@@ -55,11 +60,11 @@ public class DependValueVerify {
     }
 
     private boolean userMajorVerify(String major){
-        return majorMapper.findByName(major) != null;
+        return majorMapper.findFirstByName(major) != null;
     }
 
     private boolean userSchoolVerify(String school){
-        return majorMapper.findBySchool(school) != null;
+        return majorMapper.findFirstBySchool(school) != null;
     }
 
 }

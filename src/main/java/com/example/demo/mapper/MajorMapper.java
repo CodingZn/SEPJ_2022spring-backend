@@ -10,4 +10,6 @@ public interface MajorMapper extends JpaRepository<Major, String> {
     Major findByMajornumber(int majornumber);
     Major findBySchool(String school);
     Major findByName(String name);
+    Major findFirstBySchool(String school);
+    Major findFirstByName(String name);
 }
