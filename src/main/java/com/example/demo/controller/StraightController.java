@@ -1,17 +1,14 @@
 package com.example.demo.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.example.demo.bean.trivialBeans.Classroom;
 import com.example.demo.bean.trivialBeans.Classtime;
-import com.example.demo.bean.trivialBeans.Ultimatecontrol;
 import com.example.demo.mapper.straightMappers.ClassroomMapper;
 import com.example.demo.mapper.straightMappers.ClasstimeMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -21,48 +18,52 @@ public class StraightController {
     private final ClassroomMapper classroomMapper;
     private final ClasstimeMapper classtimeMapper;
 
-    private final Ultimatecontrol ultimatecontrol;
+//    private final Ultimatectrl ultimatecontrol;
 
-    public StraightController(ClassroomMapper classroomMapper, ClasstimeMapper classtimeMapper, Ultimatecontrol ultimatecontrol) {
+    public StraightController(ClassroomMapper classroomMapper, ClasstimeMapper classtimeMapper) {
         this.classroomMapper = classroomMapper;
         this.classtimeMapper = classtimeMapper;
-        this.ultimatecontrol = ultimatecontrol;
+//        this.ultimatecontrol = ultimatecontrol;
     }
 
     @RequestMapping(value="/classrooms", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> initializeClassrooms(@RequestHeader("Authentication") String authentication,
-                                                                    @RequestBody List<Classroom> classroomList) {//paramater to be changed
+                                                                    @RequestBody JSONArray jsonArray) {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         if (credit.equals("IsAdmin")){
+            List<Classroom> classroomList = jsonArray.toJavaList(Classroom.class);
             classroomMapper.saveAll(classroomList);
-
             return ControllerOperation.getConductResponse("Success", map);
         }
         else
             return ControllerOperation.getErrorResponse(credit, map);
     }
 
-    @RequestMapping(value="/classrooms/{name}", method = RequestMethod.PUT)
+    @RequestMapping(value="/classroom/{name}", method = RequestMethod.PUT)
     public ResponseEntity<Map<String, Object>> setClassroomsStatus(@RequestHeader("Authentication") String authentication,
-                                                                    @RequestParam("name") String name,
+                                                                    @PathVariable("name") String name,
                                                                    @RequestBody Classroom classroom) {//paramater to be changed
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         if (credit.equals("IsAdmin")){
+            if(classroomMapper.findByName(name) != null){
+                classroom.setName(name);
+                classroomMapper.save(classroom);
+                return ControllerOperation.getConductResponse("Success", map);
 
-            classroom.setName(name);
-            classroomMapper.save(classroom);
+            }
+            else
+                return ControllerOperation.getConductResponse("NotFound", map);
 
-            return ControllerOperation.getConductResponse("Success", map);
         }
         else
             return ControllerOperation.getErrorResponse(credit, map);
     }
 
-    @RequestMapping(value="/classrooms/{name}", method = RequestMethod.GET)
+    @RequestMapping(value="/classrooms", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getClassrooms(@RequestHeader("Authentication") String authentication) {
         Map<String, Object> map = new HashMap<>();
 
@@ -78,7 +79,7 @@ public class StraightController {
             return ControllerOperation.getErrorResponse(credit, map);
     }
 
-    @RequestMapping(value="/classrooms/{name}", method = RequestMethod.DELETE)
+    @RequestMapping(value="/classrooms", method = RequestMethod.DELETE)
     public ResponseEntity<Map<String, Object>> delClassrooms(@RequestHeader("Authentication") String authentication) {
         Map<String, Object> map = new HashMap<>();
 
@@ -98,11 +99,13 @@ public class StraightController {
 
     @RequestMapping(value="/classtimes", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> initializeClasstimes(@RequestHeader("Authentication") String authentication,
-                                                                    @RequestBody List<Classtime> classtimeList) {//paramater to be changed
+                                                                    @RequestBody JSONArray jsonArray) {//paramater to be changed
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         if (credit.equals("IsAdmin")){
+
+            List<Classtime> classtimeList = jsonArray.toJavaList(Classtime.class);
 
             classtimeMapper.saveAll(classtimeList);
 
@@ -143,27 +146,4 @@ public class StraightController {
     }
 
 
-    /***********************/
-
-    @RequestMapping(value="/controls/{name}", method = RequestMethod.PATCH)
-    public ResponseEntity<Map<String, Object>> changeControl (@RequestHeader("Authentication") String authentication,
-                                                              @RequestParam("name") String name,
-                                                              @RequestBody Ultimatecontrol control) {
-        Map<String, Object> map = new HashMap<>();
-
-        String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin")){
-
-            /*
-             * 在此增加相关代码，将形参中 control 的 name 属性设置为参数中的 name
-             * 然后将 control 通过 mapper 层里的 save 方法写入到数据库中
-             * */
-
-
-
-            return ControllerOperation.getConductResponse("Success", map);
-        }
-        else
-            return ControllerOperation.getErrorResponse(credit, map);
-    }
 }

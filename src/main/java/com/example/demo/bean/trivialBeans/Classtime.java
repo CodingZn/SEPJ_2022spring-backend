@@ -15,10 +15,8 @@ import javax.persistence.Table;
 @Table(name = "classtime")
 @Entity
 public class Classtime {
-    @Id
-    @Column
-    private int id;
 
+    @Id
     @Column
     private String name;
 

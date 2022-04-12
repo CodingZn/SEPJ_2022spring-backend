@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Table(name = "controls")
 @Entity
-public class Ultimatecontrol {
+public class Ultimatectrl {
     @Id
     @Column
     private String name;
