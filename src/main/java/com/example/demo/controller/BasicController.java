@@ -21,9 +21,13 @@ public abstract class BasicController <T>{
     * 其中的抽象方法即为各类间的不同之处
     * 抽象方法通过传入权限字段来控制下层操作 */
 
+    /*************获取字段的抽象方法***************/
+    abstract String getId();
+    abstract String getIds();
+    abstract String getBean();
 
     /*查--获取新id*/
-    abstract String getANewId_impl(String authority);
+    abstract Map<String, Object> getANewId_impl(String authority);
 
     public ResponseEntity<Map<String, Object>> getANewId(@RequestHeader(value="Authentication") String authentication){
         Map<String,Object> map = new HashMap<>();
@@ -32,7 +36,9 @@ public abstract class BasicController <T>{
         String authority = ControllerOperation.getAuthority(authentication);
 
         if (credit.equals(ValidJWTToken)){
-            String result = getANewId_impl(authority);
+            map = getANewId_impl(authority);
+            String result = (String) map.get("result");
+            map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);
         }
         else
@@ -64,7 +70,7 @@ public abstract class BasicController <T>{
     abstract List<String> getAllConcreteIds(Boolean showall);
     abstract List<String> getAllConcreteIds(Boolean showall, String name);
 
-    abstract String getAllIds_impl(String authority, String name);
+    abstract Map<String, Object> getAllIds_impl(String authority, String name);
 
     public ResponseEntity<Map<String, Object>> getAllIds(String authentication){
         Map<String, Object> map = new HashMap<>();
@@ -74,7 +80,9 @@ public abstract class BasicController <T>{
         String name = JWTUtils.decodeToGetValue(authentication.substring(7), "name");
 
         if (credit.equals(ValidJWTToken)){
-            String result = getAllIds_impl(authority, name);
+            map = getAllIds_impl(authority, name);
+            String result = (String) map.get("result");
+            map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);
         }
         else
@@ -110,7 +118,7 @@ public abstract class BasicController <T>{
     abstract T getConcreteBean(String id, Boolean showall);
     abstract T getConcreteBean(String id, Boolean showall, String name);
 
-    abstract String getABean_impl(String authority, String id, String name);
+    abstract Map<String, Object> getABean_impl(String authority, String id, String name);
 
     public ResponseEntity<Map<String, Object>>getABean(String keyword, String authentication) {
         Map<String, Object> map = new HashMap<>();
@@ -120,7 +128,9 @@ public abstract class BasicController <T>{
         String name = JWTUtils.decodeToGetValue(authentication.substring(7), "name");
 
         if (credit.equals(ValidJWTToken)){
-            String result = getABean_impl(authority, keyword, name);
+            map = getABean_impl(authority, keyword, name);
+            String result = (String) map.get("result");
+            map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);
         }
         else
@@ -148,7 +158,7 @@ public abstract class BasicController <T>{
     abstract String createAConcreteBean(String id, T bean);
     abstract String createAConcreteBean(String id, T bean, String name);
 
-    abstract String createABean_impl (String authority, String id, T bean, String name);
+    abstract Map<String, Object> createABean_impl (String authority, String id, T bean, String name);
 
     public ResponseEntity<Map<String, Object>> createABean(String id, T bean, String authentication){
         Map<String, Object> map = new HashMap<>();
@@ -158,7 +168,9 @@ public abstract class BasicController <T>{
         String name = JWTUtils.decodeToGetValue(authentication.substring(7), "name");
 
         if (credit.equals(ValidJWTToken)){
-            String result = createABean_impl (authority, id, bean, name);
+            map = createABean_impl (authority, id, bean, name);
+            String result = (String) map.get("result");
+            map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);
         }
         else
@@ -188,7 +200,7 @@ public abstract class BasicController <T>{
     /*改--重写一个实体,put*/
     abstract String rewriteConcreteBean(String id, T bean);
 
-    abstract String rewriteABean_impl(String authority, String id, T bean);
+    abstract Map<String, Object> rewriteABean_impl(String authority, String id, T bean);
 
     public ResponseEntity<Map<String, Object>> rewriteABean(String keyword, T bean, String authentication) {
         Map<String, Object> map = new HashMap<>();
@@ -197,7 +209,9 @@ public abstract class BasicController <T>{
         String authority = ControllerOperation.getAuthority(authentication);
 
         if (credit.equals(ValidJWTToken)){
-            String result = rewriteABean_impl(authority, keyword, bean);
+            map = modifyABean_impl(authority, keyword, bean);
+            String result = (String) map.get("result");
+            map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);
         }
         else
@@ -223,12 +237,12 @@ public abstract class BasicController <T>{
 
     }
 
-    /*改--重写一个实体, patch */
+    /*改--修改一个实体, patch */
     abstract String modifyAConcreteBean(String id, T bean);
 
     abstract String modifyAConcreteBean(String id, T bean, String name);
 
-    abstract String modifyABean_impl (String authority, String id, T bean, String name);
+    abstract Map<String, Object> modifyABean_impl (String authority, String id, T bean);
 
     public ResponseEntity<Map<String, Object>> modifyABean(String keyword, T bean, String authentication) {
         Map<String, Object> map = new HashMap<>();
@@ -238,7 +252,9 @@ public abstract class BasicController <T>{
         String name = JWTUtils.decodeToGetValue(authentication.substring(7), "name");
 
         if (credit.equals(ValidJWTToken)){
-            String result = modifyABean_impl(authority, keyword, bean, name);
+            map = modifyABean_impl(authority, keyword, bean);
+            String result = (String) map.get("result");
+            map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);
         }
         else
@@ -273,7 +289,7 @@ public abstract class BasicController <T>{
 
     abstract String delConcreteBean(String keyword, String name);
 
-    abstract String delBean_impl(String authority, String keyword, String name);
+    abstract Map<String, Object> delBean_impl(String authority, String keyword, String name);
 
     public ResponseEntity<Map<String, Object>> delBean(String keyword, String authentication){
         Map<String, Object> map = new HashMap<>();
@@ -283,7 +299,9 @@ public abstract class BasicController <T>{
         String name = JWTUtils.decodeToGetValue(authentication.substring(7), "name");
 
         if (credit.equals(ValidJWTToken)){
-            String result = delBean_impl(authority, keyword, name);
+            map = delBean_impl(authority, keyword, name);
+            String result = (String) map.get("result");
+            map.remove("result");
             return ControllerOperation.getConductResponse(result, map);
         }
         else

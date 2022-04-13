@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+import static com.example.demo.bean.JWTUtils.*;
+
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class UserController extends BasicController <UserBean>{
@@ -22,19 +24,10 @@ public class UserController extends BasicController <UserBean>{
         userService.createAdmin();
     }
 
-    @Override
-    String auth1() {
-        return "IsAdmin";
-    }
 
     @Override
-    String auth2() {
-        return "IsTeacher";
-    }
-
-    @Override
-    String auth3() {
-        return "IsStudent";
+    String getId() {
+        return "schoolnumber";
     }
 
     @Override
@@ -42,14 +35,15 @@ public class UserController extends BasicController <UserBean>{
         return "schoolnumbers";
     }
 
-    /*************未使用***************/
     @Override
-    String getId() {
-        return null;
+    String getBean() {
+        return "userBean";
     }
 
+    /***************未使用的抽象方法******************/
+
     @Override
-    String getANewConcreteId() {
+    Map<String, Object> getANewId_impl(String auth) {
         return null;
     }
 
@@ -59,16 +53,34 @@ public class UserController extends BasicController <UserBean>{
         return null;
     }
 
+
+
     /**************继承操作***************/
 
     /*查--获取一个用户信息*/
     @Override
-    UserBean getConcreteBean(String id, Boolean showall) {
+    UserBean getConcreteBean(String id, Boolean showall) {//管理员和学生权限操作
         return userService.getAUser(id);
     }
     @Override
-    UserBean getConcreteBean(String id, Boolean showall, String name) {
+    UserBean getConcreteBean(String id, Boolean showall, String name) {//教师权限操作
         return userService.getAUser(id);
+    }
+
+    @Override
+    Map<String, Object> getABean_impl(String authority, String id, String name) {
+        Map<String, Object> map = new HashMap<>();
+
+        switch (authority){
+            case AdminAuthority, StudentAuthority, TeacherAuthority ->{
+                map.put("result", "Success");
+                map.put(getBean() ,userService.getAUser(id));
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
     }
 
     @Override
@@ -81,7 +93,24 @@ public class UserController extends BasicController <UserBean>{
     /*查--返回所有主键值*/
     @Override
     List<String> getAllConcreteIds(Boolean showall) {
-        return userService.getAllSchoolnumbers();
+
+        return null;
+    }
+
+    @Override
+    Map<String, Object> getAllIds_impl(String authority, String name) {//权限控制待商榷！
+        Map<String, Object> map = new HashMap<>();
+        switch (authority){
+            case AdminAuthority, TeacherAuthority, StudentAuthority ->{
+                map.put("result", "Success");
+                map.put(getIds() ,userService.getAllSchoolnumbers());
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
+
     }
 
     @Override
@@ -104,6 +133,22 @@ public class UserController extends BasicController <UserBean>{
     }
 
     @Override
+    Map<String, Object> createABean_impl(String authority, String id, UserBean bean, String name) {
+        Map<String, Object> map = new HashMap<>();
+        switch (authority){
+            case AdminAuthority->{
+                map.put("result", "Success");
+                map.put(getIds() ,userService.createAUser(bean));
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
+
+    }
+
+    @Override
     @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@PathVariable("schoolnumber") String schoolnumber,
                                                            @RequestBody UserBean userBean,
@@ -119,6 +164,32 @@ public class UserController extends BasicController <UserBean>{
         return null;
     }
 
+    @Override
+    Map<String, Object> rewriteABean_impl(String authority, String schoolnumber, UserBean userBean) {//权限待商榷
+        Map<String, Object> map = new HashMap<>();
+        switch (authority){
+            case AdminAuthority->{
+                UserBean userBean_ori = userService.getAUser(schoolnumber);
+                if (userBean_ori == null){
+                    map.put("result", "NotFound");
+                    return map;
+                }
+                else if (!Objects.equals(schoolnumber, userBean.getSchoolnumber())){
+                    map.put("result", "FormError");
+                    return map;
+                }
+                map.put("result", "Success");
+                map.put(getBean(), userService.rewriteUser(userBean));
+                return map;
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
+
+    }
+
 
     @Override
     @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.PUT)
@@ -130,7 +201,7 @@ public class UserController extends BasicController <UserBean>{
 
     /*改--修改一个用户，patch*/
     @Override
-    String modifyAConcreteBean(String schoolnumber, UserBean userBean) {
+    String modifyAConcreteBean(String schoolnumber, UserBean userBean) {//admin
         UserBean userBean_ori = userService.getAUser(schoolnumber);
         if (userBean_ori == null)
             return "NotFound";
@@ -163,6 +234,45 @@ public class UserController extends BasicController <UserBean>{
     }
 
     @Override
+    Map<String, Object> modifyABean_impl(String authority, String schoolnumber, UserBean userBean) {
+        Map<String, Object> map = new HashMap<>();
+        switch (authority){
+            case AdminAuthority->{
+                UserBean userBean_ori = userService.getAUser(schoolnumber);
+                if (userBean_ori == null){
+                    map.put("result", "NotFound");
+                    return map;
+                }
+                map.put("result", "Success");
+                String [] adminauth = {"email", "password", "phonenumber", "name", "school", "major", "status"};
+
+                List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
+                UserBean userBean_modified = BeanTools.modify(userBean_ori, userBean, changeableList);
+                map.put(getBean(), userService.rewriteUser(userBean_modified));
+                return map;
+            }
+            case TeacherAuthority, StudentAuthority->{
+                UserBean userBean_ori = userService.getAUser(schoolnumber);
+                if (userBean_ori == null || !userBean_ori.getSchoolnumber().equals(schoolnumber)){
+                    map.put("result", "NotFound");
+                    return map;
+                }
+                map.put("result", "Success");
+                String [] standard = {"email", "password", "phonenumber"};
+
+                List<String> changeableList = new ArrayList<>(Arrays.asList(standard));
+                UserBean userBean_modified = BeanTools.modify(userBean_ori, userBean, changeableList);
+                map.put(getBean(), userService.rewriteUser(userBean_modified));
+                return map;
+            }
+            default -> {
+                map.put("result", "NoAuth");
+                return map;
+            }
+        }
+    }
+
+    @Override
     @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.PATCH)
     public ResponseEntity<Map<String, Object>> modifyABean(@PathVariable("schoolnumber") String schoolnumber,
                                                            @RequestBody UserBean userBean,
@@ -180,6 +290,21 @@ public class UserController extends BasicController <UserBean>{
     @Override
     String delConcreteBean(String keyword, String name) {
         return null;
+    }
+
+    @Override
+    Map<String, Object> delBean_impl(String authority, String keyword, String name) {
+        Map<String, Object> map = new HashMap<>();
+        switch (authority){
+            case AdminAuthority->{
+                map.put("result", "Success");
+                userService.deleteUser(keyword);
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
     }
 
     @Override
