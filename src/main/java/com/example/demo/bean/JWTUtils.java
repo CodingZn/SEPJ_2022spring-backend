@@ -11,6 +11,14 @@ import java.util.Map;
 public class JWTUtils {
     private static final String SING = "s838jjff";
 
+    public static final String ValidJWTToken = "Valid";
+    public static final String InvalidJWTToken = "Invalid";
+    public static final String IncorrectJWTToken = "WrongToken";
+    public static final String AdminAuthority = "IsAdmin";
+    public static final String TeacherAuthority = "IsTeacher";
+    public static final String StudentAuthority = "IsStudent";
+    public static final String NoAuthority = "NoAuthority";
+
     public  static  String getToken(Map<String, String> map){//生成令牌
         JWTCreator.Builder builder = JWT.create();
 //加入默认payload
