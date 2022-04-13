@@ -19,37 +19,32 @@ public class LessonController extends BasicController<Lesson> {
         this.userService = userService;
     }
 
-    @Override
-    String auth1() {
-        return "IsAdmin";
-    }
-
-    @Override
-    String auth2() {
-        return "IsTeacher";
-    }
-
-    @Override
-    String auth3() {
-        return "IsStudent";
-    }
-
-    @Override
-    String getIds() {
-        return "lessonids";
-    }
-
-    @Override
-    String getId() {
-        return "lessonid";
-    }
-
     /* 该类中所有的方法都来自继承 */
 
     /*查--获取新 lessonid */
     @Override
-    String getANewConcreteId() {
+    String getANewConcreteId() {//admin, teacher
         return userService.getANewLessonid();
+    }
+
+    @Override
+    String getId() {
+        return null;
+    }
+
+    @Override
+    String getIds() {
+        return null;
+    }
+
+    @Override
+    String getBean() {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> getANewId_impl(String authority) {
+        return null;
     }
 
     @Override
@@ -62,15 +57,20 @@ public class LessonController extends BasicController<Lesson> {
     /*查--返回所有lessonid*/
     @Override
     List<String> getAllConcreteIds(Boolean showall) {
-        if (showall)
+        if (showall)//admin
             return userService.getAllLessonid();
-        else
+        else//student
             return userService.getAllLessonid(false);
     }
 
     @Override
-    List<String> getAllConcreteIds(Boolean showall, String name) {
+    List<String> getAllConcreteIds(Boolean showall, String name) {//teacher
         return userService.getAllLessonid(name, false);
+    }
+
+    @Override
+    Map<String, Object> getAllIds_impl(String authority, String name) {
+        return null;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class LessonController extends BasicController<Lesson> {
 
     /*查--获取一个lesson*/
     @Override
-    Lesson getConcreteBean(String id, Boolean showall) {
+    Lesson getConcreteBean(String id, Boolean showall) {//admin
         if (showall){
             return userService.getALesson(id);
         }
@@ -94,12 +94,17 @@ public class LessonController extends BasicController<Lesson> {
     }
 
     @Override
-    Lesson getConcreteBean(String id, Boolean showall, String name) {
+    Lesson getConcreteBean(String id, Boolean showall, String name) {//teacher
         Lesson lesson = userService.getALesson(id);
         if (lesson != null){
             if (Objects.equals(lesson.getStatus(), "censored") || Objects.equals(lesson.getTeacher(), name))
                 return lesson;
         }
+        return null;
+    }
+
+    @Override
+    Map<String, Object> getABean_impl(String authority, String id, String name) {
         return null;
     }
 
@@ -113,7 +118,7 @@ public class LessonController extends BasicController<Lesson> {
 
     /*增--新增lesson*/
     @Override
-    String createAConcreteBean(String lessonid, Lesson lesson) {
+    String createAConcreteBean(String lessonid, Lesson lesson) {//admin
         lesson.setStatus("censored");
         return userService.createALesson(lessonid, lesson);
     }
@@ -127,6 +132,11 @@ public class LessonController extends BasicController<Lesson> {
     }
 
     @Override
+    Map<String, Object> createABean_impl(String authority, String id, Lesson bean, String name) {
+        return null;
+    }
+
+    @Override
     @RequestMapping(value="/lesson/{lessonid}", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@PathVariable("lessonid") String lessonid,
                                                            @RequestBody Lesson lesson,
@@ -136,7 +146,12 @@ public class LessonController extends BasicController<Lesson> {
 
     /*改--重写一个lesson*/
     @Override
-    String rewriteConcreteBean(String id, Lesson bean) {
+    String rewriteConcreteBean(String id, Lesson bean) {//直接模仿UserController的对应操作去重构，不会的问组长
+        return null;
+    }
+
+    @Override
+    Map<String, Object> rewriteABean_impl(String authority, String id, Lesson bean) {
         return null;
     }
 
@@ -150,7 +165,7 @@ public class LessonController extends BasicController<Lesson> {
 
     /*改--修改一个lesson，patch*/
     @Override
-    String modifyAConcreteBean(String lessonid, Lesson lesson) {
+    String modifyAConcreteBean(String lessonid, Lesson lesson) {//admin
         Lesson lesson_ori = userService.getALesson(lessonid);
 
         if(lesson_ori == null)
@@ -164,7 +179,7 @@ public class LessonController extends BasicController<Lesson> {
     }
 
     @Override
-    String modifyAConcreteBean(String lessonid, Lesson lesson, String name) {
+    String modifyAConcreteBean(String lessonid, Lesson lesson, String name) {//teacher
         Lesson lesson_ori = userService.getALesson(lessonid);
 
         if(lesson_ori == null)
@@ -180,6 +195,11 @@ public class LessonController extends BasicController<Lesson> {
     }
 
     @Override
+    Map<String, Object> modifyABean_impl(String authority, String id, Lesson bean) {
+        return null;
+    }
+
+    @Override
     @RequestMapping(value="/lesson/{lessonid}", method = RequestMethod.PATCH)
     public ResponseEntity<Map<String, Object>> modifyABean(@PathVariable("lessonid") String lessonid,
                                                            @RequestBody Lesson lesson,
@@ -190,13 +210,18 @@ public class LessonController extends BasicController<Lesson> {
 
     /*删--删除lesson*/
     @Override
-    String delConcreteBean(String keyword) {
+    String delConcreteBean(String keyword) {//admin
         return userService.deleteLesson(keyword);
     }
 
     @Override
-    String delConcreteBean(String keyword, String name) {
+    String delConcreteBean(String keyword, String name) {// teacher
         return userService.deleteLesson(keyword, name);
+    }
+
+    @Override
+    Map<String, Object> delBean_impl(String authority, String keyword, String name) {
+        return null;
     }
 
     @Override

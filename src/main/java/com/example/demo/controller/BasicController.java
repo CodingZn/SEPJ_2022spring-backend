@@ -21,6 +21,9 @@ public abstract class BasicController <T>{
     * 其中的抽象方法即为各类间的不同之处
     * 抽象方法通过传入权限字段来控制下层操作 */
 
+    /*查--获取新 lessonid */
+    abstract String getANewConcreteId();
+
     /*************获取字段的抽象方法***************/
     abstract String getId();
     abstract String getIds();

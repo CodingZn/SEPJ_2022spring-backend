@@ -19,39 +19,34 @@ public class MajorController extends BasicController<Major> {
         this.userService = userService;
     }
 
-    @Override
-    String auth1() {
-        return "IsAdmin";
-    }
-
-    @Override
-    String auth2() {
-        return "IsTeacher";
-    }
-
-    @Override
-    String auth3() {
-        return "IsStudent";
-    }
-
-    @Override
-    String getIds() {
-        return "majornumbers";
-    }
-
-    @Override
-    String getId() {
-        return "majornumber";
-    }
-
 
     /* 该类中所有的方法都来自继承 */
 
 
     /*查--获取新majornumber*/
     @Override
-    String getANewConcreteId() {
+    String getANewConcreteId() {//三种角色都能使用
         return userService.getANewMajornumber();
+    }
+
+    @Override
+    String getId() {
+        return null;
+    }
+
+    @Override
+    String getIds() {
+        return null;
+    }
+
+    @Override
+    String getBean() {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> getANewId_impl(String authority) {
+        return null;
     }
 
     @Override
@@ -63,15 +58,19 @@ public class MajorController extends BasicController<Major> {
     /*查--返回所有majornumber*/
 
     @Override
-    List<String> getAllConcreteIds(Boolean showall) {
+    List<String> getAllConcreteIds(Boolean showall) {//admin和student的操作
         return userService.getAllMajornumbers();
     }
 
     @Override
-    List<String> getAllConcreteIds(Boolean showall, String name) {
+    List<String> getAllConcreteIds(Boolean showall, String name) {//student
         return userService.getAllMajornumbers();
     }
 
+    @Override
+    Map<String, Object> getAllIds_impl(String authority, String name) {
+        return null;
+    }
 
 
     @Override
@@ -84,13 +83,18 @@ public class MajorController extends BasicController<Major> {
 
     /*查--获取一个专业*/
     @Override
-    Major getConcreteBean(String id, Boolean showall) {
+    Major getConcreteBean(String id, Boolean showall) {//admin,student
         return userService.getAMajor(id);
     }
 
     @Override
     Major getConcreteBean(String id, Boolean showall, String name) {//教师操作
         return userService.getAMajor(id);
+    }
+
+    @Override
+    Map<String, Object> getABean_impl(String authority, String id, String name) {
+        return null;
     }
 
     @Override
@@ -102,14 +106,20 @@ public class MajorController extends BasicController<Major> {
 
     /*增--新增专业*/
     @Override
-    String createAConcreteBean(String id, Major bean) {
+    String createAConcreteBean(String id, Major bean) {//admin
         return userService.createAMajor(id, bean);
     }
 
     @Override
-    String createAConcreteBean(String id, Major bean, String name) {
+    String createAConcreteBean(String id, Major bean, String name) {//teacher,student
         return null;
     }
+
+    @Override
+    Map<String, Object> createABean_impl(String authority, String id, Major bean, String name) {
+        return null;
+    }
+
     @RequestMapping(value="/major/{majornumber}", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@PathVariable("majornumber") String majornumber_str,
                                                            @RequestBody Major major,
@@ -120,7 +130,12 @@ public class MajorController extends BasicController<Major> {
 
     /*改--重写一个专业*/
     @Override
-    String rewriteConcreteBean(String id, Major bean) {
+    String rewriteConcreteBean(String id, Major bean) {//直接模仿UserController的对应操作去重构，不会的问组长
+        return null;
+    }
+
+    @Override
+    Map<String, Object> rewriteABean_impl(String authority, String id, Major bean) {
         return null;
     }
 
@@ -134,7 +149,7 @@ public class MajorController extends BasicController<Major> {
 
     /*改--修改一个专业patch*/
     @Override
-    String modifyAConcreteBean(String majornumber_str, Major major) {
+    String modifyAConcreteBean(String majornumber_str, Major major) {//admin
         Major major_ori = userService.getAMajor(majornumber_str);
 
         if(major_ori == null)
@@ -150,7 +165,12 @@ public class MajorController extends BasicController<Major> {
     }
 
     @Override
-    String modifyAConcreteBean(String majornumber_str, Major major, String name) {
+    String modifyAConcreteBean(String majornumber_str, Major major, String name) {//teacher,student
+        return null;
+    }
+
+    @Override
+    Map<String, Object> modifyABean_impl(String authority, String id, Major bean) {
         return null;
     }
 
@@ -164,12 +184,17 @@ public class MajorController extends BasicController<Major> {
 
     /*删--删除专业*/
     @Override
-    String delConcreteBean(String majornumber_str) {
+    String delConcreteBean(String majornumber_str) {//admin
         return userService.deleteMajor(majornumber_str);
     }
 
     @Override
-    String delConcreteBean(String keyword, String name) {
+    String delConcreteBean(String keyword, String name) {// teacher, student
+        return null;
+    }
+
+    @Override
+    Map<String, Object> delBean_impl(String authority, String keyword, String name) {
         return null;
     }
 
