@@ -21,7 +21,7 @@ public abstract class BasicController <T>{
     * 其中的抽象方法即为各类间的不同之处
     * 抽象方法通过传入权限字段来控制下层操作 */
 
-    /* 令牌权限 */
+    /* 已废弃，待重构全部完成后删除 */
     abstract String auth1();//admin authority
 
     abstract String auth2();//teacher authority
@@ -29,7 +29,7 @@ public abstract class BasicController <T>{
     abstract String auth3();//student authority
 
 
-    /* 请求中的相关参数 */
+    /* 使用私有常量字段替代，待重构全部完成后删除 */
 
     abstract String getIds();
     abstract String getId();
