@@ -2,13 +2,11 @@ package com.example.demo.controller;
 
 import com.example.demo.bean.JWTUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.*;
 
-import static com.example.demo.bean.JWTUtils.InvalidJWTToken;
-import static com.example.demo.bean.JWTUtils.ValidJWTToken;
+import static com.example.demo.bean.JWTUtils.*;
 
 
 //Control层，与前端联系

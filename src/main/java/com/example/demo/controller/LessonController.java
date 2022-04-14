@@ -94,11 +94,11 @@ public class LessonController extends BasicController<Lesson> {
 
     /*查--获取一个lesson*/
     @Override
-    Lesson getConcreteBean(String id, Boolean showall) {//admin
-        if (showall){
+    Lesson getConcreteBean(String id, Boolean showall) {
+        if (showall){//admin
             return userService.getALesson(id);
         }
-        else{
+        else{//student
             Lesson lesson = userService.getALesson(id);
             if (lesson != null && !Objects.equals(lesson.getStatus(), "censored"))
                 return null;
