@@ -96,7 +96,10 @@ public class StraightController {
         if (credit.equals("IsAdmin") || credit.equals("IsTeacher")){
 
             Classroom classroom = classroomMapper.findByName(name);
-            return ControllerOperation.getSearchResponse(classroom, map);
+
+            map.put("classroom", classroom);
+
+            return ControllerOperation.getConductResponse("Success", map);
         }
         else
             return ControllerOperation.getErrorResponse(credit, map);
@@ -151,7 +154,9 @@ public class StraightController {
 
             Classtime classtime = classtimeMapper.findByName(name);
 
-            return ControllerOperation.getSearchResponse(classtime, map);
+            map.put("classtime", classtime);
+
+            return ControllerOperation.getConductResponse("Success", map);
         }
         else
             return ControllerOperation.getErrorResponse(credit, map);

@@ -33,7 +33,8 @@ public class UltimateController {
         if (credit.equals("IsAdmin") || credit.equals("IsTeacher") || credit.equals("IsStudent")){
 
             Ultimatectrl ultimatectrl = ultimatecontrolMapper.findByName(name);
-            return ControllerOperation.getSearchResponse(ultimatectrl, map);
+            map.put("control", ultimatectrl);
+            return ControllerOperation.getConductResponse("Success", map);
 
         }
         else
