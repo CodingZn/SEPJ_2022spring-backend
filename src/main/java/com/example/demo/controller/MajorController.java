@@ -2,12 +2,15 @@ package com.example.demo.controller;
 
 import com.example.demo.bean.BeanTools;
 import com.example.demo.bean.Major;
+import com.example.demo.bean.UserBean;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+
+import static com.example.demo.bean.JWTUtils.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -46,7 +49,17 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     Map<String, Object> getANewId_impl(String authority) {
-        return null;
+        Map<String, Object> map = new HashMap<>();
+        switch (authority){
+            case AdminAuthority, TeacherAuthority, StudentAuthority ->{
+                map.put("result", "Success");
+                map.put(getId() ,userService.getANewMajornumber());
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
     }
 
     @Override
@@ -69,7 +82,17 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     Map<String, Object> getAllIds_impl(String authority, String name) {
-        return null;
+        Map<String, Object> map = new HashMap<>();
+        switch (authority){
+            case AdminAuthority, TeacherAuthority, StudentAuthority ->{
+                map.put("result", "Success");
+                map.put(getIds() ,userService.getAllMajornumbers());
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
     }
 
 
@@ -94,7 +117,18 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     Map<String, Object> getABean_impl(String authority, String id, String name) {
-        return null;
+        Map<String, Object> map = new HashMap<>();
+
+        switch (authority){
+            case AdminAuthority, StudentAuthority, TeacherAuthority ->{
+                map.put("result", "Success");
+                map.put(getBean() ,userService.getAMajor(id));
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
     }
 
     @Override
@@ -117,7 +151,17 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     Map<String, Object> createABean_impl(String authority, String id, Major bean, String name) {
-        return null;
+        Map<String, Object> map = new HashMap<>();
+        switch (authority){
+            case AdminAuthority->{
+                map.put("result", "Success");
+                map.put(getIds() ,userService.createAMajor(id, bean));
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
     }
 
     @RequestMapping(value="/major/{majornumber}", method = RequestMethod.POST)
@@ -136,7 +180,27 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     Map<String, Object> rewriteABean_impl(String authority, String id, Major bean) {
-        return null;
+        Map<String, Object> map = new HashMap<>();
+        switch (authority){
+            case AdminAuthority->{
+                Major bean_ori = userService.getAMajor(id);
+                if (bean_ori == null){
+                    map.put("result", "NotFound");
+                    return map;
+                }
+                else if (!Objects.equals(id, bean.getMajornumber())){
+                    map.put("result", "FormError");
+                    return map;
+                }
+                map.put("result", "Success");
+                map.put(getBean(), userService.rewriteAMajor(id,bean));
+                return map;
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
     }
 
     @Override
@@ -171,7 +235,27 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     Map<String, Object> modifyABean_impl(String authority, String id, Major bean) {
-        return null;
+        Map<String, Object> map = new HashMap<>();
+        switch (authority){
+            case AdminAuthority->{
+                Major bean_ori = userService.getAMajor(id);
+                if (bean_ori == null){
+                    map.put("result", "NotFound");
+                    return map;
+                }
+                map.put("result", "Success");
+                String [] adminauth = {"school", "name"};
+
+                List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
+                Major bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
+                map.put(getBean(), userService.rewriteAMajor(id,bean_modified));
+                return map;
+            }
+            default -> {
+                map.put("result", "NoAuth");
+                return map;
+            }
+        }
     }
 
     @Override
@@ -195,7 +279,17 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     Map<String, Object> delBean_impl(String authority, String keyword, String name) {
-        return null;
+        Map<String, Object> map = new HashMap<>();
+        switch (authority){
+            case AdminAuthority->{
+                map.put("result", "Success");
+                userService.deleteMajor(keyword);
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
     }
 
     @Override
