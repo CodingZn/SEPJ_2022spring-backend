@@ -1,0 +1,86 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class BasicController
+class ControllerOperation
+
+class UserController
+class LessonController
+class MajorController
+class StraightController
+class UltimateController
+
+UserController -up-|> BasicController
+LessonController -up-|> BasicController
+MajorController -up-|> BasicController
+
+StraightController .up.> ControllerOperation
+UltimateController .up.> ControllerOperation
+BasicController .up.> ControllerOperation
+
+
+UserController ..> BeanTools
+LessonController ..> BeanTools
+MajorController ..> BeanTools
+
+BasicController ..> JWTUtils
+UserController ..> JWTUtils
+LessonController ..> JWTUtils
+ControllerOperation ..> JWTUtils
+
+interface UserService
+
+class UserServiceImpl
+class DependValueVerify
+
+UserController --* UserService
+LessonController --* UserService
+MajorController --* UserService
+
+UserService  ..|> UserServiceImpl
+
+interface UserMapper
+interface LessonMapper
+interface MajorMapper
+interface ClassroomMapper
+interface ClasstimeMapper
+interface UltimatecontrolMapper
+
+UserServiceImpl --* UserMapper
+UserServiceImpl --* LessonMapper
+UserServiceImpl --* MajorMapper
+
+StraightController --* ClasstimeMapper
+StraightController --* ClassroomMapper
+
+UltimateController --* UltimatecontrolMapper
+
+UserServiceImpl ..> UserFormVerify
+UserServiceImpl ..> DependValueVerify
+
+DependValueVerify --* UserMapper
+DependValueVerify --* MajorMapper
+DependValueVerify --* ClassroomMapper
+
+class User
+class Lesson
+class Major
+class Classtime
+class Classroom
+class Ultimate
+
+class BeanTools
+class JWTUtils
+class UserFormVerify
+
+UserMapper --> User
+LessonMapper --> Lesson
+MajorMapper --> Major
+ClasstimeMapper --> Classtime
+ClassroomMapper --> Classroom
+UltimatecontrolMapper  --> Ultimate
+
+UserFormVerify .. User
+
+
+@enduml
