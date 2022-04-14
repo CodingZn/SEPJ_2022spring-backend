@@ -26,6 +26,11 @@ public class UserController extends BasicController <UserBean>{
 
 
     @Override
+    String getANewConcreteId() {
+        return null;
+    }
+
+    @Override
     String getId() {
         return "schoolnumber";
     }
