@@ -142,8 +142,7 @@ public class UserController extends BasicController <UserBean>{
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", "Success");
-                map.put(getIds() ,userService.createAUser(bean));
+                map.put("result", userService.createAUser(bean));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -183,8 +182,7 @@ public class UserController extends BasicController <UserBean>{
                     map.put("result", "FormError");
                     return map;
                 }
-                map.put("result", "Success");
-                map.put(getBean(), userService.rewriteUser(userBean));
+                map.put("result", userService.rewriteUser(userBean));
                 return map;
             }
             default -> {
@@ -253,7 +251,7 @@ public class UserController extends BasicController <UserBean>{
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 UserBean userBean_modified = BeanTools.modify(userBean_ori, userBean, changeableList);
-                map.put(getBean(), userService.rewriteUser(userBean_modified));
+                map.put("result", userService.rewriteUser(userBean_modified));
                 return map;
             }
             case TeacherAuthority, StudentAuthority->{
@@ -267,7 +265,7 @@ public class UserController extends BasicController <UserBean>{
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(standard));
                 UserBean userBean_modified = BeanTools.modify(userBean_ori, userBean, changeableList);
-                map.put(getBean(), userService.rewriteUser(userBean_modified));
+                map.put("result", userService.rewriteUser(userBean_modified));
                 return map;
             }
             default -> {
@@ -302,8 +300,8 @@ public class UserController extends BasicController <UserBean>{
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", "Success");
-                userService.deleteUser(keyword);
+                map.put("result", userService.deleteUser(keyword));
+
             }
             default -> {
                 map.put("result", "NoAuth");
