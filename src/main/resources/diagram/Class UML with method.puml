@@ -1,0 +1,255 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class BasicController{
++ getANewId()
++ getAllIds()
++ getABean()
++ getAllBeans()
++ createABean()
++ rewriteABean()
++ modifyABean()
++ deleteABean()
+}
+class ControllerOperation
+{
++ checkAuthentication()
++ getAuthority()
++ getErrorResponse()
++ getConductResponse()
+}
+class UserController
+{
++ getANewId()
++ getAllIds()
++ getABean()
++ createABean()
++ rewriteABean()
++ modifyABean()
++ deleteABean()
+}
+class LessonController
+{
++ getANewId()
++ getAllIds()
++ getABean()
++ createABean()
++ rewriteABean()
++ modifyABean()
++ deleteABean()
+}
+class MajorController
+{
++ getANewId()
++ getAllIds()
++ getABean()
++ createABean()
++ rewriteABean()
++ modifyABean()
++ deleteABean()
+}
+class StraightController
+{
++ getAllIds()
++ getABean()
++ initializeAllBeans()
++ rewriteABean()
++ deleteAllBeans()
+}
+class UltimateController
+{
++ modifyABean()
++ getABean()
+}
+
+UserController -up-|> BasicController
+LessonController -up-|> BasicController
+MajorController -up-|> BasicController
+
+StraightController .up.> ControllerOperation
+UltimateController .up.> ControllerOperation
+BasicController .up.> ControllerOperation
+
+
+UserController ..> BeanTools
+LessonController ..> BeanTools
+MajorController ..> BeanTools
+
+BasicController ..> JWTUtils
+UserController ..> JWTUtils
+LessonController ..> JWTUtils
+ControllerOperation ..> JWTUtils
+
+interface UserSpecService
+{
++ createAdmin()
++ login()
+}
+interface GeneralService
+{
++ getANewId()
++ getAllIds()
++ getABean()
++ getAllBeans()
++ createABean()
++ changeABean()
++ deleteABean()
+}
+
+class UserServiceImpl
+{
++ implements...(...)
+}
+class MajorServiceImpl
+{
++ implements...(...)
+}
+class LessonServiceImpl
+{
++ implements...(...)
+}
+class UserSpecServiceImpl
+{
++ implements...(...)
+}
+
+class DependValueVerify
+{
++ lessonDependCheck()
++ userDependCheck()
+}
+
+UserController --* GeneralService
+UserController --* UserSpecService
+LessonController --* GeneralService
+MajorController --* GeneralService
+
+GeneralService  ..|> UserServiceImpl
+GeneralService  ..|> MajorServiceImpl
+GeneralService  ..|> LessonServiceImpl
+UserSpecService ..|> UserSpecServiceImpl
+
+interface UserMapper
+{
++ getter(...)
++ setter(...)
+}
+interface LessonMapper
+{
++ getter(...)
++ setter(...)
+}
+interface MajorMapper
+{
++ getter(...)
++ setter(...)
+}
+interface ClassroomMapper
+{
++ getter(...)
++ setter(...)
+}
+interface ClasstimeMapper
+{
++ getter(...)
++ setter(...)
+}
+interface UltimatecontrolMapper
+{
++ getter(...)
++ setter(...)
+}
+
+UserServiceImpl --* UserMapper
+UserSpecServiceImpl --* UserMapper
+LessonServiceImpl --* LessonMapper
+MajorServiceImpl --* MajorMapper
+
+StraightController --* ClasstimeMapper
+StraightController --* ClassroomMapper
+
+UltimateController --* UltimatecontrolMapper
+
+UserServiceImpl ..> UserFormVerify
+UserServiceImpl ..> DependValueVerify
+LessonServiceImpl ..> DependValueVerify
+
+DependValueVerify --* UserMapper
+DependValueVerify --* MajorMapper
+DependValueVerify --* ClassroomMapper
+
+class User
+{
+- usertype
+- schoolnumber
+- name
+- identitynumber
+- email
+- phonenumber
+- password
+- school
+- major
+- status
+}
+class Lesson
+{
+- lessonid
+- lessonname
+- school
+- hour
+- credit
+- teacher
+- introduction
+- period
+- place
+- capacity
+- status
+}
+class Major
+{
+- majornumber
+- name
+- school
+}
+class Classtime
+{
+- name
+- time
+}
+class Classroom
+{
+- name
+- status
+}
+class Ultimate
+{
+- name
+- statis
+}
+
+class BeanTools
+{
++ modify()
+}
+class JWTUtils
+{
++ generateToken()
++ decodeToGetValue()
+}
+class UserFormVerify
+{
++ verify()
+}
+
+
+UserMapper --> User
+LessonMapper --> Lesson
+MajorMapper --> Major
+ClasstimeMapper --> Classtime
+ClassroomMapper --> Classroom
+UltimatecontrolMapper  --> Ultimate
+
+UserFormVerify .. User
+
+
+@enduml

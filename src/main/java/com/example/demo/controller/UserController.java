@@ -257,7 +257,7 @@ public class UserController extends BasicController <User>{
             if (Objects.equals(password, "fDu666666"))
                 payload.put("initialUser","true");
 
-            token = JWTUtils.getToken(payload);
+            token = JWTUtils.generateToken(payload);
 
             map.put("jwt",token);
 

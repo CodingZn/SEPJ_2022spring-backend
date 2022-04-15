@@ -19,7 +19,7 @@ public class JWTUtils {
     public static final String StudentAuthority = "IsStudent";
     public static final String NoAuthority = "NoAuthority";
 
-    public  static  String getToken(Map<String, String> map){//生成令牌
+    public  static  String generateToken(Map<String, String> map){//生成令牌
         JWTCreator.Builder builder = JWT.create();
 //加入默认payload
         Calendar instance = Calendar.getInstance();
@@ -39,7 +39,7 @@ public class JWTUtils {
     /**
      * 验证token  合法性
      */
-    public static DecodedJWT verify(String token){
+    private static DecodedJWT verify(String token){
         return JWT.require(Algorithm.HMAC256(SING)).build().verify(token);
     }
 
