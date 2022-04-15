@@ -28,16 +28,24 @@ UserController ..> JWTUtils
 LessonController ..> JWTUtils
 ControllerOperation ..> JWTUtils
 
-interface UserService
+interface UserSpecService
+interface GeneralService
 
 class UserServiceImpl
+class MajorServiceImpl
+class LessonServiceImpl
 class DependValueVerify
+class UserSpecServiceImpl
 
-UserController --* UserService
-LessonController --* UserService
-MajorController --* UserService
+UserController --* GeneralService
+UserController --* UserSpecService
+LessonController --* GeneralService
+MajorController --* GeneralService
 
-UserService  ..|> UserServiceImpl
+GeneralService  ..|> UserServiceImpl
+GeneralService  ..|> MajorServiceImpl
+GeneralService  ..|> LessonServiceImpl
+UserSpecService ..|> UserSpecServiceImpl
 
 interface UserMapper
 interface LessonMapper
@@ -47,8 +55,9 @@ interface ClasstimeMapper
 interface UltimatecontrolMapper
 
 UserServiceImpl --* UserMapper
-UserServiceImpl --* LessonMapper
-UserServiceImpl --* MajorMapper
+UserSpecServiceImpl --* UserMapper
+LessonServiceImpl --* LessonMapper
+MajorServiceImpl --* MajorMapper
 
 StraightController --* ClasstimeMapper
 StraightController --* ClassroomMapper
@@ -57,6 +66,7 @@ UltimateController --* UltimatecontrolMapper
 
 UserServiceImpl ..> UserFormVerify
 UserServiceImpl ..> DependValueVerify
+LessonServiceImpl ..> DependValueVerify
 
 DependValueVerify --* UserMapper
 DependValueVerify --* MajorMapper
