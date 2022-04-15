@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.bean.BeanTools;
 import com.example.demo.bean.Major;
-import com.example.demo.service.serviceImpl.MajorServiceImpl;
+import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +14,10 @@ import static com.example.demo.bean.JWTUtils.*;
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class MajorController extends BasicController<Major> {
-    private final MajorServiceImpl majorService;
+    private final GeneralService<Major> majorService;
 
     @Autowired
-    public MajorController(MajorServiceImpl majorService) {
+    public MajorController(GeneralService<Major> majorService) {
         this.majorService = majorService;
     }
 

@@ -3,8 +3,8 @@ package com.example.demo.controller;
 import com.example.demo.bean.BeanTools;
 import com.example.demo.bean.JWTUtils;
 import com.example.demo.bean.User;
+import com.example.demo.service.GeneralService;
 import com.example.demo.service.UserSpecService;
-import com.example.demo.service.serviceImpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +18,12 @@ import static com.example.demo.bean.JWTUtils.*;
 @CrossOrigin("http://localhost:3000")
 public class UserController extends BasicController <User>{
     private final UserSpecService userSpecService;
-    private final UserServiceImpl userServiceImpl;
+    private final GeneralService<User> userService;
 
     @Autowired
-    public UserController(UserSpecService userSpecService, UserServiceImpl userServiceImpl) {
+    public UserController(UserSpecService userSpecService, GeneralService<User> userService) {
         this.userSpecService = userSpecService;
-        this.userServiceImpl = userServiceImpl;
+        this.userService = userService;
         userSpecService.createAdmin();
     }
 
@@ -57,9 +57,9 @@ public class UserController extends BasicController <User>{
 
         switch (authority){
             case AdminAuthority, StudentAuthority, TeacherAuthority ->{
-                if (userServiceImpl.getABean(id) != null){
+                if (userService.getABean(id) != null){
                     map.put("result", "Success");
-                    map.put(getBean() , userServiceImpl.getABean(id));
+                    map.put(getBean() , userService.getABean(id));
                 }
                 else{
                     map.put("result", "NotFound");
@@ -85,7 +85,7 @@ public class UserController extends BasicController <User>{
         switch (authority){
             case AdminAuthority, TeacherAuthority, StudentAuthority ->{
                 map.put("result", "Success");
-                map.put(getIds() , userServiceImpl.getAllIds());
+                map.put(getIds() , userService.getAllIds());
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -109,7 +109,7 @@ public class UserController extends BasicController <User>{
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", userServiceImpl.createABean(id, bean));
+                map.put("result", userService.createABean(id, bean));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -135,7 +135,7 @@ public class UserController extends BasicController <User>{
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                User user_ori = userServiceImpl.getABean(schoolnumber);
+                User user_ori = userService.getABean(schoolnumber);
                 if (user_ori == null){
                     map.put("result", "NotFound");
                     return map;
@@ -144,7 +144,7 @@ public class UserController extends BasicController <User>{
                     map.put("result", "FormError");
                     return map;
                 }
-                map.put("result", userServiceImpl.changeABean(schoolnumber, user));
+                map.put("result", userService.changeABean(schoolnumber, user));
                 return map;
             }
             default -> {
@@ -169,7 +169,7 @@ public class UserController extends BasicController <User>{
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                User user_ori = userServiceImpl.getABean(schoolnumber);
+                User user_ori = userService.getABean(schoolnumber);
                 if (user_ori == null){
                     map.put("result", "NotFound");
                     return map;
@@ -179,11 +179,11 @@ public class UserController extends BasicController <User>{
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 User user_modified = BeanTools.modify(user_ori, user, changeableList);
-                map.put("result", userServiceImpl.changeABean(schoolnumber, user_modified));
+                map.put("result", userService.changeABean(schoolnumber, user_modified));
                 return map;
             }
             case TeacherAuthority, StudentAuthority->{
-                User user_ori = userServiceImpl.getABean(schoolnumber);
+                User user_ori = userService.getABean(schoolnumber);
                 if (user_ori == null || !user_ori.getSchoolnumber().equals(schoolnumber)){
                     map.put("result", "NotFound");
                     return map;
@@ -193,7 +193,7 @@ public class UserController extends BasicController <User>{
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(standard));
                 User user_modified = BeanTools.modify(user_ori, user, changeableList);
-                map.put("result", userServiceImpl.changeABean(schoolnumber, user_modified));
+                map.put("result", userService.changeABean(schoolnumber, user_modified));
                 return map;
             }
             default -> {
@@ -217,7 +217,7 @@ public class UserController extends BasicController <User>{
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", userServiceImpl.deleteABean(keyword));
+                map.put("result", userService.deleteABean(keyword));
 
             }
             default -> {

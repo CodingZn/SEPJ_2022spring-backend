@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.bean.BeanTools;
 import com.example.demo.bean.Lesson;
-import com.example.demo.service.serviceImpl.LessonServiceImpl;
+import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,10 +15,10 @@ import static com.example.demo.bean.JWTUtils.*;
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class LessonController extends BasicController<Lesson> {
-    private final LessonServiceImpl lessonService;
+    private final GeneralService<Lesson> lessonService;
 
     @Autowired
-    public LessonController(LessonServiceImpl lessonService) {
+    public LessonController(GeneralService<Lesson> lessonService) {
         this.lessonService = lessonService;
     }
 
