@@ -76,6 +76,11 @@ public class ControllerOperation {
                 map.put("message", "操作成功！");
                 return new ResponseEntity<>(map, HttpStatus.OK);
             }
+            case "NoAuth" -> {
+                System.out.println("No authority!");
+                map.put("message", "无操作权限！");
+                return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
+            }
             case "NotFound" -> {
                 System.out.println("Entry not found!");
                 map.put("message", "无对应信息！");
