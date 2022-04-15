@@ -19,9 +19,6 @@ public abstract class BasicController <T>{
     * 其中的抽象方法即为各类间的不同之处
     * 抽象方法通过传入权限字段来控制下层操作 */
 
-    /*查--获取新 lessonid */
-    abstract String getANewConcreteId();
-
     /*************获取字段的抽象方法***************/
     abstract String getId();
     abstract String getIds();
@@ -44,32 +41,8 @@ public abstract class BasicController <T>{
         }
         else
             return ControllerOperation.getErrorResponse(credit, map);
-//
-//        if (credit.equals(auth1())){//一定成功，不做封装
-//            String newConcreteId = getANewConcreteId();
-//
-//            map.put(getId(), newConcreteId);
-//            return new ResponseEntity<>(map, HttpStatus.OK);
-//        }
-//        else if (credit.equals(auth2())){
-//            String newConcreteId = getANewConcreteId();
-//
-//            map.put(getId(), newConcreteId);
-//            return new ResponseEntity<>(map, HttpStatus.OK);
-//        }
-//        else if (credit.equals(auth3())){
-//            return ControllerOperation.getErrorResponse(credit, map);
-//        }
-//        else {
-//            return ControllerOperation.getErrorResponse(credit, map);
-//        }
-
 
     }
-
-    /*查--返回所有id值，id值的身份由被调用函数确定*/
-    abstract List<String> getAllConcreteIds(Boolean showall);
-    abstract List<String> getAllConcreteIds(Boolean showall, String name);
 
     abstract Map<String, Object> getAllIds_impl(String authority, String name);
 
@@ -89,35 +62,7 @@ public abstract class BasicController <T>{
         else
             return ControllerOperation.getErrorResponse(credit, map);
 
-
-//        if (credit.equals(auth1())){//必然成功，未重构
-//            List<String> strings = getAllConcreteIds(true);
-//
-//            System.out.println("strings="+strings);
-//            map.put(getIds(),strings);//change
-//            return new ResponseEntity<>(map, HttpStatus.OK);
-//        }
-//        else if (credit.equals(auth2())){
-//            List<String> strings = getAllConcreteIds(false, name);
-//            System.out.println("strings="+strings);
-//            map.put(getIds(),strings);//change
-//            return new ResponseEntity<>(map, HttpStatus.OK);
-//        }
-//        else if (credit.equals(auth3())){
-//            List<String> strings = getAllConcreteIds(false);
-//            System.out.println("strings="+strings);
-//            map.put(getIds(),strings);//change
-//            return new ResponseEntity<>(map, HttpStatus.OK);
-//        }
-//        else{
-//            return ControllerOperation.getErrorResponse(credit, map);
-//        }
-
     }
-
-    /*查--获取一个实体信息*/
-    abstract T getConcreteBean(String id, Boolean showall);
-    abstract T getConcreteBean(String id, Boolean showall, String name);
 
     abstract Map<String, Object> getABean_impl(String authority, String id, String name);
 
@@ -136,28 +81,10 @@ public abstract class BasicController <T>{
         }
         else
             return ControllerOperation.getErrorResponse(credit, map);
-//        if (credit.equals(auth1())){
-//            T entity = getConcreteBean(keyword, true);
-//
-//            return ControllerOperation.getSearchResponse(entity, map);
-//        }
-//        else if (credit.equals(auth2())){
-//            T entity = getConcreteBean(keyword, false, name);
-//            return ControllerOperation.getSearchResponse(entity, map);
-//        }
-//        else if (credit.equals(auth3())){
-//            T entity = getConcreteBean(keyword, false);
-//            return ControllerOperation.getSearchResponse(entity, map);
-//        }
-//        else{
-//            return ControllerOperation.getErrorResponse(credit, map);
-//        }
+
     }
 
     /*增--新增一个实体,post*/
-
-    abstract String createAConcreteBean(String id, T bean);
-    abstract String createAConcreteBean(String id, T bean, String name);
 
     abstract Map<String, Object> createABean_impl (String authority, String id, T bean, String name);
 
@@ -177,29 +104,7 @@ public abstract class BasicController <T>{
         else
             return ControllerOperation.getErrorResponse(credit, map);
 
-//        if (credit.equals(auth1())){
-//
-//            String result = createAConcreteBean(id, bean);
-//
-//            return ControllerOperation.getConductResponse(result, map);
-//
-//        }
-//        else if (credit.equals(auth2())){
-//            String result = createAConcreteBean(id, bean, name);
-//
-//            return ControllerOperation.getConductResponse(result, map);
-//
-//        }
-//        else if (credit.equals(auth3())){
-//            return ControllerOperation.getErrorResponse(credit, map);
-//        }
-//        else{
-//            return ControllerOperation.getErrorResponse(credit, map);
-//        }
     }
-
-    /*改--重写一个实体,put*/
-    abstract String rewriteConcreteBean(String id, T bean);
 
     abstract Map<String, Object> rewriteABean_impl(String authority, String id, T bean);
 
@@ -218,30 +123,7 @@ public abstract class BasicController <T>{
         else
             return ControllerOperation.getErrorResponse(credit, map);
 
-//        if (credit.equals(auth1())){
-//
-//            String result = modifyAConcreteBean(id, bean);
-//
-//            return ControllerOperation.getConductResponse(result, map);
-//
-//        }
-//        else if (credit.equals(auth2())){
-//            return ControllerOperation.getErrorResponse(credit, map);
-//        }
-//        else if (credit.equals(auth3())){
-//            return ControllerOperation.getErrorResponse(credit, map);
-//        }
-//        else{
-//            return ControllerOperation.getErrorResponse(credit, map);
-//        }
-
-
     }
-
-    /*改--修改一个实体, patch */
-    abstract String modifyAConcreteBean(String id, T bean);
-
-    abstract String modifyAConcreteBean(String id, T bean, String name);
 
     abstract Map<String, Object> modifyABean_impl (String authority, String id, T bean);
 
@@ -261,34 +143,9 @@ public abstract class BasicController <T>{
         else
             return ControllerOperation.getErrorResponse(credit, map);
 
-//        if (credit.equals(auth1())){
-//
-//            String result = modifyAConcreteBean(id, bean);
-//
-//            return ControllerOperation.getConductResponse(result, map);
-//
-//        }
-//        else if (credit.equals(auth2())){
-//            String result = modifyAConcreteBean(id, bean, name);
-//
-//            return ControllerOperation.getConductResponse(result, map);
-//        }
-//        else if (credit.equals(auth3())){
-//            String result = modifyAConcreteBean(id, bean, name);
-//
-//            return ControllerOperation.getConductResponse(result, map);
-//        }
-//        else{
-//            return ControllerOperation.getErrorResponse(credit, map);
-//        }
-
     }
 
     /*删--删除实体*/
-
-    abstract String delConcreteBean(String keyword);
-
-    abstract String delConcreteBean(String keyword, String name);
 
     abstract Map<String, Object> delBean_impl(String authority, String keyword, String name);
 
@@ -307,21 +164,6 @@ public abstract class BasicController <T>{
         }
         else
             return ControllerOperation.getErrorResponse(credit, map);
-
-//        if (credit.equals(auth1())){
-//            String result = delConcreteBean(keyword);
-//            return ControllerOperation.getConductResponse(result, map);
-//        }
-//        else if (credit.equals(auth2())){
-//            String result = delConcreteBean(keyword, name);
-//            return ControllerOperation.getConductResponse(result, map);
-//        }
-//        else if (credit.equals(auth3())){
-//            return ControllerOperation.getErrorResponse(credit, map);
-//        }
-//        else{
-//            return ControllerOperation.getErrorResponse(credit, map);
-//        }
 
     }
 

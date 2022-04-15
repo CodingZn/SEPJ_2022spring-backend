@@ -26,11 +26,6 @@ public class UserController extends BasicController <UserBean>{
 
 
     @Override
-    String getANewConcreteId() {
-        return null;
-    }
-
-    @Override
     String getId() {
         return "schoolnumber";
     }
@@ -52,25 +47,6 @@ public class UserController extends BasicController <UserBean>{
         return null;
     }
 
-
-    @Override
-    List<String> getAllConcreteIds(Boolean showall, String name) {
-        return null;
-    }
-
-
-
-    /**************继承操作***************/
-
-    /*查--获取一个用户信息*/
-    @Override
-    UserBean getConcreteBean(String id, Boolean showall) {//管理员和学生权限操作
-        return userService.getAUser(id);
-    }
-    @Override
-    UserBean getConcreteBean(String id, Boolean showall, String name) {//教师权限操作
-        return userService.getAUser(id);
-    }
 
     @Override
     Map<String, Object> getABean_impl(String authority, String id, String name) {
@@ -100,13 +76,6 @@ public class UserController extends BasicController <UserBean>{
         return super.getABean(schoolnumber, authentication);
     }
 
-    /*查--返回所有主键值*/
-    @Override
-    List<String> getAllConcreteIds(Boolean showall) {
-
-        return null;
-    }
-
     @Override
     Map<String, Object> getAllIds_impl(String authority, String name) {//权限控制待商榷！
         Map<String, Object> map = new HashMap<>();
@@ -133,16 +102,6 @@ public class UserController extends BasicController <UserBean>{
     /*增--新增一个用户*/
 
     @Override
-    String createAConcreteBean(String id, UserBean bean) {
-        return userService.createAUser(bean);
-    }
-
-    @Override
-    String createAConcreteBean(String id, UserBean bean, String name) {
-        return null;
-    }
-
-    @Override
     Map<String, Object> createABean_impl(String authority, String id, UserBean bean, String name) {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
@@ -167,11 +126,6 @@ public class UserController extends BasicController <UserBean>{
 
 
     /*改--重写一个用户,put*/
-
-    @Override
-    String rewriteConcreteBean(String id, UserBean bean) {
-        return null;
-    }
 
     @Override
     Map<String, Object> rewriteABean_impl(String authority, String schoolnumber, UserBean userBean) {//权限待商榷
@@ -205,40 +159,6 @@ public class UserController extends BasicController <UserBean>{
                                                             @RequestBody UserBean userBean,
                                                             @RequestHeader(value="Authentication") String authentication) {
         return super.rewriteABean(schoolnumber, userBean, authentication);
-    }
-
-    /*改--修改一个用户，patch*/
-    @Override
-    String modifyAConcreteBean(String schoolnumber, UserBean userBean) {//admin
-        UserBean userBean_ori = userService.getAUser(schoolnumber);
-        if (userBean_ori == null)
-            return "NotFound";
-
-        String [] adminauth = {"email", "password", "phonenumber", "name", "school", "major", "status"};
-
-        List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
-        UserBean userBean_modified = BeanTools.modify(userBean_ori, userBean, changeableList);
-        return userService.rewriteUser(userBean_modified);
-
-    }
-
-    @Override
-    String modifyAConcreteBean(String schoolnumber, UserBean userBean, String name) {//teacher and student
-
-        UserBean userBean_ori = userService.getAUser(schoolnumber);
-        if (userBean_ori == null)
-            return "NotFound";
-        if (!userBean_ori.getSchoolnumber().equals(schoolnumber)){
-            return "NotFound";
-        }
-        System.out.println("2");
-        String [] standard = {"email", "password", "phonenumber"};
-
-        List<String> changeableList = new ArrayList<>(Arrays.asList(standard));
-        UserBean userBean_modified = BeanTools.modify(userBean_ori, userBean, changeableList);
-        System.out.println("3");
-        return userService.rewriteUser(userBean_modified);
-
     }
 
     @Override
@@ -288,17 +208,6 @@ public class UserController extends BasicController <UserBean>{
         return super.modifyABean(schoolnumber, userBean, authentication);
     }
 
-
-    /*删--删除用户*/
-    @Override
-    String delConcreteBean(String keyword) {
-        return userService.deleteUser(keyword);
-    }
-
-    @Override
-    String delConcreteBean(String keyword, String name) {
-        return null;
-    }
 
     @Override
     Map<String, Object> delBean_impl(String authority, String keyword, String name) {
