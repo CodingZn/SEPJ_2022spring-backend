@@ -25,17 +25,17 @@ public class LessonController extends BasicController<Lesson> {
 
     @Override
     String getId() {
-        return null;
+        return "lessonid";
     }
 
     @Override
     String getIds() {
-        return null;
+        return "lessonids";
     }
 
     @Override
     String getBean() {
-        return null;
+        return "lesson";
     }
 
     /*查--获取新 lessonid */
@@ -246,9 +246,6 @@ public class LessonController extends BasicController<Lesson> {
                 Lesson bean_ori = userService.getALesson(id);
                 if (bean_ori == null) {
                     map.put("result", "NotFound");
-                    return map;
-                } else if (!Objects.equals(id, String.valueOf(bean.getLessonid()))) {
-                    map.put("result", "FormError");
                     return map;
                 }
                 map.put("result", userService.rewriteALesson(id, bean));

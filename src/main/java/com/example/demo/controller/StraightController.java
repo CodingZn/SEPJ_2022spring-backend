@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+import static com.example.demo.bean.JWTUtils.*;
+import static com.example.demo.controller.ControllerOperation.*;
+
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class StraightController {
@@ -31,29 +34,31 @@ public class StraightController {
 
     /*增--初始化教室*/
     @RequestMapping(value="/classrooms", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> initializeClassrooms(@RequestHeader("Authentication") String authentication,
+    public ResponseEntity<Map<String, Object>> initializeClassrooms(@RequestHeader(value = "Authentication") String authentication,
                                                                     @RequestBody JSONArray jsonArray) {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin")){
+        String authority = ControllerOperation.getAuthority(authentication);
+        if (authority.equals(AdminAuthority)){
             List<Classroom> classroomList = jsonArray.toJavaList(Classroom.class);
             classroomMapper.saveAll(classroomList);
             return ControllerOperation.getConductResponse("Success", map);
         }
         else
-            return ControllerOperation.getErrorResponse(credit, map);
+            return ControllerOperation.getConductResponse(authority, map);
     }
 
     /*改--修改单个教室状态*/
     @RequestMapping(value="/classroom/{name}", method = RequestMethod.PUT)
-    public ResponseEntity<Map<String, Object>> setClassroomsStatus(@RequestHeader("Authentication") String authentication,
+    public ResponseEntity<Map<String, Object>> setClassroomsStatus(@RequestHeader(value = "Authentication") String authentication,
                                                                     @PathVariable("name") String name,
                                                                    @RequestBody Classroom classroom) {//paramater to be changed
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin")){
+        String authority = ControllerOperation.getAuthority(authentication);
+        if (authority.equals(AdminAuthority)){
             if(classroomMapper.findByName(name) != null){
                 classroom.setName(name);
                 classroomMapper.save(classroom);
@@ -65,16 +70,17 @@ public class StraightController {
 
         }
         else
-            return ControllerOperation.getErrorResponse(credit, map);
+            return ControllerOperation.getConductResponse(authority, map);
     }
 
     /*查--获取所有教室名*/
     @RequestMapping(value="/classrooms", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getAllClassroomName(@RequestHeader("Authentication") String authentication) {
+    public ResponseEntity<Map<String, Object>> getAllClassroomName(@RequestHeader(value = "Authentication") String authentication) {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin") || credit.equals("IsTeacher")){
+        String authority = ControllerOperation.getAuthority(authentication);
+        if (authority.equals(AdminAuthority) || authority.equals(TeacherAuthority)){
 
             List<Classroom> classroomList = classroomMapper.findAll();
             List<String> classroomNameList = classroomList.stream().map(Classroom::getName).toList();
@@ -83,17 +89,18 @@ public class StraightController {
             return ControllerOperation.getConductResponse("Success", map);
         }
         else
-            return ControllerOperation.getErrorResponse(credit, map);
+            return ControllerOperation.getConductResponse(authority, map);
     }
 
     /*查--获取单个教室*/
     @RequestMapping(value="/classroom/{name}", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getAClassroom(@RequestHeader("Authentication") String authentication,
+    public ResponseEntity<Map<String, Object>> getAClassroom(@RequestHeader(value = "Authentication") String authentication,
                                                              @PathVariable("name") String name) {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin") || credit.equals("IsTeacher")){
+        String authority = ControllerOperation.getAuthority(authentication);
+        if (authority.equals(AdminAuthority) || authority.equals(TeacherAuthority)){
 
             Classroom classroom = classroomMapper.findByName(name);
 
@@ -102,23 +109,24 @@ public class StraightController {
             return ControllerOperation.getConductResponse("Success", map);
         }
         else
-            return ControllerOperation.getErrorResponse(credit, map);
+            return ControllerOperation.getConductResponse(authority, map);
     }
 
     /*删--删除所有教室*/
     @RequestMapping(value="/classrooms", method = RequestMethod.DELETE)
-    public ResponseEntity<Map<String, Object>> delClassrooms(@RequestHeader("Authentication") String authentication) {
+    public ResponseEntity<Map<String, Object>> delClassrooms(@RequestHeader(value = "Authentication") String authentication) {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin")){
+        String authority = ControllerOperation.getAuthority(authentication);
+        if (authority.equals(AdminAuthority)){
 
             classroomMapper.deleteAll();
 
             return ControllerOperation.getConductResponse("Success", map);
         }
         else
-            return ControllerOperation.getErrorResponse(credit, map);
+            return ControllerOperation.getConductResponse(authority, map);
     }
 
 
@@ -126,12 +134,13 @@ public class StraightController {
 
     /*增--初始化上课时间*/
     @RequestMapping(value="/classtimes", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> initializeClasstimes(@RequestHeader("Authentication") String authentication,
+    public ResponseEntity<Map<String, Object>> initializeClasstimes(@RequestHeader(value = "Authentication") String authentication,
                                                                     @RequestBody JSONArray jsonArray) {//paramater to be changed
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin")){
+        String authority = ControllerOperation.getAuthority(authentication);
+        if (authority.equals(AdminAuthority)){
 
             List<Classtime> classtimeList = jsonArray.toJavaList(Classtime.class);
 
@@ -140,17 +149,18 @@ public class StraightController {
             return ControllerOperation.getConductResponse("Success", map);
         }
         else
-            return ControllerOperation.getErrorResponse(credit, map);
+            return ControllerOperation.getConductResponse(authority, map);
     }
 
     /*查--获取一个上课时间对象*/
     @RequestMapping(value="/classtime/{name}", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getAClasstime(@RequestHeader("Authentication") String authentication,
+    public ResponseEntity<Map<String, Object>> getAClasstime(@RequestHeader(value = "Authentication") String authentication,
                                                              @PathVariable("name") String name) {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin") || credit.equals("IsTeacher")){
+        String authority = ControllerOperation.getAuthority(authentication);
+        if (authority.equals(AdminAuthority) || authority.equals(TeacherAuthority)){
 
             Classtime classtime = classtimeMapper.findByName(name);
 
@@ -159,17 +169,17 @@ public class StraightController {
             return ControllerOperation.getConductResponse("Success", map);
         }
         else
-            return ControllerOperation.getErrorResponse(credit, map);
+            return ControllerOperation.getConductResponse(authority, map);
     }
 
     /*查--获取所有上课时间段*/
     @RequestMapping(value="/classtimes", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getClasstimes(@RequestHeader("Authentication") String authentication) {
+    public ResponseEntity<Map<String, Object>> getClasstimes(@RequestHeader(value = "Authentication") String authentication) {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin") || credit.equals("IsTeacher")){
-            List<Classtime> a = classtimeMapper.findAll();
+        String authority = ControllerOperation.getAuthority(authentication);
+        if (authority.equals(AdminAuthority) || authority.equals(TeacherAuthority)){
 
             List<Classtime> classtimeList = classtimeMapper.findAll();
             List<String> classtimeNameList = classtimeList.stream().map(Classtime::getName).toList();
@@ -178,23 +188,24 @@ public class StraightController {
             return ControllerOperation.getConductResponse("Success", map);
         }
         else
-            return ControllerOperation.getErrorResponse(credit, map);
+            return ControllerOperation.getConductResponse(authority, map);
     }
 
     /*删--删除所有上课时间对象*/
     @RequestMapping(value="/classtimes", method = RequestMethod.DELETE)
-    public ResponseEntity<Map<String, Object>> delClasstimes(@RequestHeader("Authentication") String authentication) {
+    public ResponseEntity<Map<String, Object>> delClasstimes(@RequestHeader(value = "Authentication") String authentication) {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin")){
+        String authority = ControllerOperation.getAuthority(authentication);
+        if (authority.equals(AdminAuthority)){
 
             classtimeMapper.deleteAll();
 
             return ControllerOperation.getConductResponse("Success", map);
         }
         else
-            return ControllerOperation.getErrorResponse(credit, map);
+            return ControllerOperation.getConductResponse(authority, map);
     }
 
 

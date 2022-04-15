@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.example.demo.bean.JWTUtils.*;
+
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class UltimateController {
@@ -30,7 +32,8 @@ public class UltimateController {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin") || credit.equals("IsTeacher") || credit.equals("IsStudent")){
+        String authority = ControllerOperation.getAuthority(authentication);
+        if (credit.equals(ValidJWTToken)){
 
             Ultimatectrl ultimatectrl = ultimatecontrolMapper.findByName(name);
             map.put("control", ultimatectrl);
@@ -38,7 +41,7 @@ public class UltimateController {
 
         }
         else
-            return ControllerOperation.getErrorResponse(credit, map);
+            return ControllerOperation.getConductResponse(credit, map);
     }
 
     /*修改一个开关*/
@@ -49,7 +52,8 @@ public class UltimateController {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        if (credit.equals("IsAdmin")){
+        String authority = ControllerOperation.getAuthority(authentication);
+        if (authority.equals(AdminAuthority)){
 
             control.setName(name);
             if(ultimatecontrolMapper.findByName(name) != null){
@@ -60,6 +64,6 @@ public class UltimateController {
             return ControllerOperation.getConductResponse("NotFound", map);
         }
         else
-            return ControllerOperation.getErrorResponse(credit, map);
+            return ControllerOperation.getConductResponse(authority, map);
     }
 }

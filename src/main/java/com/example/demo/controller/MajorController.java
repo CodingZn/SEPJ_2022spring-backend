@@ -28,17 +28,17 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     String getId() {
-        return null;
+        return "majornumber";
     }
 
     @Override
     String getIds() {
-        return null;
+        return "majornumbers";
     }
 
     @Override
     String getBean() {
-        return null;
+        return "major";
     }
 
     /*查--获取新majornumber*/
@@ -191,10 +191,6 @@ public class MajorController extends BasicController<Major> {
                 Major bean_ori = userService.getAMajor(id);
                 if (bean_ori == null){
                     map.put("result", "NotFound");
-                    return map;
-                }
-                else if (!Objects.equals(id, String.valueOf(bean.getMajornumber()))){
-                    map.put("result", "FormError");
                     return map;
                 }
                 map.put("result", userService.rewriteAMajor(id,bean));

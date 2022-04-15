@@ -170,7 +170,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String createAMajor(String majornumber_str, Major major) {
+    public String createAMajor(String majornumber_str, Major major) {//只创建，不修改
 
         Major major1 = getAMajor(majornumber_str);
         if (major1 == null) {
@@ -193,13 +193,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String rewriteAMajor(String majornumber_str, Major major) {//创建一个对象，若主键已存在，则修改对象的值
+    public String rewriteAMajor(String majornumber_str, Major major) {//只根据主键修改，不创建
         Major major1 = getAMajor(majornumber_str);
         if (major1 == null) {
             return "NotFound";
         }
-
-        if (major.getName().equals("") || !major.getSchool().equals(""))
+        if (major.getName().equals("") || major.getSchool().equals(""))
             return "FormError";
 
         major.setMajornumber(major1.getMajornumber());
