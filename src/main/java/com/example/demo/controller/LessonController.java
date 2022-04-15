@@ -113,6 +113,18 @@ public class LessonController extends BasicController<Lesson> {
                 }
                 return map;
             }
+            case TeacherAuthority -> {
+                Lesson lesson = lessonService.getABean(id);
+                if (lesson != null &&
+                        (Objects.equals(lesson.getStatus(), "censored") || Objects.equals(lesson.getTeacher(), name))) {
+                    map.put("result", "Success");
+                    map.put(getBean(), lesson);
+                }
+                else {
+                    map.put("result","NotFound");
+                }
+                return map;
+            }
             case StudentAuthority -> {
                 Lesson lesson = lessonService.getABean(id);
                 if (lesson != null && Objects.equals(lesson.getStatus(), "censored")){
@@ -122,19 +134,6 @@ public class LessonController extends BasicController<Lesson> {
                 }
                 map.put("result","NotFound");
                 return map;
-            }
-            case TeacherAuthority -> {
-                Lesson lesson = lessonService.getABean(id);
-                if (lesson != null &&
-                        (Objects.equals(lesson.getStatus(), "censored") || Objects.equals(lesson.getTeacher(), name))) {
-                    map.put("result", "Success");
-                    map.put(getBean(), lesson);
-                    return map;
-                }
-                else {
-                    map.put("result","NotFound");
-                    return map;
-                }
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -158,7 +157,6 @@ public class LessonController extends BasicController<Lesson> {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
-                lesson.setStatus("censored");
                 map.put("result", lessonService.createABean(id, lesson));
             }
             case TeacherAuthority -> {
@@ -182,17 +180,29 @@ public class LessonController extends BasicController<Lesson> {
     }
 
     @Override
-    Map<String, Object> rewriteABean_impl(String authority, String id, Lesson bean) {
+    Map<String, Object> rewriteABean_impl(String authority, String id, Lesson lesson) {
 
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
+                Lesson lesson_ori = lessonService.getABean(id);
+                if (lesson_ori == null) {
+                    map.put("result", "NotFound");
+                    return map;
+                }
+                map.put("result", lessonService.changeABean(id, lesson));
+                return map;
+            }
+            case TeacherAuthority -> {
                 Lesson bean_ori = lessonService.getABean(id);
                 if (bean_ori == null) {
                     map.put("result", "NotFound");
                     return map;
                 }
-                map.put("result", lessonService.changeABean(id, bean));
+                String[] changeable = { "lessonname", "period", "place"};
+                List<String> changeableList = new ArrayList<>(Arrays.asList(changeable));
+                Lesson lesson_changed = BeanTools.modify(bean_ori, lesson, changeableList);
+                map.put("result", lessonService.changeABean(id, lesson_changed));
                 return map;
             }
             default -> {
