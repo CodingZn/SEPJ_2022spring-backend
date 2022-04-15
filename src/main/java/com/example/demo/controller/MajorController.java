@@ -26,12 +26,6 @@ public class MajorController extends BasicController<Major> {
     /* 该类中所有的方法都来自继承 */
 
 
-    /*查--获取新majornumber*/
-    @Override
-    String getANewConcreteId() {//三种角色都能使用
-        return userService.getANewMajornumber();
-    }
-
     @Override
     String getId() {
         return null;
@@ -45,6 +39,13 @@ public class MajorController extends BasicController<Major> {
     @Override
     String getBean() {
         return null;
+    }
+
+    /*查--获取新majornumber*/
+
+    @Override
+    String getANewConcreteId() {//三种角色都能使用
+        return userService.getANewMajornumber();
     }
 
     @Override
@@ -121,8 +122,13 @@ public class MajorController extends BasicController<Major> {
 
         switch (authority){
             case AdminAuthority, StudentAuthority, TeacherAuthority ->{
-                map.put("result", "Success");
-                map.put(getBean() ,userService.getAMajor(id));
+                if (userService.getAMajor(id) != null){
+                    map.put("result", "Success");
+                    map.put(getBean() ,userService.getAMajor(id));
+                }
+                else{
+                    map.put("result", "NotFound");
+                }
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -154,8 +160,7 @@ public class MajorController extends BasicController<Major> {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", "Success");
-                map.put(getIds() ,userService.createAMajor(id, bean));
+                map.put("result", userService.createAMajor(id, bean));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -188,12 +193,11 @@ public class MajorController extends BasicController<Major> {
                     map.put("result", "NotFound");
                     return map;
                 }
-                else if (!Objects.equals(id, bean.getMajornumber())){
+                else if (!Objects.equals(id, String.valueOf(bean.getMajornumber()))){
                     map.put("result", "FormError");
                     return map;
                 }
-                map.put("result", "Success");
-                map.put(getBean(), userService.rewriteAMajor(id,bean));
+                map.put("result", userService.rewriteAMajor(id,bean));
                 return map;
             }
             default -> {
@@ -248,7 +252,7 @@ public class MajorController extends BasicController<Major> {
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 Major bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
-                map.put(getBean(), userService.rewriteAMajor(id,bean_modified));
+                map.put("result", userService.rewriteAMajor(id,bean_modified));
                 return map;
             }
             default -> {
@@ -282,8 +286,7 @@ public class MajorController extends BasicController<Major> {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", "Success");
-                userService.deleteMajor(keyword);
+                map.put("result", userService.deleteMajor(keyword));
             }
             default -> {
                 map.put("result", "NoAuth");

@@ -78,8 +78,13 @@ public class UserController extends BasicController <UserBean>{
 
         switch (authority){
             case AdminAuthority, StudentAuthority, TeacherAuthority ->{
-                map.put("result", "Success");
-                map.put(getBean() ,userService.getAUser(id));
+                if (userService.getAUser(id) != null){
+                    map.put("result", "Success");
+                    map.put(getBean() ,userService.getAUser(id));
+                }
+                else{
+                    map.put("result", "NotFound");
+                }
             }
             default -> {
                 map.put("result", "NoAuth");
