@@ -12,17 +12,13 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "user")
-@GenericGenerator(name = "jpa-uuid", strategy = "uuid")
-public class UserBean {
-    @Id
-    @GeneratedValue(generator = "jpa-uuid")
-    @Column(name = "id", nullable = false)
-    private String id;
+public class User {
 
     @Column(name = "usertype", length =15, nullable = false)
     private String usertype;
     //usertype变量只允许"admin","teacher","student"三种取值，其余均为非法
 
+    @Id
     @Column(name = "schoolnumber", nullable = false)
     private String schoolnumber;
 

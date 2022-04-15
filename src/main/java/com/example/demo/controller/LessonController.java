@@ -2,23 +2,24 @@ package com.example.demo.controller;
 
 import com.example.demo.bean.BeanTools;
 import com.example.demo.bean.Lesson;
-import com.example.demo.service.UserService;
+import com.example.demo.service.serviceImpl.LessonServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.example.demo.bean.JWTUtils.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class LessonController extends BasicController<Lesson> {
-    private final UserService userService;
+    private final LessonServiceImpl lessonService;
 
     @Autowired
-    public LessonController(UserService userService) {
-        this.userService = userService;
+    public LessonController(LessonServiceImpl lessonService) {
+        this.lessonService = lessonService;
     }
 
     /* 该类中所有的方法都来自继承 */
@@ -44,7 +45,7 @@ public class LessonController extends BasicController<Lesson> {
         switch (authority) {
             case AdminAuthority, TeacherAuthority -> {
                 map.put("result", "Success");
-                map.put(getId(), userService.getANewLessonid());
+                map.put(getId(), lessonService.getANewId());
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -66,15 +67,22 @@ public class LessonController extends BasicController<Lesson> {
         switch (authority) {
             case AdminAuthority -> {
                 map.put("result", "Success");
-                map.put(getIds(), userService.getAllLessonid());
+                map.put(getIds(), lessonService.getAllIds());
             }
             case TeacherAuthority ->{
                 map.put("result", "Success");
-                map.put(getIds(), userService.getAllLessonid(name, false));
+                List<Lesson> lessonList = new ArrayList<Lesson>(lessonService.getAllBeans());
+                lessonList.removeIf(u -> !Objects.equals(u.getTeacher(), name) && !Objects.equals(u.getStatus(), "censored"));
+                List<String> lessonidList = lessonList.stream().map(u -> String.valueOf(u.getLessonid())).collect(Collectors.toList());
+
+                map.put(getIds(), lessonidList);
             }
             case StudentAuthority ->{
                 map.put("result", "Success");
-                map.put(getIds(), userService.getAllLessonid(false));
+                List<Lesson> lessonList = new ArrayList<Lesson>(lessonService.getAllBeans());
+                lessonList.removeIf(u -> !Objects.equals(u.getStatus(), "censored"));
+                List<String> lessonidList = lessonList.stream().map(u -> String.valueOf(u.getLessonid())).collect(Collectors.toList());
+                map.put(getIds(), lessonidList);
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -95,7 +103,7 @@ public class LessonController extends BasicController<Lesson> {
 
         switch (authority) {
             case AdminAuthority -> {
-                Lesson lesson = userService.getALesson(id);
+                Lesson lesson = lessonService.getABean(id);
                 if (lesson != null){
                     map.put("result", "Success");
                     map.put(getBean(), lesson);
@@ -106,7 +114,7 @@ public class LessonController extends BasicController<Lesson> {
                 return map;
             }
             case StudentAuthority -> {
-                Lesson lesson = userService.getALesson(id);
+                Lesson lesson = lessonService.getABean(id);
                 if (lesson != null && Objects.equals(lesson.getStatus(), "censored")){
                     map.put("result", "Success");
                     map.put(getBean(), lesson);
@@ -116,7 +124,7 @@ public class LessonController extends BasicController<Lesson> {
                 return map;
             }
             case TeacherAuthority -> {
-                Lesson lesson = userService.getALesson(id);
+                Lesson lesson = lessonService.getABean(id);
                 if (lesson != null &&
                         (Objects.equals(lesson.getStatus(), "censored") || Objects.equals(lesson.getTeacher(), name))) {
                     map.put("result", "Success");
@@ -151,12 +159,12 @@ public class LessonController extends BasicController<Lesson> {
         switch (authority) {
             case AdminAuthority -> {
                 lesson.setStatus("censored");
-                map.put("result", userService.createALesson(id, lesson));
+                map.put("result", lessonService.createABean(id, lesson));
             }
             case TeacherAuthority -> {
                 lesson.setTeacher(name);
                 lesson.setStatus("pending");
-                map.put("result", userService.createALesson(id, lesson));
+                map.put("result", lessonService.createABean(id, lesson));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -179,12 +187,12 @@ public class LessonController extends BasicController<Lesson> {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
-                Lesson bean_ori = userService.getALesson(id);
+                Lesson bean_ori = lessonService.getABean(id);
                 if (bean_ori == null) {
                     map.put("result", "NotFound");
                     return map;
                 }
-                map.put("result", userService.rewriteALesson(id, bean));
+                map.put("result", lessonService.changeABean(id, bean));
                 return map;
             }
             default -> {
@@ -208,7 +216,7 @@ public class LessonController extends BasicController<Lesson> {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
-                Lesson bean_ori = userService.getALesson(id);
+                Lesson bean_ori = lessonService.getABean(id);
                 if (bean_ori == null) {
                     map.put("result", "NotFound");
                     return map;
@@ -217,11 +225,11 @@ public class LessonController extends BasicController<Lesson> {
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 Lesson bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
-                map.put("result", userService.rewriteALesson(id, bean_modified));
+                map.put("result", lessonService.changeABean(id, bean_modified));
                 return map;
             }
             case TeacherAuthority -> {
-                Lesson bean_ori = userService.getALesson(id);
+                Lesson bean_ori = lessonService.getABean(id);
                 if (bean_ori == null || !("" + bean_ori.getLessonid()).equals(id)) {
                     map.put("result", "NotFound");
                     return map;
@@ -230,7 +238,7 @@ public class LessonController extends BasicController<Lesson> {
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(teacherAuth));
                 Lesson bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
-                map.put("result", userService.rewriteALesson(id, bean_modified));
+                map.put("result", lessonService.changeABean(id, bean_modified));
                 return map;
             }
             default -> {
@@ -254,10 +262,15 @@ public class LessonController extends BasicController<Lesson> {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
-                map.put("result", userService.deleteLesson(keyword));
+                map.put("result", lessonService.deleteABean(keyword));
             }
             case TeacherAuthority -> {
-                map.put("result", userService.deleteLesson(keyword, name));
+                Lesson lesson = lessonService.getABean(keyword);
+                if (lesson != null && !Objects.equals(lesson.getTeacher(), name)){
+                    map.put("result", "NoAuth");
+                    return map;
+                }
+                map.put("result", lessonService.deleteABean(keyword));
             }
             default -> {
                 map.put("result", "NoAuth");

@@ -2,7 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.bean.BeanTools;
 import com.example.demo.bean.Major;
-import com.example.demo.service.UserService;
+import com.example.demo.service.serviceImpl.MajorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +14,11 @@ import static com.example.demo.bean.JWTUtils.*;
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class MajorController extends BasicController<Major> {
-    private final UserService userService;
+    private final MajorServiceImpl majorService;
 
     @Autowired
-    public MajorController(UserService userService) {
-        this.userService = userService;
+    public MajorController(MajorServiceImpl majorService) {
+        this.majorService = majorService;
     }
 
 
@@ -48,7 +48,7 @@ public class MajorController extends BasicController<Major> {
         switch (authority){
             case AdminAuthority, TeacherAuthority, StudentAuthority ->{
                 map.put("result", "Success");
-                map.put(getId() ,userService.getANewMajornumber());
+                map.put(getId() , majorService.getANewId());
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -71,7 +71,7 @@ public class MajorController extends BasicController<Major> {
         switch (authority){
             case AdminAuthority, TeacherAuthority, StudentAuthority ->{
                 map.put("result", "Success");
-                map.put(getIds() ,userService.getAllMajornumbers());
+                map.put(getIds() , majorService.getAllIds());
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -95,9 +95,9 @@ public class MajorController extends BasicController<Major> {
 
         switch (authority){
             case AdminAuthority, StudentAuthority, TeacherAuthority ->{
-                if (userService.getAMajor(id) != null){
+                if (majorService.getABean(id) != null){
                     map.put("result", "Success");
-                    map.put(getBean() ,userService.getAMajor(id));
+                    map.put(getBean() , majorService.getABean(id));
                 }
                 else{
                     map.put("result", "NotFound");
@@ -122,7 +122,7 @@ public class MajorController extends BasicController<Major> {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", userService.createAMajor(id, bean));
+                map.put("result", majorService.createABean(id, bean));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -144,12 +144,12 @@ public class MajorController extends BasicController<Major> {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                Major bean_ori = userService.getAMajor(id);
+                Major bean_ori = majorService.getABean(id);
                 if (bean_ori == null){
                     map.put("result", "NotFound");
                     return map;
                 }
-                map.put("result", userService.rewriteAMajor(id,bean));
+                map.put("result", majorService.changeABean(id,bean));
                 return map;
             }
             default -> {
@@ -172,7 +172,7 @@ public class MajorController extends BasicController<Major> {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                Major bean_ori = userService.getAMajor(id);
+                Major bean_ori = majorService.getABean(id);
                 if (bean_ori == null){
                     map.put("result", "NotFound");
                     return map;
@@ -182,7 +182,7 @@ public class MajorController extends BasicController<Major> {
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 Major bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
-                map.put("result", userService.rewriteAMajor(id,bean_modified));
+                map.put("result", majorService.changeABean(id,bean_modified));
                 return map;
             }
             default -> {
@@ -205,7 +205,7 @@ public class MajorController extends BasicController<Major> {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", userService.deleteMajor(keyword));
+                map.put("result", majorService.deleteABean(keyword));
             }
             default -> {
                 map.put("result", "NoAuth");

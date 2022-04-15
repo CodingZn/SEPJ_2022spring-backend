@@ -1,24 +1,25 @@
 package com.example.demo.service.serviceImpl;
 
 import com.example.demo.bean.Lesson;
-import com.example.demo.bean.UserBean;
+import com.example.demo.bean.User;
 import com.example.demo.mapper.LessonMapper;
 import com.example.demo.mapper.MajorMapper;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.mapper.straightMappers.ClassroomMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-
+@Service
 public class DependValueVerify {
 
     /* 类功能：对实体成员中的依赖属性进行验证，对不合法的数据做出拦截 */
-
 
     private final MajorMapper majorMapper;
     private final UserMapper userMapper;
     private final LessonMapper lessonMapper;
     private final ClassroomMapper classroomMapper;
 
-
+    @Autowired
     public DependValueVerify(MajorMapper majorMapper, UserMapper userMapper, LessonMapper lessonMapper, ClassroomMapper classroomMapper) {
         this.majorMapper = majorMapper;
         this.userMapper = userMapper;
@@ -62,9 +63,9 @@ public class DependValueVerify {
 
     /*************用户检查****************/
 
-    public boolean userDependCheck(UserBean userBean){
-        return userMajorVerify(userBean.getMajor()) &&
-                userSchoolVerify(userBean.getSchool());
+    public boolean userDependCheck(User user){
+        return userMajorVerify(user.getMajor()) &&
+                userSchoolVerify(user.getSchool());
     }
 
     private boolean userMajorVerify(String major){

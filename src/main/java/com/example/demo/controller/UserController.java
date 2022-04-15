@@ -2,8 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.bean.BeanTools;
 import com.example.demo.bean.JWTUtils;
-import com.example.demo.bean.UserBean;
-import com.example.demo.service.UserService;
+import com.example.demo.bean.User;
+import com.example.demo.service.UserSpecService;
+import com.example.demo.service.serviceImpl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,13 +16,15 @@ import static com.example.demo.bean.JWTUtils.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-public class UserController extends BasicController <UserBean>{
-    private final UserService userService;
+public class UserController extends BasicController <User>{
+    private final UserSpecService userSpecService;
+    private final UserServiceImpl userServiceImpl;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-        userService.createAdmin();
+    public UserController(UserSpecService userSpecService, UserServiceImpl userServiceImpl) {
+        this.userSpecService = userSpecService;
+        this.userServiceImpl = userServiceImpl;
+        userSpecService.createAdmin();
     }
 
 
@@ -37,7 +40,7 @@ public class UserController extends BasicController <UserBean>{
 
     @Override
     String getBean() {
-        return "userBean";
+        return "user";
     }
 
     /***************未使用的抽象方法******************/
@@ -54,9 +57,9 @@ public class UserController extends BasicController <UserBean>{
 
         switch (authority){
             case AdminAuthority, StudentAuthority, TeacherAuthority ->{
-                if (userService.getAUser(id) != null){
+                if (userServiceImpl.getABean(id) != null){
                     map.put("result", "Success");
-                    map.put(getBean() ,userService.getAUser(id));
+                    map.put(getBean() , userServiceImpl.getABean(id));
                 }
                 else{
                     map.put("result", "NotFound");
@@ -82,7 +85,7 @@ public class UserController extends BasicController <UserBean>{
         switch (authority){
             case AdminAuthority, TeacherAuthority, StudentAuthority ->{
                 map.put("result", "Success");
-                map.put(getIds() ,userService.getAllSchoolnumbers());
+                map.put(getIds() , userServiceImpl.getAllIds());
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -102,11 +105,11 @@ public class UserController extends BasicController <UserBean>{
     /*增--新增一个用户*/
 
     @Override
-    Map<String, Object> createABean_impl(String authority, String id, UserBean bean, String name) {
+    Map<String, Object> createABean_impl(String authority, String id, User bean, String name) {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", userService.createAUser(bean));
+                map.put("result", userServiceImpl.createABean(id, bean));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -119,29 +122,29 @@ public class UserController extends BasicController <UserBean>{
     @Override
     @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@PathVariable("schoolnumber") String schoolnumber,
-                                                           @RequestBody UserBean userBean,
+                                                           @RequestBody User user,
                                                            @RequestHeader(value = "Authentication") String authentication) {
-        return super.createABean(schoolnumber, userBean, authentication);
+        return super.createABean(schoolnumber, user, authentication);
     }
 
 
     /*改--重写一个用户,put*/
 
     @Override
-    Map<String, Object> rewriteABean_impl(String authority, String schoolnumber, UserBean userBean) {//权限待商榷
+    Map<String, Object> rewriteABean_impl(String authority, String schoolnumber, User user) {//权限待商榷
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                UserBean userBean_ori = userService.getAUser(schoolnumber);
-                if (userBean_ori == null){
+                User user_ori = userServiceImpl.getABean(schoolnumber);
+                if (user_ori == null){
                     map.put("result", "NotFound");
                     return map;
                 }
-                else if (!Objects.equals(schoolnumber, userBean.getSchoolnumber())){
+                else if (!Objects.equals(schoolnumber, user.getSchoolnumber())){
                     map.put("result", "FormError");
                     return map;
                 }
-                map.put("result", userService.rewriteUser(userBean));
+                map.put("result", userServiceImpl.changeABean(schoolnumber, user));
                 return map;
             }
             default -> {
@@ -156,18 +159,18 @@ public class UserController extends BasicController <UserBean>{
     @Override
     @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.PUT)
     public ResponseEntity<Map<String, Object>> rewriteABean(@PathVariable("schoolnumber") String schoolnumber,
-                                                            @RequestBody UserBean userBean,
+                                                            @RequestBody User user,
                                                             @RequestHeader(value="Authentication") String authentication) {
-        return super.rewriteABean(schoolnumber, userBean, authentication);
+        return super.rewriteABean(schoolnumber, user, authentication);
     }
 
     @Override
-    Map<String, Object> modifyABean_impl(String authority, String schoolnumber, UserBean userBean) {
+    Map<String, Object> modifyABean_impl(String authority, String schoolnumber, User user) {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                UserBean userBean_ori = userService.getAUser(schoolnumber);
-                if (userBean_ori == null){
+                User user_ori = userServiceImpl.getABean(schoolnumber);
+                if (user_ori == null){
                     map.put("result", "NotFound");
                     return map;
                 }
@@ -175,13 +178,13 @@ public class UserController extends BasicController <UserBean>{
                 String [] adminauth = {"email", "password", "phonenumber", "name", "school", "major", "status"};
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
-                UserBean userBean_modified = BeanTools.modify(userBean_ori, userBean, changeableList);
-                map.put("result", userService.rewriteUser(userBean_modified));
+                User user_modified = BeanTools.modify(user_ori, user, changeableList);
+                map.put("result", userServiceImpl.changeABean(schoolnumber, user_modified));
                 return map;
             }
             case TeacherAuthority, StudentAuthority->{
-                UserBean userBean_ori = userService.getAUser(schoolnumber);
-                if (userBean_ori == null || !userBean_ori.getSchoolnumber().equals(schoolnumber)){
+                User user_ori = userServiceImpl.getABean(schoolnumber);
+                if (user_ori == null || !user_ori.getSchoolnumber().equals(schoolnumber)){
                     map.put("result", "NotFound");
                     return map;
                 }
@@ -189,8 +192,8 @@ public class UserController extends BasicController <UserBean>{
                 String [] standard = {"email", "password", "phonenumber"};
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(standard));
-                UserBean userBean_modified = BeanTools.modify(userBean_ori, userBean, changeableList);
-                map.put("result", userService.rewriteUser(userBean_modified));
+                User user_modified = BeanTools.modify(user_ori, user, changeableList);
+                map.put("result", userServiceImpl.changeABean(schoolnumber, user_modified));
                 return map;
             }
             default -> {
@@ -203,9 +206,9 @@ public class UserController extends BasicController <UserBean>{
     @Override
     @RequestMapping(value="/user/{schoolnumber}", method = RequestMethod.PATCH)
     public ResponseEntity<Map<String, Object>> modifyABean(@PathVariable("schoolnumber") String schoolnumber,
-                                                           @RequestBody UserBean userBean,
+                                                           @RequestBody User user,
                                                            @RequestHeader(value="Authentication") String authentication) {
-        return super.modifyABean(schoolnumber, userBean, authentication);
+        return super.modifyABean(schoolnumber, user, authentication);
     }
 
 
@@ -214,7 +217,7 @@ public class UserController extends BasicController <UserBean>{
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", userService.deleteUser(keyword));
+                map.put("result", userServiceImpl.deleteABean(keyword));
 
             }
             default -> {
@@ -235,7 +238,7 @@ public class UserController extends BasicController <UserBean>{
 
     /*!!!查==登录操作*/
     @RequestMapping(value="/token", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> login(@RequestBody UserBean user) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
         String schoolnumber, password;
 
         schoolnumber = user.getSchoolnumber();
@@ -243,7 +246,7 @@ public class UserController extends BasicController <UserBean>{
 
         Map<String, Object> map = new HashMap<>();
 
-        UserBean userBean=userService.login(schoolnumber, password);
+        User userBean= userSpecService.login(schoolnumber, password);
 
         if(userBean != null && userBean.getStatus().equals("enabled")){//success
             String token;
