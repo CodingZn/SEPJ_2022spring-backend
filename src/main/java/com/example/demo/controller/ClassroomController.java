@@ -1,12 +1,8 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.example.demo.bean.JWTUtils;
-import com.example.demo.bean.Lesson;
 import com.example.demo.bean.trivialBeans.Classroom;
-import com.example.demo.bean.trivialBeans.Classtime;
 import com.example.demo.mapper.straightMappers.ClassroomMapper;
-import com.example.demo.mapper.straightMappers.ClasstimeMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +14,7 @@ import static com.example.demo.bean.JWTUtils.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-public class ClassroomController extends BasicController {
+public class ClassroomController extends BasicController<Classroom> {
 
     private final ClassroomMapper classroomMapper;
 
@@ -26,7 +22,54 @@ public class ClassroomController extends BasicController {
         this.classroomMapper = classroomMapper;
     }
 
-    /***********教室操作************/
+    /*查--获取单个教室*/
+    @Override
+    Map<String, Object> getABean_impl(String authority, String id, String name) {
+        Map<String, Object> map = new HashMap<>();
+        switch (authority) {
+            case AdminAuthority, TeacherAuthority -> {
+                Classroom classroom = classroomMapper.findByName(name);
+
+                map.put("classroom", classroom);
+                map.put("result", "Success");
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
+    }
+
+    @Override
+    @RequestMapping(value = "/classroom/{name}", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> getABean(@PathVariable("name") String name,
+                                                        @RequestHeader("Authentication") String authentication) {
+        return super.getABean(name, authentication);
+    }
+
+    /*查--获取所有教室名*/
+    @Override
+    Map<String, Object> getAllBeans_impl(String authority) {
+        Map<String, Object> map = new HashMap<>();
+        switch (authority) {
+            case AdminAuthority, TeacherAuthority -> {
+                List<Classroom> classroomList = classroomMapper.findAll();
+                List<String> classroomNameList = classroomList.stream().map(Classroom::getName).toList();
+
+                map.put("names", classroomNameList);
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
+    }
+
+    @Override
+    @RequestMapping(value = "/classrooms", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> getAllBeans(@RequestHeader("Authentication") String authentication) {
+        return super.getAllBeans(authentication);
+    }
 
     /*增--初始化教室*/
     Map<String, Object> createBeans_impl(String authority, JSONArray jsonArray) {
@@ -54,17 +97,16 @@ public class ClassroomController extends BasicController {
 
     /*改--修改单个教室状态*/
     @Override
-    Map<String, Object> modifyABean_impl(String authority, String name, Classroom classroom){
+    Map<String, Object> modifyABean_impl(String authority, String id, Classroom classroom) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
-                if(classroomMapper.findByName(name) != null){
-                    classroom.setName(name);
+                if (classroomMapper.findByName(id) != null) {
+                    classroom.setName(id);
                     classroomMapper.save(classroom);
-                    map.put("result","Success");
-                }
-                else
-                    map.put("result","NotFound");
+                    map.put("result", "Success");
+                } else
+                    map.put("result", "NotFound");
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -72,75 +114,23 @@ public class ClassroomController extends BasicController {
         }
         return map;
     }
+
     @Override
-    @RequestMapping(value="/classroom/{name}", method = RequestMethod.PUT)
-    public ResponseEntity<Map<String, Object>> modifyABean(@RequestHeader(value = "Authentication") String authentication,
-                                                                   @PathVariable("name") String name,
-                                                                   @RequestBody Classroom classroom) {//paramater to be changed
-        return super.modifyABean(name, classroom, authentication);
-    }
-    /*@RequestMapping(value = "/classroom/{name}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/classroom/{name}", method = RequestMethod.PUT)
     public ResponseEntity<Map<String, Object>> modifyABean(@PathVariable("name") String name,
                                                            @RequestBody Classroom classroom,
-                                                           @RequestHeader(value = "Authentication") String authentication) {
+                                                           @RequestHeader(value = "Authentication") String authentication) {//paramater to be changed
         return super.modifyABean(name, classroom, authentication);
-    }*/
-
-    /*查--获取所有教室名*/
-    @Override
-    Map<String, Object> getAllBeans_impl(String authority){
-        Map<String, Object> map = new HashMap<>();
-        switch (authority) {
-            case AdminAuthority, TeacherAuthority -> {
-                List<Classroom> classroomList = classroomMapper.findAll();
-                List<String> classroomNameList = classroomList.stream().map(Classroom::getName).toList();
-
-                map.put("names", classroomNameList);
-            }
-            default -> {
-                map.put("result", "NoAuth");
-            }
-        }
-        return map;
-    }
-    @Override
-    @RequestMapping(value = "/classrooms", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getAllBeans(@RequestHeader("Authentication") String authentication) {
-        return super.getAllBeans(authentication);
-    }
-
-    /*查--获取单个教室*/
-    @Override
-    Map<String, Object> getABean_impl(String authority, String id, String name) {
-        Map<String, Object> map = new HashMap<>();
-        switch (authority) {
-            case AdminAuthority, TeacherAuthority -> {
-                Classroom classroom = classroomMapper.findByName(name);
-
-                map.put("classroom", classroom);
-                map.put("result","Success");
-            }
-            default -> {
-                map.put("result", "NoAuth");
-            }
-        }
-        return map;
-    }
-    @Override
-    @RequestMapping(value = "/classroom/{name}", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getABean(@PathVariable("name") String name,
-                                                        @RequestHeader("Authentication") String authentication) {
-        return super.getABean(name, authentication);
     }
 
     /*删--删除所有教室*/
     @Override
-    Map<String, Object> delBeans_impl(String authority){
+    Map<String, Object> delBeans_impl(String authority) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
                 classroomMapper.deleteAll();
-                map.put("result","Success");
+                map.put("result", "Success");
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -148,9 +138,51 @@ public class ClassroomController extends BasicController {
         }
         return map;
     }
+
     @Override
     @RequestMapping(value = "/classrooms", method = RequestMethod.DELETE)
     public ResponseEntity<Map<String, Object>> delBeans(@RequestHeader("Authentication") String authentication) {
         return super.delBeans(authentication);
+    }
+
+    /***************未使用的抽象方法******************/
+    @Override
+    Map<String, Object> rewriteABean_impl(String authority, String id, Classroom bean) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> createABean_impl(String authority, String id, Classroom bean, String name) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> delBean_impl(String authority, String keyword, String name) {
+        return null;
+    }
+
+    @Override
+    String getId() {
+        return null;
+    }
+
+    @Override
+    String getIds() {
+        return null;
+    }
+
+    @Override
+    String getBean() {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> getANewId_impl(String authority) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> getAllIds_impl(String authority, String name) {
+        return null;
     }
 }
