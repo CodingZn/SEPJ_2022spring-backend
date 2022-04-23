@@ -46,6 +46,7 @@ public abstract class BasicController<T> {
 
     }
 
+    /*查--获取所有id*/
     abstract Map<String, Object> getAllIds_impl(String authority, String name);
 
     public ResponseEntity<Map<String, Object>> getAllIds(String authentication) {
@@ -65,6 +66,7 @@ public abstract class BasicController<T> {
 
     }
 
+    /*查--获取一个实体*/
     abstract Map<String, Object> getABean_impl(String authority, String id, String name);
 
     public ResponseEntity<Map<String, Object>> getABean(String keyword, String authentication) {
@@ -84,6 +86,7 @@ public abstract class BasicController<T> {
 
     }
 
+    /*查--获取全部实体*/
     abstract Map<String, Object> getAllBeans_impl(String authority);
 
     public ResponseEntity<Map<String, Object>> getAllBeans(String authentication) {
@@ -104,7 +107,6 @@ public abstract class BasicController<T> {
     }
 
     /*增--新增一个实体,post*/
-
     abstract Map<String, Object> createABean_impl(String authority, String id, T bean, String name);
 
     public ResponseEntity<Map<String, Object>> createABean(String id, T bean, String authentication) {
@@ -124,6 +126,7 @@ public abstract class BasicController<T> {
 
     }
 
+    /*增--新增多个实体*/
     abstract Map<String, Object> createBeans_impl(String authority, JSONArray jsonArray);
 
     public ResponseEntity<Map<String, Object>> createBeans(String authentication, JSONArray jsonArray) {
@@ -141,6 +144,7 @@ public abstract class BasicController<T> {
             return ControllerOperation.getErrorResponse(credit, map);
     }
 
+    /*改--重写一个实体*/
     abstract Map<String, Object> rewriteABean_impl(String authority, String id, T bean);
 
     public ResponseEntity<Map<String, Object>> rewriteABean(String keyword, T bean, String authentication) {
@@ -159,6 +163,7 @@ public abstract class BasicController<T> {
 
     }
 
+    /*改--重写一个实体*/
     abstract Map<String, Object> modifyABean_impl(String authority, String id, T bean);
 
     public ResponseEntity<Map<String, Object>> modifyABean(String keyword, T bean, String authentication) {
@@ -178,7 +183,7 @@ public abstract class BasicController<T> {
 
     }
 
-    /*删--删除实体*/
+    /*删--删除一个实体*/
 
     abstract Map<String, Object> delBean_impl(String authority, String keyword, String name);
 
@@ -198,7 +203,7 @@ public abstract class BasicController<T> {
             return ControllerOperation.getErrorResponse(credit, map);
 
     }
-
+    /*删--删除多个实体*/
     abstract Map<String, Object> delBeans_impl(String authority);
 
     public ResponseEntity<Map<String, Object>> delBeans(String authentication) {
