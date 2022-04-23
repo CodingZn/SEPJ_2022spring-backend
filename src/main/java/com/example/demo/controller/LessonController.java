@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.example.demo.bean.BeanTools;
 import com.example.demo.bean.Lesson;
 import com.example.demo.service.GeneralService;
@@ -39,6 +40,8 @@ public class LessonController extends BasicController<Lesson> {
         return "lesson";
     }
 
+
+    /*查--获取新id*/
     @Override
     Map<String, Object> getANewId_impl(String authority) {
         Map<String, Object> map = new HashMap<>();
@@ -60,7 +63,7 @@ public class LessonController extends BasicController<Lesson> {
         return super.getANewId(authentication);
     }
 
-
+    /*查--获取所有id*/
     @Override
     Map<String, Object> getAllIds_impl(String authority, String name) {
         Map<String, Object> map = new HashMap<>();
@@ -97,6 +100,7 @@ public class LessonController extends BasicController<Lesson> {
         return super.getAllIds(authentication);
     }
 
+    /*查--获取一个实体*/
     @Override
     Map<String, Object> getABean_impl(String authority, String id, String name) {
         Map<String, Object> map = new HashMap<>();
@@ -143,7 +147,6 @@ public class LessonController extends BasicController<Lesson> {
 
     }
 
-
     @Override
     @RequestMapping(value = "/lesson/{lessonid}", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getABean(@PathVariable("lessonid") String lessonid,
@@ -151,6 +154,7 @@ public class LessonController extends BasicController<Lesson> {
         return super.getABean(lessonid, authentication);
     }
 
+    /*增--新增一个实体,post*/
     @Override
     Map<String, Object> createABean_impl(String authority, String id, Lesson lesson, String name) {
 
@@ -179,6 +183,7 @@ public class LessonController extends BasicController<Lesson> {
         return super.createABean(lessonid, lesson, authentication);
     }
 
+    /*改--重写一个实体*/
     @Override
     Map<String, Object> rewriteABean_impl(String authority, String id, Lesson lesson) {
 
@@ -220,6 +225,7 @@ public class LessonController extends BasicController<Lesson> {
         return super.rewriteABean(lessonid, lesson, authentication);
     }
 
+    /*改--重写一个实体*/
     @Override
     Map<String, Object> modifyABean_impl(String authority, String id, Lesson bean) {
 
@@ -266,7 +272,7 @@ public class LessonController extends BasicController<Lesson> {
         return super.modifyABean(lessonid, lesson, authentication);
     }
 
-
+    /*删--删除一个实体*/
     @Override
     Map<String, Object> delBean_impl(String authority, String keyword, String name) {
         Map<String, Object> map = new HashMap<>();
@@ -297,4 +303,20 @@ public class LessonController extends BasicController<Lesson> {
     }
 
 
+    /***************未使用的抽象方法******************/
+
+    @Override
+    Map<String, Object> getAllBeans_impl(String authority) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> createBeans_impl(String authority, JSONArray jsonArray) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> delBeans_impl(String authority) {
+        return null;
+    }
 }

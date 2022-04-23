@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.example.demo.bean.BeanTools;
 import com.example.demo.bean.Major;
 import com.example.demo.service.GeneralService;
@@ -80,7 +81,6 @@ public class MajorController extends BasicController<Major> {
         return map;
     }
 
-
     @Override
     @RequestMapping(value="/majors", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllIds(@RequestHeader(value="Authentication") String authentication) {
@@ -88,7 +88,7 @@ public class MajorController extends BasicController<Major> {
         return super.getAllIds(authentication);
     }
 
-
+    /*查--获取一个实体*/
     @Override
     Map<String, Object> getABean_impl(String authority, String id, String name) {
         Map<String, Object> map = new HashMap<>();
@@ -117,6 +117,7 @@ public class MajorController extends BasicController<Major> {
         return super.getABean(majornumber_str, authentication);
     }
 
+    /*增--新增一个实体,post*/
     @Override
     Map<String, Object> createABean_impl(String authority, String id, Major bean, String name) {
         Map<String, Object> map = new HashMap<>();
@@ -139,6 +140,7 @@ public class MajorController extends BasicController<Major> {
 
     }
 
+    /*改--重写一个实体*/
     @Override
     Map<String, Object> rewriteABean_impl(String authority, String id, Major bean) {
         Map<String, Object> map = new HashMap<>();
@@ -167,6 +169,7 @@ public class MajorController extends BasicController<Major> {
         return super.rewriteABean(majornumber_str, major, authentication);
     }
 
+    /*改--重写一个实体*/
     @Override
     Map<String, Object> modifyABean_impl(String authority, String id, Major bean) {
         Map<String, Object> map = new HashMap<>();
@@ -200,6 +203,7 @@ public class MajorController extends BasicController<Major> {
         return super.modifyABean(majornumber_str, major, authentication);
     }
 
+    /*删--删除一个实体*/
     @Override
     Map<String, Object> delBean_impl(String authority, String keyword, String name) {
         Map<String, Object> map = new HashMap<>();
@@ -219,6 +223,22 @@ public class MajorController extends BasicController<Major> {
     public ResponseEntity<Map<String, Object>> delBean(@PathVariable("majornumber") String majornumber_str,
                                                        @RequestHeader(value="Authentication") String authentication) {
         return super.delBean(majornumber_str, authentication);
+    }
+
+    /***************未使用的抽象方法******************/
+    @Override
+    Map<String, Object> getAllBeans_impl(String authority) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> createBeans_impl(String authority, JSONArray jsonArray) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> delBeans_impl(String authority) {
+        return null;
     }
 
 
