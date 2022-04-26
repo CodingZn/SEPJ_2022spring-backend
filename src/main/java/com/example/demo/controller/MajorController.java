@@ -41,28 +41,6 @@ public class MajorController extends BasicController<Major> {
         return "major";
     }
 
-    /*查--获取新majornumber*/
-
-    @Override
-    Map<String, Object> getANewId_impl(String authority) {
-        Map<String, Object> map = new HashMap<>();
-        switch (authority){
-            case AdminAuthority, TeacherAuthority, StudentAuthority ->{
-                map.put("result", "Success");
-                map.put(getId() , majorService.getANewId());
-            }
-            default -> {
-                map.put("result", "NoAuth");
-            }
-        }
-        return map;
-    }
-
-    @Override
-    @RequestMapping(value="/majornumber", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getANewId(@RequestHeader(value="Authentication") String authentication) {
-        return super.getANewId(authentication);
-    }
 
     /*查--返回所有majornumber*/
 

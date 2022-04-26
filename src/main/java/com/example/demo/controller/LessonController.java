@@ -41,27 +41,6 @@ public class LessonController extends BasicController<Lesson> {
     }
 
 
-    /*查--获取新id*/
-    @Override
-    Map<String, Object> getANewId_impl(String authority) {
-        Map<String, Object> map = new HashMap<>();
-        switch (authority) {
-            case AdminAuthority, TeacherAuthority -> {
-                map.put("result", "Success");
-                map.put(getId(), lessonService.getANewId());
-            }
-            default -> {
-                map.put("result", "NoAuth");
-            }
-        }
-        return map;
-    }
-
-    @Override
-    @RequestMapping(value = "/lessonid", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getANewId(@RequestHeader("Authentication") String authentication) {
-        return super.getANewId(authentication);
-    }
 
     /*查--获取所有id*/
     @Override

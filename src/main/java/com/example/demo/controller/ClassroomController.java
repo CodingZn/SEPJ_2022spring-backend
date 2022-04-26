@@ -177,11 +177,6 @@ public class ClassroomController extends BasicController<Classroom> {
     }
 
     @Override
-    Map<String, Object> getANewId_impl(String authority) {
-        return null;
-    }
-
-    @Override
     Map<String, Object> getAllIds_impl(String authority, String name) {
         return null;
     }

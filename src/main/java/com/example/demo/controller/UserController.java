@@ -44,13 +44,6 @@ public class UserController extends BasicController<User> {
         return "user";
     }
 
-    /***************未使用的抽象方法******************/
-
-    @Override
-    Map<String, Object> getANewId_impl(String auth) {
-        return null;
-    }
-
     @Override
     Map<String, Object> getAllBeans_impl(String authority) {
         return null;
