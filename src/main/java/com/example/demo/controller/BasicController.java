@@ -27,7 +27,7 @@ public abstract class BasicController<T> {
 
     abstract String getBean();
 
-    /*查--获取新id*/
+    /*查--获取新id*//*
     abstract Map<String, Object> getANewId_impl(String authority);
 
     public ResponseEntity<Map<String, Object>> getANewId(@RequestHeader(value = "Authentication") String authentication) {
@@ -44,7 +44,7 @@ public abstract class BasicController<T> {
         } else
             return ControllerOperation.getErrorResponse(credit, map);
 
-    }
+    }*/
 
     /*查--获取所有id*/
     abstract Map<String, Object> getAllIds_impl(String authority, String name);
