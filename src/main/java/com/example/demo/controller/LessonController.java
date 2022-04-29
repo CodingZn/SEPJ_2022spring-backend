@@ -110,14 +110,31 @@ public class LessonController extends BasicController<Lesson> {
             }
             case TeacherAuthority -> {
                 Lesson lesson = lessonService.getABean(id);
-                if (lesson != null &&
+
+                List<User> teachers = new ArrayList<User>(lesson.getTeacher());
+
+                for(int i = 0;i < teachers.size();i++)
+                {
+                    if(lesson != null &&
+                            (teachers.get(i).getName().equals(name) || lesson.getStatus().toString().equals("censored")))
+                    {
+                        map.put("result", "Success");
+                        map.put(getBean(), lesson);
+                        break;
+                    }
+                    else if(i == teachers.size() - 1){
+                        map.put("result","NotFound");
+                    }
+                }
+
+                /*if (lesson != null &&
                         (Objects.equals(lesson.getStatus().toString(), "censored") || Objects.equals(lesson.getTeacher(), name))) {
                     map.put("result", "Success");
                     map.put(getBean(), lesson);
                 }
                 else {
                     map.put("result","NotFound");
-                }
+                }*/
                 return map;
             }
             case StudentAuthority -> {
@@ -273,10 +290,22 @@ public class LessonController extends BasicController<Lesson> {
             }
             case TeacherAuthority -> {
                 Lesson lesson = lessonService.getABean(keyword);
-                if (lesson != null && !Objects.equals(lesson.getTeacher(), name)){
+
+                List<User> teachers = new ArrayList<User>(lesson.getTeacher());
+
+                for(int i = 0;i < teachers.size();i++)
+                {
+                    if(lesson != null && teachers.get(i).getName().equals(name))
+                    {
+                        map.put("result", "NoAuth");
+                        return map;
+                    }
+                }
+
+                /*if (lesson != null && !Objects.equals(lesson.getTeacher(), name)){
                     map.put("result", "NoAuth");
                     return map;
-                }
+                }*/
                 map.put("result", lessonService.deleteABean(keyword));
             }
             default -> {
