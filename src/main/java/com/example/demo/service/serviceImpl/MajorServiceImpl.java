@@ -46,15 +46,11 @@ public class MajorServiceImpl implements GeneralService<Major> {
     }
 
     @Override
-    public Major getABean(String majornumber_str) {
+    public Major getABean(String majornumber) {
         Major major;
-        try {
-            int majornumber = Integer.parseInt(majornumber_str);
-            major = majorMapper.findByMajornumber(majornumber);
-            return major;
-        } catch (NumberFormatException e) {//传入majornumber格式不对
-            return null;
-        }
+        major = majorMapper.findByMajornumber(majornumber);
+        return major;
+
     }
 
     @Override
@@ -63,16 +59,13 @@ public class MajorServiceImpl implements GeneralService<Major> {
     }
 
     @Override
-    public String createABean(String majornumber_str, Major major) {//只创建，不修改
+    public String createABean(String majornumber, Major major) {//只创建，不修改
 
-        Major major1 = getABean(majornumber_str);
+        Major major1 = getABean(majornumber);
         if (major1 == null) {
-            try{
-                major.setMajornumber(Integer.parseInt(majornumber_str));
-            }
-            catch (Exception e){
-                return "FormError";
-            }
+
+            major.setMajornumber(majornumber);
+
             if (major.getName().equals("") || major.getSchool().equals(""))  return "FormError";
             majorMapper.save(major);
             return "Success";
@@ -86,8 +79,8 @@ public class MajorServiceImpl implements GeneralService<Major> {
     }
 
     @Override
-    public String changeABean(String majornumber_str, Major major) {//只根据主键修改，不创建
-        Major major1 = getABean(majornumber_str);
+    public String changeABean(String majornumber, Major major) {//只根据主键修改，不创建
+        Major major1 = getABean(majornumber);
         if (major1 == null) {
             return "NotFound";
         }
@@ -100,14 +93,9 @@ public class MajorServiceImpl implements GeneralService<Major> {
     }
 
     @Override
-    public String deleteABean(String majornumber_str) {
+    public String deleteABean(String majornumber) {
 
-        int majornumber;
-        try {
-            majornumber = Integer.parseInt(majornumber_str);
-        } catch (NumberFormatException e) {//传入majornumber格式不对
-            return "NotFound";
-        }
+
         Major major = majorMapper.findByMajornumber(majornumber);
         if (major != null) {
             majorMapper.delete(major);

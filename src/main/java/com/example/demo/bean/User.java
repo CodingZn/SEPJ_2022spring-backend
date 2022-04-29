@@ -1,72 +1,90 @@
 package com.example.demo.bean;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
+import com.example.demo.utils.UserFormVerify;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import java.util.List;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @Table(name = "user")
 public class User {
 
-    @Column(name = "usertype", length =15, nullable = false)
-    private String usertype;
-    //usertype变量只允许"admin","teacher","student"三种取值，其余均为非法
+    public enum Type {
+        admin, teacher, student
+    }
+    public enum Status{
+        enabled, disabled
+    }
+
+    @Column(name = "usertype", nullable = false, length = 10)
+    @Enumerated(EnumType.STRING)
+    private Type usertype;
 
     @Id
-    @Column(name = "schoolnumber", nullable = false)
+    @Column(name = "schoolnumber", nullable = false, length = 32)
     private String schoolnumber;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 64)
     private String name;
 
-    @Column(name = "identitynumber", nullable = false)
+    @Column(name = "identitynumber", nullable = false, length = 32)
     private String identitynumber;
 
-    @Column(name = "email")
+    @Column(name = "email", length = 64)
     private String email;
 
-    @Column(name = "phonenumber")
+    @Column(name = "phonenumber", length = 32)
     private String phonenumber;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, length = 32)
     private String password;
 
-    @Column(name = "school")
-    private String school;
+    @ManyToOne
+    @JoinColumn(name = "school")
+    private School school;
 
-    @Column(name = "major")
-    private String major;
+    @ManyToOne
+    @JoinColumn(name = "major")
+    private Major major;
 
-    @Column(name = "status")
-    private String status;
+    @Column(name = "grade", length = 5)
+    private String grade;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status",nullable = false, length = 10)
+    private Status status = Status.enabled;
+
+    @ManyToMany(mappedBy = "classmates")
+    private List<Lesson> lessonsTaking;
+
+    @ManyToMany
+    @JoinTable(name="students_lessons_taken")
+    private List<Lesson> lessonsTaken;
 
 
     public boolean verifyform(){
         UserFormVerify check = new UserFormVerify();
         boolean a, b, c, d;
-        a = check.utype_verify(usertype)
-                && check.name_verify(name)
+        a = check.name_verify(name)
                 && check.id_verify(identitynumber)
                 && check.password_verify(password)
-                && check.major_verify(major)
-                && check.school_verify(school)
-                && check.status_verify(status);
+                && check.major_verify(major.getName())
+                && check.school_verify(school.getName());
         b = email == null || check.email_verify(email);
         c = phonenumber == null || check.phone_verify(phonenumber);
 
-        switch (usertype){
-            case "student": d = check.stuid_verify(schoolnumber);break;
-            case "teacher": d = check.workid_verify(schoolnumber);break;
-            case "admin": d = true;break;
-            default: d = false;break;
-        }
+        d = switch (usertype) {
+            case student -> check.stuid_verify(schoolnumber);
+            case teacher -> check.workid_verify(schoolnumber);
+            case admin -> true;
+        };
 
         return a && b && c && d;
 

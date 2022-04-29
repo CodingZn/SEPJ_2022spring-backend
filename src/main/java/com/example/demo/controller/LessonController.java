@@ -1,7 +1,8 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.example.demo.bean.BeanTools;
+import com.example.demo.bean.User;
+import com.example.demo.utils.BeanTools;
 import com.example.demo.bean.Lesson;
 import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.example.demo.bean.JWTUtils.*;
+import static com.example.demo.utils.JWTUtils.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -54,7 +55,18 @@ public class LessonController extends BasicController<Lesson> {
             case TeacherAuthority ->{
                 map.put("result", "Success");
                 List<Lesson> lessonList = new ArrayList<Lesson>(lessonService.getAllBeans());
-                lessonList.removeIf(u -> !Objects.equals(u.getTeacher(), name) && !Objects.equals(u.getStatus(), "censored"));
+
+                for(int i = 0;i < lessonList.size();i++){
+                    List<User> teachers = new ArrayList<User>(lessonList.get(i).getTeacher());
+
+                    for(int j = 0;j < teachers.size();j++)
+                    {
+                        if(teachers.get(i).getName().equals(name) && lessonList.get(i).getStatus().toString().equals("censored"))
+                            lessonList.remove(i);
+                    }
+                }
+
+//              lessonList.removeIf(u -> !Objects.equals(u.getTeacher(), name) && !Objects.equals(u.getStatus().toString(), "censored"));
                 List<String> lessonidList = lessonList.stream().map(u -> String.valueOf(u.getLessonid())).collect(Collectors.toList());
 
                 map.put(getIds(), lessonidList);
@@ -62,7 +74,7 @@ public class LessonController extends BasicController<Lesson> {
             case StudentAuthority ->{
                 map.put("result", "Success");
                 List<Lesson> lessonList = new ArrayList<Lesson>(lessonService.getAllBeans());
-                lessonList.removeIf(u -> !Objects.equals(u.getStatus(), "censored"));
+                lessonList.removeIf(u -> !Objects.equals(u.getStatus().toString(), "censored"));
                 List<String> lessonidList = lessonList.stream().map(u -> String.valueOf(u.getLessonid())).collect(Collectors.toList());
                 map.put(getIds(), lessonidList);
             }
@@ -99,7 +111,7 @@ public class LessonController extends BasicController<Lesson> {
             case TeacherAuthority -> {
                 Lesson lesson = lessonService.getABean(id);
                 if (lesson != null &&
-                        (Objects.equals(lesson.getStatus(), "censored") || Objects.equals(lesson.getTeacher(), name))) {
+                        (Objects.equals(lesson.getStatus().toString(), "censored") || Objects.equals(lesson.getTeacher(), name))) {
                     map.put("result", "Success");
                     map.put(getBean(), lesson);
                 }
@@ -110,7 +122,7 @@ public class LessonController extends BasicController<Lesson> {
             }
             case StudentAuthority -> {
                 Lesson lesson = lessonService.getABean(id);
-                if (lesson != null && Objects.equals(lesson.getStatus(), "censored")){
+                if (lesson != null && Objects.equals(lesson.getStatus().toString(), "censored")){
                     map.put("result", "Success");
                     map.put(getBean(), lesson);
                     return map;
@@ -143,8 +155,8 @@ public class LessonController extends BasicController<Lesson> {
                 map.put("result", lessonService.createABean(id, lesson));
             }
             case TeacherAuthority -> {
-                lesson.setTeacher(name);
-                lesson.setStatus("pending");
+ /*               lesson.setTeacher(name);*/
+                lesson.setStatus(Lesson.Status.pending);
                 map.put("result", lessonService.createABean(id, lesson));
             }
             default -> {
@@ -183,7 +195,7 @@ public class LessonController extends BasicController<Lesson> {
                     map.put("result", "NotFound");
                     return map;
                 }
-                String[] changeable = { "lessonname", "period", "place"};
+                String[] changeable = { "lessonname", "arranges"};
                 List<String> changeableList = new ArrayList<>(Arrays.asList(changeable));
                 Lesson lesson_changed = BeanTools.modify(bean_ori, lesson, changeableList);
                 map.put("result", lessonService.changeABean(id, lesson_changed));
@@ -216,7 +228,7 @@ public class LessonController extends BasicController<Lesson> {
                     map.put("result", "NotFound");
                     return map;
                 }
-                String[] adminauth = {"lessonname", "school", "hour", "credit", "teacher", "introduction", "period", "place", "capacity", "status"};
+                String[] adminauth = {"lessonname", "school", "hour", "credit", "teacher", "introduction", "arranges", "semester" , "majorallowed" , "capacity", "status"};
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 Lesson bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
@@ -229,7 +241,7 @@ public class LessonController extends BasicController<Lesson> {
                     map.put("result", "NotFound");
                     return map;
                 }
-                String[] teacherAuth = {"lessonname", "period", "place"};
+                String[] teacherAuth = {"lessonname", "arranges"};
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(teacherAuth));
                 Lesson bean_modified = BeanTools.modify(bean_ori, bean, changeableList);

@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.example.demo.bean.JWTUtils.*;
+import static com.example.demo.utils.JWTUtils.*;
+import static com.example.demo.bean.trivialBeans.Ultimatectrl.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -21,8 +22,16 @@ public class UltimateController {
 
     public UltimateController(UltimatecontrolMapper ultimatecontrolMapper) {
         this.ultimatecontrolMapper = ultimatecontrolMapper;
-        Ultimatectrl ultimatectrl = new Ultimatectrl("classcontrol", "enabled");
-        ultimatecontrolMapper.save(ultimatectrl);
+        Ultimatectrl ultimatectrl;
+        if (!ultimatecontrolMapper.findById(CLASS_CONTROL).isPresent()){
+            ultimatectrl = new Ultimatectrl(CLASS_CONTROL, CLASS_CONTROL_DISABLED);
+            ultimatecontrolMapper.save(ultimatectrl);
+        }
+        if (!ultimatecontrolMapper.findById(SEMESTER_CONTROL).isPresent()){
+            ultimatectrl = new Ultimatectrl(SEMESTER_CONTROL, "2021A");
+            ultimatecontrolMapper.save(ultimatectrl);
+        }
+
     }
 
     /*获取一个开关状态*/

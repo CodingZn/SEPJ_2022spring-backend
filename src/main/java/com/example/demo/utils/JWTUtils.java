@@ -1,4 +1,4 @@
-package com.example.demo.bean;
+package com.example.demo.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;

@@ -1,4 +1,4 @@
-package com.example.demo.bean;
+package com.example.demo.utils;
 
 import java.util.Objects;
 
@@ -45,14 +45,6 @@ public class UserFormVerify {
     public boolean major_verify(String major){
         return major.matches("[\u4e00-\u9fa5A-Za-z]+");//中英文
     }
-    public boolean status_verify(String status){
-        return Objects.equals(status, "enabled")
-                || Objects.equals(status, "disabled");
-    }
-    public boolean utype_verify(String usertype){
-        return Objects.equals(usertype, "student")
-                ||Objects.equals(usertype, "teacher")
-                ||Objects.equals(usertype, "admin");
-    }
+
 
 }

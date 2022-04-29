@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.demo.bean.JWTUtils.*;
+import static com.example.demo.utils.JWTUtils.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -28,7 +28,8 @@ public class ClassroomController extends BasicController<Classroom> {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority, TeacherAuthority -> {
-                Classroom classroom = classroomMapper.findByName(name);
+                Classroom classroom = classroomMapper.findByName(id);
+                //下方法传入的name对应basicController方法里keyword,再对应本方法id位置
 
                 map.put("classroom", classroom);
                 map.put("result", "Success");
@@ -97,12 +98,12 @@ public class ClassroomController extends BasicController<Classroom> {
 
     /*改--修改单个教室状态*/
     @Override
-    Map<String, Object> modifyABean_impl(String authority, String id, Classroom classroom) {
+    Map<String, Object> modifyABean_impl(String authority, String name, Classroom classroom) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
-                if (classroomMapper.findByName(id) != null) {
-                    classroom.setName(id);
+                if (classroomMapper.findByName(name) != null) {
+                    classroom.setName(name);
                     classroomMapper.save(classroom);
                     map.put("result", "Success");
                 } else

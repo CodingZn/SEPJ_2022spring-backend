@@ -31,10 +31,7 @@ public class DependValueVerify {
     /*************课程检查****************/
 
     public boolean lessonDependCheck(Lesson lesson){
-        return lessonPeriodVerify(lesson.getPeriod())&&
-                lessonPlaceVerify(lesson.getPlace()) &&
-                lessonSchoolVerify(lesson.getSchool()) &&
-                lessonTeacherVerify(lesson.getTeacher());
+        return true;
     }
 
     private  boolean lessonSchoolVerify(String school){
@@ -64,8 +61,7 @@ public class DependValueVerify {
     /*************用户检查****************/
 
     public boolean userDependCheck(User user){
-        return userMajorVerify(user.getMajor()) &&
-                userSchoolVerify(user.getSchool());
+        return true;
     }
 
     private boolean userMajorVerify(String major){

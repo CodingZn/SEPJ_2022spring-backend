@@ -1,12 +1,11 @@
 package com.example.demo.bean;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -14,15 +13,14 @@ import javax.persistence.*;
 public class Major {
 
     @Id
-    @Column(name="majornumber", nullable = false)
-    private int majornumber;
+    @Column(name="majornumber", nullable = false, length = 5)
+    private String majornumber;
 
-    @Column(name="name")
+    @Column(name="name", nullable = false, length = 32)
     private String name;
 
-    @Column(name = "school")
-    private String school;
-
-
+    @ManyToOne
+    @JoinColumn(name= "major_schoolid")
+    private School school;
 
 }

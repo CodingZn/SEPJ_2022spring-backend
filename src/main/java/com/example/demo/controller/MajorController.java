@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.example.demo.bean.BeanTools;
+import com.example.demo.utils.BeanTools;
 import com.example.demo.bean.Major;
 import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-import static com.example.demo.bean.JWTUtils.*;
+import static com.example.demo.utils.JWTUtils.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -114,7 +114,7 @@ public class MajorController extends BasicController<Major> {
     public ResponseEntity<Map<String, Object>> createABean(@PathVariable("majornumber") String majornumber_str,
                                                            @RequestBody Major major,
                                                            @RequestHeader(value="Authentication") String authentication){
-       return super.createABean(majornumber_str, major, authentication);
+        return super.createABean(majornumber_str, major, authentication);
 
     }
 

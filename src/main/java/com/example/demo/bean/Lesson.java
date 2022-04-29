@@ -1,15 +1,12 @@
 package com.example.demo.bean;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.List;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -17,41 +14,55 @@ import javax.persistence.Table;
 public class Lesson {
 
     @Id
-    @Column(name = "lessonid", nullable = false)
-    private int lessonid;
+    @Column(name = "lessonid", nullable = false, length = 20)
+    private String lessonid;
 
-    @Column(name = "lessonname")
+    @Column(name = "lessoncode", nullable = false, length = 20)
+    private String lessoncode;
+
+    @Column(name = "lessonname", nullable = false, length = 32)
     private String lessonname;
 
-    @Column(name = "school")
-    private String school;
+    @ManyToOne
+    @JoinColumn(name = "school")
+    private School school;
 
-    @Column(name = "hour")
-    private String hour;
+    @Column(name = "hour", nullable = false)
+    private int hour;
 
-    @Column(name = "credit")
-    private String credit;
+    @Column(name = "credit", nullable = false)
+    private int credit;
 
-    @Column(name = "teacher")
-    private String teacher;
+    @ManyToMany
+    @JoinTable(name="lessons_teacher_taking")
+    private List<User> teacher;
 
     @Column(name = "introduction")
     private String introduction;
 
-    @Column(name = "period")
-    private String period;
-
-    @Column(name = "place")
-    private String place;
+    @OneToMany(mappedBy = "uplesson")
+    private List<Classarrange> arranges;
 
     @Column(name = "capacity")
-    private String capacity;
+    private int capacity;
+
+    @Column(name = "semester", length = 10)
+    private String semester;
+
+    @Column(name = "majorallowed")
+    private String majorallowed;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status = Status.censored;
 
+    public enum Status{
+        censored, pending
+    }
 
-
+    @ManyToMany()
+    @JoinTable(name="lessons_students_taking")
+    private List<User> classmates;
 
 
 }

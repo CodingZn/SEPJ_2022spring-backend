@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-import static com.example.demo.bean.JWTUtils.*;
-import static com.example.demo.controller.ControllerOperation.*;
+import static com.example.demo.utils.JWTUtils.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")

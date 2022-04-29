@@ -1,15 +1,14 @@
 package com.example.demo.bean.trivialBeans;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "classtime")
@@ -17,10 +16,10 @@ import javax.persistence.Table;
 public class Classtime {
 
     @Id
-    @Column
+    @Column(nullable = false, length = 5)
     private String name;
 
-    @Column
+    @Column(nullable = false, length = 20)
     private String time;
 
 }

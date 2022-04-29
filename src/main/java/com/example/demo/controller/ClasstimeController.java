@@ -10,8 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.demo.bean.JWTUtils.AdminAuthority;
-import static com.example.demo.bean.JWTUtils.TeacherAuthority;
+import static com.example.demo.utils.JWTUtils.*;
 
 public class ClasstimeController extends BasicController<Classtime> {
 

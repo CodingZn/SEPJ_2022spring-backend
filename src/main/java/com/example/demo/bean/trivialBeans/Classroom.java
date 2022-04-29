@@ -1,15 +1,11 @@
 package com.example.demo.bean.trivialBeans;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "classroom")
@@ -17,11 +13,19 @@ import javax.persistence.Table;
 public class Classroom {
 
     @Id
-    @Column
+    @Column(nullable = false, length = 20)
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 10)
+    private Status status = Status.enabled;
+
+    public enum Status{
+        enabled, disabled
+    }
+
     @Column
-    private String status;
+    private int capacity;
 
 
 }

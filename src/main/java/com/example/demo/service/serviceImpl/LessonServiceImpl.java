@@ -49,15 +49,11 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     }
 
     @Override
-    public Lesson getABean(String lessonid_str) {
+    public Lesson getABean(String lessonid) {
         Lesson lesson;
-        try {
-            int lessonid = Integer.parseInt(lessonid_str);
-            lesson = lessonMapper.findByLessonid(lessonid);
-            return lesson;
-        } catch (NumberFormatException e) {//传入lessonid格式不对
-            return null;
-        }
+        lesson = lessonMapper.findByLessonid(lessonid);
+        return lesson;
+
     }
 
 
@@ -67,10 +63,10 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     }
 
     @Override
-    public String createABean(String lessonid_str, Lesson lesson) {
-        Lesson lesson1 = getABean(lessonid_str);
+    public String createABean(String lessonid, Lesson lesson) {
+        Lesson lesson1 = getABean(lessonid);
         if (lesson1 == null){
-            lesson.setLessonid(Integer.parseInt(lessonid_str));
+            lesson.setLessonid(lessonid);
             if ((lesson.getLessonname().equals("") || lesson.getSchool().equals("")))
                 return "FormError";
             else if (!dependValueVerify.lessonDependCheck(lesson))
@@ -84,13 +80,13 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     }
 
     @Override
-    public String changeABean(String lessonid_str, Lesson lesson) {
+    public String changeABean(String lessonid, Lesson lesson) {
 
-        Lesson lesson1 = getABean(lessonid_str);
+        Lesson lesson1 = getABean(lessonid);
         if (lesson1 == null)
             return "NotFound";
         else{
-            lesson.setLessonid(Integer.parseInt(lessonid_str));
+            lesson.setLessonid(lessonid);
             if ((lesson.getLessonname().equals("") || lesson.getSchool().equals("")))
                 return "FormError";
             else if (!dependValueVerify.lessonDependCheck(lesson))
@@ -103,13 +99,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     }
 
     @Override
-    public String deleteABean(String lessonid_str) {
-        int lessonid;
-        try {
-            lessonid = Integer.parseInt(lessonid_str);
-        } catch (NumberFormatException e) {//传入 lessonid_str 格式不对
-            return "NotFound";
-        }
+    public String deleteABean(String lessonid) {
         Lesson lesson = lessonMapper.findByLessonid(lessonid);
         if (lesson != null) {
             lessonMapper.delete(lesson);

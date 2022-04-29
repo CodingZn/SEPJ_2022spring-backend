@@ -6,6 +6,8 @@ import com.example.demo.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
+
 @Service
 public class UserSpecServiceImpl implements UserSpecService {
     private final UserMapper userMapper;
@@ -16,16 +18,17 @@ public class UserSpecServiceImpl implements UserSpecService {
         this.userMapper = userMapper;
     }
 
-    @Override
+    @Override @Valid
     public void createAdmin() {//判断数据库中是否有管理员，若无，自动生成
-        User userbean = userMapper.findByUsertype("admin");
+        User userbean = userMapper.findByUsertype(User.Type.admin);
         if (userbean == null) {
             User admin = new User();
-            admin.setUsertype("admin");
+            admin.setUsertype(User.Type.admin);
             admin.setSchoolnumber("10001");
             admin.setName("admin");
             admin.setPassword("admin666");
             admin.setIdentitynumber("310101197001010011");
+            admin.setStatus(User.Status.enabled);
             userMapper.save(admin);
             System.out.println("Successfully created initial administrator!");
         }
@@ -35,6 +38,5 @@ public class UserSpecServiceImpl implements UserSpecService {
     public User login(String schoolnumber, String password) {
         return userMapper.findBySchoolnumberAndPassword(schoolnumber, password);
     }
-
 
 }

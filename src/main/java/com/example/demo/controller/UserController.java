@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.example.demo.bean.BeanTools;
-import com.example.demo.bean.JWTUtils;
+import com.example.demo.utils.BeanTools;
+import com.example.demo.utils.JWTUtils;
 import com.example.demo.bean.User;
 import com.example.demo.service.GeneralService;
 import com.example.demo.service.UserSpecService;
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
-import static com.example.demo.bean.JWTUtils.*;
+import static com.example.demo.utils.JWTUtils.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-public class UserController extends BasicController<User> {
+public class UserController extends BasicController <User>{
     private final UserSpecService userSpecService;
     private final GeneralService<User> userService;
 
@@ -180,7 +180,7 @@ public class UserController extends BasicController<User> {
                     return map;
                 }
                 map.put("result", "Success");
-                String[] adminauth = {"email", "password", "phonenumber", "name", "school", "major", "status"};
+                String[] adminauth = {"email", "password", "phonenumber", "name", "school", "major", "status","grade"};
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 User user_modified = BeanTools.modify(user_ori, user, changeableList);
@@ -254,12 +254,12 @@ public class UserController extends BasicController<User> {
 
         User userBean = userSpecService.login(schoolnumber, password);
 
-        if (userBean != null && userBean.getStatus().equals("enabled")) {//success
+        if (userBean != null && userBean.getStatus().toString().equals("enabled")) {//success
             String token;
             Map<String, String> payload = new HashMap<>();//自定义payload
             payload.put("schoolnumber", userBean.getSchoolnumber());//学号
             payload.put("name", userBean.getName());//姓名
-            payload.put("usertype", userBean.getUsertype());//用户角色
+            payload.put("usertype", userBean.getUsertype().toString());//用户角色
             if (Objects.equals(password, "fDu666666"))
                 payload.put("initialUser", "true");
 

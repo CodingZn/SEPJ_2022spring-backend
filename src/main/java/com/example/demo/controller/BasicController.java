@@ -1,19 +1,19 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.example.demo.bean.JWTUtils;
+import com.example.demo.utils.JWTUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
 import java.util.*;
 
-import static com.example.demo.bean.JWTUtils.*;
+import static com.example.demo.utils.JWTUtils.*;
 
 
 //Control层，与前端联系
 @RestController
 @CrossOrigin("http://localhost:3000")
-public abstract class BasicController<T> {
+public abstract class BasicController <T>{
 
     /* 根据 Controller 层共同属性控制出来的抽象类，
      * 包括了基本的增删改查操作，与前端抽象类保持一致
