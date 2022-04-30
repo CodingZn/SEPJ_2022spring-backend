@@ -1,4 +1,4 @@
-package com.example.demo.bean.trivialBeans;
+package com.example.demo.bean;
 
 import lombok.*;
 
@@ -10,17 +10,17 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Table(name = "classtime")
 @Entity
-public class Classtime {
+public class Classtime {//admin changeable
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true)
-    private int classtimeid;
+    private int classtimeid;//unchangeable
 
     @Column(nullable = false, length = 5)
-    private String name;
+    private String name;//admin changeable
 
     @Column(nullable = false, length = 20)
-    private String time;
+    private String time;//admin changeable
 
 }

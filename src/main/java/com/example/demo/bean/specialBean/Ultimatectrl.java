@@ -1,4 +1,4 @@
-package com.example.demo.bean.trivialBeans;
+package com.example.demo.bean.specialBean;
 import lombok.*;
 
 import javax.persistence.Column;

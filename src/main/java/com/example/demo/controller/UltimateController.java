@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.bean.trivialBeans.Ultimatectrl;
+import com.example.demo.bean.specialBean.Ultimatectrl;
 import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.example.demo.utils.JWTUtils.*;
-import static com.example.demo.bean.trivialBeans.Ultimatectrl.*;
+import static com.example.demo.bean.specialBean.Ultimatectrl.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")

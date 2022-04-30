@@ -1,7 +1,5 @@
 package com.example.demo.bean;
 
-import com.example.demo.bean.trivialBeans.Classroom;
-import com.example.demo.bean.trivialBeans.Classtime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

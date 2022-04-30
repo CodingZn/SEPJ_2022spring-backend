@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.example.demo.bean.User;
 import com.example.demo.utils.BeanTools;
 import com.example.demo.bean.Major;
 import com.example.demo.service.GeneralService;

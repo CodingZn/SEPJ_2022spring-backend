@@ -1,6 +1,6 @@
 package com.example.demo.mapper.straightMappers;
 
-import com.example.demo.bean.trivialBeans.Ultimatectrl;
+import com.example.demo.bean.specialBean.Ultimatectrl;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

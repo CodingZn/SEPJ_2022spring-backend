@@ -12,7 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "user")
-public class User {
+public class User {//admin|self changeable
 
     public enum Type {
         admin, teacher, student
@@ -23,48 +23,51 @@ public class User {
 
     @Column(name = "usertype", nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
-    private Type usertype;
+    private Type usertype;//unchangeable
 
     @Id
     @Column(name = "userid", nullable = false, length = 32)
-    private String userid;
+    private String userid;//unchangeable
 
     @Column(name = "name", nullable = false, length = 64)
-    private String name;
+    private String name;//admin changeable
 
     @Column(name = "identitynumber", nullable = false, length = 32)
-    private String identitynumber;
+    private String identitynumber;//unchangeable
 
     @Column(name = "email", length = 64)
-    private String email;
+    private String email;//changeable
 
     @Column(name = "phonenumber", length = 32)
-    private String phonenumber;
+    private String phonenumber;//changeable
 
     @Column(name = "password", nullable = false, length = 32)
-    private String password;
+    private String password;//self-only changeable
 
     @ManyToOne
     @JoinColumn(name = "school")
-    private School school;
+    private School school;//admin changeable
 
     @ManyToOne
     @JoinColumn(name = "major")
-    private Major major;
+    private Major major;//admin changeable
 
     @Column(name = "grade", length = 5)
-    private String grade;
+    private String grade;//admin changeable
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status",nullable = false, length = 10)
-    private Status status = Status.enabled;
+    private Status status = Status.enabled;//admin changeable
 
     @ManyToMany(mappedBy = "classmates")
-    private List<Lesson> lessonsTaking;
+    private List<Lesson> lessonsTaking;//changeable
 
     @ManyToMany
     @JoinTable(name="students_lessons_taken")
-    private List<Lesson> lessonsTaken;
+    private List<Lesson> lessonsTaken;//admin changeable
+
+    @OneToMany(mappedBy = "student")
+    private List<LessonRequest> lessonRequests;//self-only changeable
 
 
     public boolean verifyform(){

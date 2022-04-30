@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.example.demo.bean.trivialBeans.Classroom;
+import com.example.demo.bean.Classroom;
 import com.example.demo.mapper.straightMappers.ClassroomMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +23,26 @@ public class ClassroomController extends BasicController<Classroom> {
     public ClassroomController(ClassroomMapper classroomMapper) {
         this.classroomMapper = classroomMapper;
     }
+
+    /* 该类中所有的方法都来自继承 */
+
+
+    @Override
+    String getIds() {
+        return "classroomids";
+    }
+
+    @Override
+    String getBean() {
+        return "classroom";
+    }
+
+    @Override
+    String getBeans() {
+        return "classrooms";
+    }
+
+    /* 1-查--getAllIds--获取所有id*/
 
     /*查--获取单个教室*/
     @Override
@@ -50,6 +70,11 @@ public class ClassroomController extends BasicController<Classroom> {
         return super.getABean(name, authentication);
     }
 
+    @Override
+    Map<String, Object> getAllBeans_impl(String authority, String userid) {
+        return null;
+    }
+
     /*查--获取所有教室名*/
     @Override
     Map<String, Object> getAllBeans_impl(String authority) {
@@ -72,6 +97,26 @@ public class ClassroomController extends BasicController<Classroom> {
     @RequestMapping(value = "/classrooms", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllBeans(@RequestHeader("Authentication") String authentication) {
         return super.getAllBeans(authentication);
+    }
+
+    @Override
+    Map<String, Object> createABean_impl(String authority, String userid, String key, Classroom bean) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> createBeans_impl(String authority, String userid, List<Classroom> beans) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> rewriteABean_impl(String authority, String userid, String key, Classroom bean) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> modifyABean_impl(String authority, String userid, String key, Classroom bean) {
+        return null;
     }
 
     /*增--初始化教室*/
@@ -165,12 +210,7 @@ public class ClassroomController extends BasicController<Classroom> {
     }
 
     @Override
-    String getIds() {
-        return null;
-    }
-
-    @Override
-    String getBean() {
+    Map<String, Object> delBeans_impl(String authority, String userid, List<?> ids) {
         return null;
     }
 

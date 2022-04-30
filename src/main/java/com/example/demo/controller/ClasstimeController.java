@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.example.demo.bean.trivialBeans.Classtime;
+import com.example.demo.bean.Classtime;
 import com.example.demo.mapper.straightMappers.ClasstimeMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +45,11 @@ public class ClasstimeController extends BasicController<Classtime> {
         return super.getABean(name, authentication);
     }
 
+    @Override
+    Map<String, Object> getAllBeans_impl(String authority, String userid) {
+        return null;
+    }
+
     /*查--获取所有上课时间段*/
     @Override
     Map<String, Object> getAllBeans_impl(String authority) {
@@ -67,6 +72,26 @@ public class ClasstimeController extends BasicController<Classtime> {
     @RequestMapping(value = "/classtimes", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllBeans(@RequestHeader(value = "Authentication") String authentication) {
         return super.getAllBeans(authentication);
+    }
+
+    @Override
+    Map<String, Object> createABean_impl(String authority, String userid, String key, Classtime bean) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> createBeans_impl(String authority, String userid, List<Classtime> beans) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> rewriteABean_impl(String authority, String userid, String key, Classtime bean) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> modifyABean_impl(String authority, String userid, String key, Classtime bean) {
+        return null;
     }
 
     /*增--初始化上课时间*/
@@ -129,12 +154,22 @@ public class ClasstimeController extends BasicController<Classtime> {
     }
 
     @Override
+    Map<String, Object> delBeans_impl(String authority, String userid, List<?> ids) {
+        return null;
+    }
+
+    @Override
     String getIds() {
         return null;
     }
 
     @Override
     String getBean() {
+        return null;
+    }
+
+    @Override
+    String getBeans() {
         return null;
     }
 

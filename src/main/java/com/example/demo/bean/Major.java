@@ -10,17 +10,17 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name="major")
-public class Major {
+public class Major {//admin changeable
 
     @Id
     @Column(name="majorid", nullable = false, length = 5)
-    private String majorid;
+    private String majorid;//unchangeable
 
     @Column(name="name", nullable = false, length = 32)
-    private String name;
+    private String name;//changeable
 
     @ManyToOne
     @JoinColumn(name= "major_schoolid")
-    private School school;
+    private School school;//changeable
 
 }

@@ -1,6 +1,6 @@
 package com.example.demo.mapper.straightMappers;
 
-import com.example.demo.bean.trivialBeans.Classtime;
+import com.example.demo.bean.Classtime;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

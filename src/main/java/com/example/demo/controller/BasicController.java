@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.example.demo.bean.trivialBeans.Classroom;
 import com.example.demo.utils.JWTUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;

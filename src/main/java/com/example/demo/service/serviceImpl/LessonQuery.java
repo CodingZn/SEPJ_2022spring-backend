@@ -1,8 +1,6 @@
 package com.example.demo.service.serviceImpl;
 
 import com.example.demo.bean.Lesson;
-import com.example.demo.bean.trivialBeans.Classroom;
-import com.example.demo.bean.trivialBeans.Classtime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

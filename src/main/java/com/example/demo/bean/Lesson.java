@@ -11,50 +11,50 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "lesson")
-public class Lesson {
+public class Lesson {//changeable
 
     @Id
     @Column(name = "lessonid", nullable = false, length = 20)
-    private String lessonid;
+    private String lessonid;//unchangeable
 
     @Column(name = "lessoncode", nullable = false, length = 20)
-    private String lessoncode;
+    private String lessoncode;//unchangeable
 
     @Column(name = "lessonname", nullable = false, length = 32)
-    private String lessonname;
+    private String lessonname;//admin|teacher_self changeable
 
     @ManyToOne
     @JoinColumn(name = "school")
-    private School school;
+    private School school;//admin changeable
 
     @Column(name = "hour", nullable = false)
-    private int hour;
+    private int hour;//admin changeable
 
     @Column(name = "credit", nullable = false)
-    private int credit;
+    private int credit;//admin changeable
 
     @ManyToMany
     @JoinTable(name="lessons_teacher_taking")
-    private List<User> teacher;
+    private List<User> teacher;//admin changeable
 
     @Column(name = "introduction")
-    private String introduction;
+    private String introduction;//admin|teacher_self changeable
 
     @OneToMany(mappedBy = "uplesson")
-    private List<Classarrange> arranges;
+    private List<Classarrange> arranges;//admin changeable
 
     @Column(name = "capacity")
-    private int capacity;
+    private int capacity;//admin changeable
 
     @Column(name = "semester", length = 10)
-    private String semester;
+    private String semester;//unchangeable
 
     @Column(name = "majorallowed")
-    private String majorallowed;
+    private String majorallowed;//admin changeable
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private Status status = Status.censored;
+    private Status status = Status.censored;//admin changeable
 
     public enum Status{
         censored, pending
@@ -62,7 +62,7 @@ public class Lesson {
 
     @ManyToMany()
     @JoinTable(name="lessons_students_taking")
-    private List<User> classmates;
+    private List<User> classmates;//admin|student_self changeable
 
 
 }
