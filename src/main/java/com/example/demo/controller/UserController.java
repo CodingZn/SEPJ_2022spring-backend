@@ -175,7 +175,7 @@ public class UserController extends BasicController <User>{
 
     /* 6-改--rewriteABean--重写一个实体,put*/
     @Override
-    Map<String, Object> rewriteABean_impl(String authority, String userid, String key, User user) {
+    Map<String, Object> rewriteABean_impl(String authority, String userid, String key, User bean) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
@@ -183,11 +183,8 @@ public class UserController extends BasicController <User>{
                 if (user_ori == null) {
                     map.put("result", "NotFound");
                     return map;
-                } else if (!Objects.equals(key, user.getUserid())) {
-                    map.put("result", "FormError");
-                    return map;
                 }
-                map.put("result", userService.changeABean(key, user));
+                map.put("result", userService.changeABean(key, bean));
                 return map;
             }
             default -> {
@@ -261,7 +258,6 @@ public class UserController extends BasicController <User>{
         switch (authority) {
             case AdminAuthority -> {
                 map.put("result", userService.deleteABean(key));
-
             }
             default -> {
                 map.put("result", "NoAuth");

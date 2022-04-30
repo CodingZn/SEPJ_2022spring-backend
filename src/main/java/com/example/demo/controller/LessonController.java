@@ -36,40 +36,33 @@ public class LessonController extends BasicController<Lesson> {
         return "lesson";
     }
 
-
-
-    /*查--获取所有id*/
     @Override
-    Map<String, Object> getAllIds_impl(String authority, String name) {
+    String getBeans() {
+        return "lessons";
+    }
+
+
+    /* 1-查--getAllIds--获取所有id*/
+    @Override
+    Map<String, Object> getAllIds_impl(String authority, String userid) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
                 map.put("result", "Success");
                 map.put(getIds(), lessonService.getAllIds());
             }
-            case TeacherAuthority ->{
+            case TeacherAuthority ->{//只能查找到自己参与开的 和 审核通过的课程
                 map.put("result", "Success");
-                List<Lesson> lessonList = new ArrayList<Lesson>(lessonService.getAllBeans());
-
-                for(int i = 0;i < lessonList.size();i++){
-                    List<User> teachers = new ArrayList<User>(lessonList.get(i).getTeacher());
-
-                    for(int j = 0;j < teachers.size();j++)
-                    {
-                        if(teachers.get(i).getName().equals(name) && lessonList.get(i).getStatus().toString().equals("censored"))
-                            lessonList.remove(i);
-                    }
-                }
-
-//              lessonList.removeIf(u -> !Objects.equals(u.getTeacher(), name) && !Objects.equals(u.getStatus().toString(), "censored"));
+                List<Lesson> lessonList = new ArrayList<>(lessonService.getAllBeans());
+                lessonList.removeIf(u -> u.getTeacher().stream().map(User::getUserid).toList().contains(userid)
+                        && !Objects.equals(u.getStatus(), Lesson.Status.censored));
                 List<String> lessonidList = lessonList.stream().map(u -> String.valueOf(u.getLessonid())).collect(Collectors.toList());
-
                 map.put(getIds(), lessonidList);
             }
-            case StudentAuthority ->{
+            case StudentAuthority ->{//只能查找到审核通过的课程
                 map.put("result", "Success");
-                List<Lesson> lessonList = new ArrayList<Lesson>(lessonService.getAllBeans());
-                lessonList.removeIf(u -> !Objects.equals(u.getStatus().toString(), "censored"));
+                List<Lesson> lessonList = new ArrayList<>(lessonService.getAllBeans());
+                lessonList.removeIf(u -> !Objects.equals(u.getStatus(), Lesson.Status.censored));
                 List<String> lessonidList = lessonList.stream().map(u -> String.valueOf(u.getLessonid())).collect(Collectors.toList());
                 map.put(getIds(), lessonidList);
             }
@@ -86,14 +79,14 @@ public class LessonController extends BasicController<Lesson> {
         return super.getAllIds(authentication);
     }
 
-    /*查--获取一个实体*/
+    /* 2-查--getABean--获取一个实体*/
     @Override
-    Map<String, Object> getABean_impl(String authority, String id, String searchid) {
+    Map<String, Object> getABean_impl(String authority, String userid, String key) {
         Map<String, Object> map = new HashMap<>();
 
         switch (authority) {
             case AdminAuthority -> {
-                Lesson lesson = lessonService.getABean(id);
+                Lesson lesson = lessonService.getABean(key);
                 if (lesson != null){
                     map.put("result", "Success");
                     map.put(getBean(), lesson);
@@ -103,38 +96,23 @@ public class LessonController extends BasicController<Lesson> {
                 }
                 return map;
             }
-            case TeacherAuthority -> {
-                Lesson lesson = lessonService.getABean(id);
+            case TeacherAuthority -> {//只能查找到自己参与开的 和 审核通过的课程
+                Lesson lesson = lessonService.getABean(key);
 
-                List<User> teachers = new ArrayList<User>(lesson.getTeacher());
-
-                for(int i = 0;i < teachers.size();i++)
-                {
-                    if(lesson != null &&
-                            (teachers.get(i).getName().equals(searchid) || lesson.getStatus().toString().equals("censored")))
-                    {
-                        map.put("result", "Success");
-                        map.put(getBean(), lesson);
-                        break;
-                    }
-                    else if(i == teachers.size() - 1){
-                        map.put("result","NotFound");
-                    }
-                }
-
-                /*if (lesson != null &&
-                        (Objects.equals(lesson.getStatus().toString(), "censored") || Objects.equals(lesson.getTeacher(), name))) {
+                if (lesson != null &&
+                        (Objects.equals(lesson.getStatus(), Lesson.Status.censored)
+                                || (lesson.getTeacher().stream().map(User::getUserid).toList().contains(userid)))) {
                     map.put("result", "Success");
                     map.put(getBean(), lesson);
                 }
                 else {
                     map.put("result","NotFound");
-                }*/
+                }
                 return map;
             }
-            case StudentAuthority -> {
-                Lesson lesson = lessonService.getABean(id);
-                if (lesson != null && Objects.equals(lesson.getStatus().toString(), "censored")){
+            case StudentAuthority -> {//只能查找到审核通过的课程
+                Lesson lesson = lessonService.getABean(key);
+                if (lesson != null && Objects.equals(lesson.getStatus(), Lesson.Status.censored)){
                     map.put("result", "Success");
                     map.put(getBean(), lesson);
                     return map;
@@ -152,24 +130,60 @@ public class LessonController extends BasicController<Lesson> {
 
     @Override
     @RequestMapping(value = "/lesson/{lessonid}", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getABean(@PathVariable("lessonid") String lessonid,
-                                                        @RequestHeader("Authentication") String authentication) {
-        return super.getABean(lessonid, authentication);
+    public ResponseEntity<Map<String, Object>> getABean(@RequestHeader(value = "Authentication") String authentication,
+                                                        @PathVariable("lessonid") String key) {
+        return super.getABean(authentication, key);
     }
 
-    /*增--新增一个实体,post*/
+    /* 3-查--getAllBeans--获取全部实体*/
     @Override
-    Map<String, Object> createABean_impl(String authority, String id, Lesson lesson, String name) {
+    Map<String, Object> getAllBeans_impl(String authority, String userid) {
+        Map<String, Object> map = new HashMap<>();
+
+        switch (authority) {
+            case AdminAuthority -> {
+                map.put(getBeans(), lessonService.getAllBeans());
+                map.put("result", "Success");
+            }
+            case TeacherAuthority ->{//只能查找到自己参与开的 和 审核通过的课程
+                map.put("result", "Success");
+                List<Lesson> lessonList = new ArrayList<>(lessonService.getAllBeans());
+                lessonList.removeIf(u -> !u.getTeacher().stream().map(User::getUserid).toList().contains(userid)
+                        && !Objects.equals(u.getStatus(), Lesson.Status.censored));
+                map.put(getBeans(), lessonList);
+            }
+            case StudentAuthority ->{//只能查找到审核通过的课程
+                map.put("result", "Success");
+                List<Lesson> lessonList = new ArrayList<>(lessonService.getAllBeans());
+                lessonList.removeIf(u -> !Objects.equals(u.getStatus(), Lesson.Status.censored));
+                map.put(getBeans(), lessonList);
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
+    }
+
+    @Override
+    @RequestMapping(value = "/lessons", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> getAllBeans(@RequestHeader(value = "Authentication") String authentication) {
+        return super.getAllBeans(authentication);
+    }
+
+    /* 4-增--createABean--新增一个实体*/
+    @Override
+    Map<String, Object> createABean_impl(String authority, String userid, String key, Lesson lesson) {
 
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
-                map.put("result", lessonService.createABean(id, lesson));
+                map.put("result", lessonService.createABean(userid, lesson));
             }
             case TeacherAuthority -> {
- /*               lesson.setTeacher(name);*/
+                /*!!!               lesson.setTeacher(name);*/
                 lesson.setStatus(Lesson.Status.pending);
-                map.put("result", lessonService.createABean(id, lesson));
+                map.put("result", lessonService.createABean(userid, lesson));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -180,37 +194,59 @@ public class LessonController extends BasicController<Lesson> {
 
     @Override
     @RequestMapping(value = "/lesson/{lessonid}", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> createABean(@PathVariable("lessonid") String lessonid,
-                                                           @RequestBody Lesson lesson,
-                                                           @RequestHeader(value = "Authentication") String authentication) {
-        return super.createABean(lessonid, lesson, authentication);
+    public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
+                                                           @PathVariable("lessonid") String key,
+                                                           @RequestBody Lesson lesson) {
+        return super.createABean(authentication, key, lesson);
     }
 
-    /*改--重写一个实体*/
+    /* 5-增--createBeans--新增多个实体*/
     @Override
-    Map<String, Object> rewriteABean_impl(String authority, String id, Lesson lesson) {
-
+    Map<String, Object> createBeans_impl(String authority, String userid, List<Lesson> beans) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
-                Lesson lesson_ori = lessonService.getABean(id);
+                map.put("result", lessonService.createBeans(beans));
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
+    }
+
+    @Override
+    @RequestMapping(value = "/lessons", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createBeans(@RequestHeader(value = "Authentication") String authentication,
+                                                           @RequestBody JSONArray jsonArray, Class<Lesson> clazz) {
+        return super.createBeans(authentication, jsonArray, clazz);
+    }
+
+    /* 6-改--rewriteABean--重写一个实体,put*/
+    @Override
+    Map<String, Object> rewriteABean_impl(String authority, String userid, String key, Lesson bean) {
+        Map<String, Object> map = new HashMap<>();
+        switch (authority) {
+            case AdminAuthority -> {
+                Lesson lesson_ori = lessonService.getABean(key);
                 if (lesson_ori == null) {
                     map.put("result", "NotFound");
                     return map;
                 }
-                map.put("result", lessonService.changeABean(id, lesson));
+                map.put("result", lessonService.changeABean(key, bean));
                 return map;
             }
             case TeacherAuthority -> {
-                Lesson bean_ori = lessonService.getABean(id);
-                if (bean_ori == null) {
+                Lesson lesson_ori = lessonService.getABean(key);
+                if (lesson_ori == null) {
                     map.put("result", "NotFound");
                     return map;
                 }
-                String[] changeable = { "lessonname", "arranges"};
-                List<String> changeableList = new ArrayList<>(Arrays.asList(changeable));
-                Lesson lesson_changed = BeanTools.modify(bean_ori, lesson, changeableList);
-                map.put("result", lessonService.changeABean(id, lesson_changed));
+                if (!lesson_ori.getTeacher().stream().map(User::getUserid).toList().contains(userid)){
+                    map.put("result", "NoAuth");
+                    return map;
+                }
+                map.put("result", lessonService.changeABean(key, bean));
                 return map;
             }
             default -> {
@@ -222,20 +258,20 @@ public class LessonController extends BasicController<Lesson> {
 
     @Override
     @RequestMapping(value = "/lesson/{lessonid}", method = RequestMethod.PUT)
-    public ResponseEntity<Map<String, Object>> rewriteABean(@PathVariable("lessonid") String lessonid,
-                                                            @RequestBody Lesson lesson,
-                                                            @RequestHeader("Authentication") String authentication) {
-        return super.rewriteABean(lessonid, lesson, authentication);
+    public ResponseEntity<Map<String, Object>> rewriteABean(@RequestHeader(value = "Authentication") String authentication,
+                                                            @PathVariable("lessonid") String key,
+                                                            @RequestBody Lesson lesson) {
+        return super.rewriteABean(authentication, key, lesson);
     }
 
-    /*改--重写一个实体*/
+    /* 7-改--modifyABean--修改一个实体,patch*/
     @Override
-    Map<String, Object> modifyABean_impl(String authority, String id, Lesson bean) {
+    Map<String, Object> modifyABean_impl(String authority, String userid, String key, Lesson bean) {
 
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
-                Lesson bean_ori = lessonService.getABean(id);
+                Lesson bean_ori = lessonService.getABean(key);
                 if (bean_ori == null) {
                     map.put("result", "NotFound");
                     return map;
@@ -244,20 +280,24 @@ public class LessonController extends BasicController<Lesson> {
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 Lesson bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
-                map.put("result", lessonService.changeABean(id, bean_modified));
+                map.put("result", lessonService.changeABean(key, bean_modified));
                 return map;
             }
             case TeacherAuthority -> {
-                Lesson bean_ori = lessonService.getABean(id);
-                if (bean_ori == null || !("" + bean_ori.getLessonid()).equals(id)) {
+                Lesson lesson_ori = lessonService.getABean(key);
+                if (lesson_ori == null) {
                     map.put("result", "NotFound");
+                    return map;
+                }
+                if (!lesson_ori.getTeacher().stream().map(User::getUserid).toList().contains(userid)){
+                    map.put("result", "NoAuth");
                     return map;
                 }
                 String[] teacherAuth = {"lessonname", "arranges"};
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(teacherAuth));
-                Lesson bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
-                map.put("result", lessonService.changeABean(id, bean_modified));
+                Lesson bean_modified = BeanTools.modify(lesson_ori, bean, changeableList);
+                map.put("result", lessonService.changeABean(key, bean_modified));
                 return map;
             }
             default -> {
@@ -269,39 +309,31 @@ public class LessonController extends BasicController<Lesson> {
 
     @Override
     @RequestMapping(value = "/lesson/{lessonid}", method = RequestMethod.PATCH)
-    public ResponseEntity<Map<String, Object>> modifyABean(@PathVariable("lessonid") String lessonid,
-                                                           @RequestBody Lesson lesson,
-                                                           @RequestHeader(value = "Authentication") String authentication) {
-        return super.modifyABean(lessonid, lesson, authentication);
+    public ResponseEntity<Map<String, Object>> modifyABean(@RequestHeader(value = "Authentication") String authentication,
+                                                           @PathVariable("lessonid") String key,
+                                                           @RequestBody Lesson lesson) {
+        return super.modifyABean(authentication, key, lesson);
     }
 
-    /*删--删除一个实体*/
+    /* 8-删--deleteABean--删除一个实体*/
     @Override
-    Map<String, Object> delBean_impl(String authority, String keyword, String name) {
+    Map<String, Object> delBean_impl(String authority, String userid, String key) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
-                map.put("result", lessonService.deleteABean(keyword));
+                map.put("result", lessonService.deleteABean(key));
             }
             case TeacherAuthority -> {
-                Lesson lesson = lessonService.getABean(keyword);
-
-                List<User> teachers = new ArrayList<User>(lesson.getTeacher());
-
-                for(int i = 0;i < teachers.size();i++)
-                {
-                    if(lesson != null && teachers.get(i).getName().equals(name))
-                    {
-                        map.put("result", "NoAuth");
-                        return map;
-                    }
+                Lesson lesson = lessonService.getABean(key);
+                if (lesson == null) {
+                    map.put("result", "NotFound");
+                    return map;
                 }
-
-                /*if (lesson != null && !Objects.equals(lesson.getTeacher(), name)){
+                if (!lesson.getTeacher().stream().map(User::getUserid).toList().contains(userid)){
                     map.put("result", "NoAuth");
                     return map;
-                }*/
-                map.put("result", lessonService.deleteABean(keyword));
+                }
+                map.put("result", lessonService.deleteABean(key));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -312,26 +344,33 @@ public class LessonController extends BasicController<Lesson> {
 
     @Override
     @RequestMapping(value = "/lesson/{lessonid}", method = RequestMethod.DELETE)
-    public ResponseEntity<Map<String, Object>> delBean(@PathVariable("lessonid") String lessonid,
-                                                       @RequestHeader("Authentication") String authentication) {
-        return super.delBean(lessonid, authentication);
+    public ResponseEntity<Map<String, Object>> delBean(@RequestHeader("Authentication") String authentication,
+                                                       @PathVariable("lessonid") String lessonid) {
+        return super.delBean(authentication, lessonid);
     }
 
-
-    /***************未使用的抽象方法******************/
-
+    /* 9-删--deleteBeans--删除多个实体*/
     @Override
-    Map<String, Object> getAllBeans_impl(String authority) {
-        return null;
+    Map<String, Object> delBeans_impl(String authority, String userid, List<?> ids) {
+        Map<String, Object> map = new HashMap<>();
+        switch (authority) {
+            case AdminAuthority -> {
+                map.put("result", lessonService.deleteBeans(ids));
+            }
+            case TeacherAuthority -> {//先剔除掉无权限的课程再操作
+                List<String> lessonidList = (List<String>) ids;
+                List<Lesson> lessonList = lessonidList.stream().map(lessonService::getABean).toList();
+                lessonList.removeIf(Objects::isNull);
+                lessonList.removeIf( u -> !u.getTeacher().stream().map(User::getUserid).toList().contains(userid)
+                        && !Objects.equals(u.getStatus(), Lesson.Status.censored));
+                lessonidList = lessonList.stream().map(Lesson::getLessonid).toList();
+                lessonService.deleteBeans(lessonidList);
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
     }
 
-    @Override
-    Map<String, Object> createBeans_impl(String authority, JSONArray jsonArray) {
-        return null;
-    }
-
-    @Override
-    Map<String, Object> delBeans_impl(String authority) {
-        return null;
-    }
 }
