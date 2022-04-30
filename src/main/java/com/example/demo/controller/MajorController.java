@@ -89,9 +89,9 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     @RequestMapping(value="/major/{majorid}", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getABean(@PathVariable("majorid") String majornumber_str,
-                                                        @RequestHeader(value="Authentication") String authentication) {
-        return super.getABean(majornumber_str, authentication);
+    public ResponseEntity<Map<String, Object>> getABean(@RequestHeader(value="Authentication") String authentication,
+                                                        @PathVariable("majorid") String key) {
+        return super.getABean(authentication, key);
     }
 
     /* 3-查--getAllBeans--获取全部实体*/
@@ -113,7 +113,7 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     @RequestMapping(value = "/majors", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getAllBeans(String authentication) {
+    public ResponseEntity<Map<String, Object>> getAllBeans(@RequestHeader(value="Authentication") String authentication) {
         return super.getAllBeans(authentication);
     }
 
@@ -132,6 +132,7 @@ public class MajorController extends BasicController<Major> {
         return map;
     }
 
+    @Override
     @RequestMapping(value="/major/{majorid}", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
                                                            @PathVariable("majorid") String key,
@@ -169,12 +170,7 @@ public class MajorController extends BasicController<Major> {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                Major bean_ori = majorService.getABean(key);
-                if (bean_ori == null){
-                    map.put("result", "NotFound");
-                    return map;
-                }
-                map.put("result", majorService.changeABean(key,major));
+                map.put("result", majorService.changeABean(key, major));
                 return map;
             }
             default -> {
@@ -243,9 +239,9 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     @RequestMapping(value="/major/{majorid}", method = RequestMethod.DELETE)
-    public ResponseEntity<Map<String, Object>> delBean(@PathVariable("majorid") String majornumber_str,
-                                                       @RequestHeader(value="Authentication") String authentication) {
-        return super.delBean(majornumber_str, authentication);
+    public ResponseEntity<Map<String, Object>> delBean(@RequestHeader(value="Authentication") String authentication,
+                                                       @PathVariable("majorid") String key) {
+        return super.delBean(authentication, key);
     }
 
     /* 9-删--deleteBeans--删除多个实体*/

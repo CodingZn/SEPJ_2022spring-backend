@@ -179,11 +179,6 @@ public class UserController extends BasicController <User>{
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
-                User user_ori = userService.getABean(key);
-                if (user_ori == null) {
-                    map.put("result", "NotFound");
-                    return map;
-                }
                 map.put("result", userService.changeABean(key, bean));
                 return map;
             }
