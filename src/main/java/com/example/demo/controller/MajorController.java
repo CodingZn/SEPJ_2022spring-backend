@@ -194,7 +194,7 @@ public class MajorController extends BasicController<Major> {
 
     /* 7-改--modifyABean--修改一个实体,patch*/
     @Override
-    Map<String, Object> modifyABean_impl(String authority, String schoolnumber, String key, Major bean) {
+    Map<String, Object> modifyABean_impl(String authority, String userid, String key, Major bean) {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
@@ -250,7 +250,7 @@ public class MajorController extends BasicController<Major> {
 
     /* 9-删--deleteBeans--删除多个实体*/
     @Override
-    Map<String, Object> delBeans_impl(String authority, String schoolnumber, List<?> ids) {
+    Map<String, Object> delBeans_impl(String authority, String userid, List<?> ids) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {

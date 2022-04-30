@@ -35,7 +35,7 @@ public abstract class BasicController <T>{
     * */
 
     /* 1-查--getAllIds--获取所有id*/
-    abstract Map<String, Object> getAllIds_impl(String authority, String schoolnumber);
+    abstract Map<String, Object> getAllIds_impl(String authority, String userid);
 
     public ResponseEntity<Map<String, Object>> getAllIds(String authentication) {
         Map<String, Object> map = new HashMap<>();
@@ -55,7 +55,7 @@ public abstract class BasicController <T>{
     }
 
     /* 2-查--getABean--获取一个实体*/
-    abstract Map<String, Object> getABean_impl(String authority, String schoolnumber, String key);
+    abstract Map<String, Object> getABean_impl(String authority, String userid, String key);
 
     public ResponseEntity<Map<String, Object>> getABean(String authentication, String key) {
         Map<String, Object> map = new HashMap<>();
@@ -75,7 +75,7 @@ public abstract class BasicController <T>{
     }
 
     /* 3-查--getAllBeans--获取全部实体*/
-    abstract Map<String, Object> getAllBeans_impl(String authority, String schoolnumber);
+    abstract Map<String, Object> getAllBeans_impl(String authority, String userid);
 
     public ResponseEntity<Map<String, Object>> getAllBeans(String authentication) {
         Map<String, Object> map = new HashMap<>();
@@ -95,7 +95,7 @@ public abstract class BasicController <T>{
     }
 
     /* 4-增--createABean--新增一个实体*/
-    abstract Map<String, Object> createABean_impl(String authority, String schoolnumber, String key, T bean);
+    abstract Map<String, Object> createABean_impl(String authority, String userid, String key, T bean);
 
     public ResponseEntity<Map<String, Object>> createABean(String authentication, String key, T bean) {
         Map<String, Object> map = new HashMap<>();
@@ -115,7 +115,7 @@ public abstract class BasicController <T>{
     }
 
     /* 5-增--createBeans--新增多个实体*/
-    abstract Map<String, Object> createBeans_impl(String authority, String schoolnumber, List<T> beans);
+    abstract Map<String, Object> createBeans_impl(String authority, String userid, List<T> beans);
 
     public ResponseEntity<Map<String, Object>> createBeans(String authentication, JSONArray jsonArray, Class<T> clazz) {
         Map<String, Object> map = new HashMap<>();
@@ -135,7 +135,7 @@ public abstract class BasicController <T>{
     }
 
     /* 6-改--rewriteABean--重写一个实体,put*/
-    abstract Map<String, Object> rewriteABean_impl(String authority, String schoolnumber, String key, T bean);
+    abstract Map<String, Object> rewriteABean_impl(String authority, String userid, String key, T bean);
 
     public ResponseEntity<Map<String, Object>> rewriteABean(String authentication, String key, T bean) {
         Map<String, Object> map = new HashMap<>();
@@ -155,7 +155,7 @@ public abstract class BasicController <T>{
     }
 
     /* 7-改--modifyABean--修改一个实体,patch*/
-    abstract Map<String, Object> modifyABean_impl(String authority, String schoolnumber, String key, T bean);
+    abstract Map<String, Object> modifyABean_impl(String authority, String userid, String key, T bean);
 
     public ResponseEntity<Map<String, Object>> modifyABean(String authentication, String key, T bean) {
         Map<String, Object> map = new HashMap<>();
@@ -175,7 +175,7 @@ public abstract class BasicController <T>{
     }
 
     /* 8-删--deleteABean--删除一个实体*/
-    abstract Map<String, Object> delBean_impl(String authority, String schoolnumber, String key);
+    abstract Map<String, Object> delBean_impl(String authority, String userid, String key);
 
     public ResponseEntity<Map<String, Object>> delBean(String authentication, String key) {
         Map<String, Object> map = new HashMap<>();
@@ -195,7 +195,7 @@ public abstract class BasicController <T>{
     }
 
     /* 9-删--deleteBeans--删除多个实体*/
-    abstract Map<String, Object> delBeans_impl(String authority, String schoolnumber, List<?> ids);
+    abstract Map<String, Object> delBeans_impl(String authority, String userid, List<?> ids);
 
     public ResponseEntity<Map<String, Object>> delBeans(String authentication, JSONArray jsonArray, Class<?> clazz) {
         Map<String, Object> map = new HashMap<>();
