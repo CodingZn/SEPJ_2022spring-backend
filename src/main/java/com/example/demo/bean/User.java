@@ -4,8 +4,6 @@ import com.example.demo.utils.UserFormVerify;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @Setter
@@ -28,8 +26,8 @@ public class User {
     private Type usertype;
 
     @Id
-    @Column(name = "schoolnumber", nullable = false, length = 32)
-    private String schoolnumber;
+    @Column(name = "userid", nullable = false, length = 32)
+    private String userid;
 
     @Column(name = "name", nullable = false, length = 64)
     private String name;
@@ -81,8 +79,8 @@ public class User {
         c = phonenumber == null || check.phone_verify(phonenumber);
 
         d = switch (usertype) {
-            case student -> check.stuid_verify(schoolnumber);
-            case teacher -> check.workid_verify(schoolnumber);
+            case student -> check.stuid_verify(userid);
+            case teacher -> check.workid_verify(userid);
             case admin -> true;
         };
 

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.example.demo.bean.User;
 import com.example.demo.utils.BeanTools;
 import com.example.demo.bean.Major;
 import com.example.demo.service.GeneralService;
@@ -28,7 +29,7 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     String getIds() {
-        return "majornumbers";
+        return "majorids";
     }
 
     @Override
@@ -38,14 +39,13 @@ public class MajorController extends BasicController<Major> {
 
     @Override
     String getBeans() {
-        return null;
+        return "majors";
     }
 
 
-    /*查--返回所有majornumber*/
-
+    /* 1-查--getAllIds--获取所有id*/
     @Override
-    Map<String, Object> getAllIds_impl(String authority, String name) {
+    Map<String, Object> getAllIds_impl(String authority, String userid) {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority, TeacherAuthority, StudentAuthority ->{
@@ -62,20 +62,19 @@ public class MajorController extends BasicController<Major> {
     @Override
     @RequestMapping(value="/majors", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllIds(@RequestHeader(value="Authentication") String authentication) {
-        System.out.println("111");
         return super.getAllIds(authentication);
     }
 
-    /*查--获取一个实体*/
+    /* 2-查--getABean--获取一个实体*/
     @Override
-    Map<String, Object> getABean_impl(String authority, String id, String searchid) {
+    Map<String, Object> getABean_impl(String authority, String userid, String key) {
         Map<String, Object> map = new HashMap<>();
 
         switch (authority){
             case AdminAuthority, StudentAuthority, TeacherAuthority ->{
-                if (majorService.getABean(id) != null){
+                if (majorService.getABean(key) != null){
                     map.put("result", "Success");
-                    map.put(getBean() , majorService.getABean(id));
+                    map.put(getBean() , majorService.getABean(key));
                 }
                 else{
                     map.put("result", "NotFound");
@@ -89,44 +88,21 @@ public class MajorController extends BasicController<Major> {
     }
 
     @Override
-    @RequestMapping(value="/major/{majornumber}", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> getABean(@PathVariable("majornumber") String majornumber_str,
+    @RequestMapping(value="/major/{majorid}", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> getABean(@PathVariable("majorid") String majornumber_str,
                                                         @RequestHeader(value="Authentication") String authentication) {
         return super.getABean(majornumber_str, authentication);
     }
 
+    /* 3-查--getAllBeans--获取全部实体*/
     @Override
-    Map<String, Object> getAllBeans_impl(String authority, String schoolnumber) {
-        return null;
-    }
-
-    @Override
-    Map<String, Object> createABean_impl(String authority, String schoolnumber, String key, Major bean) {
-        return null;
-    }
-
-    @Override
-    Map<String, Object> createBeans_impl(String authority, String schoolnumber, List<Major> beans) {
-        return null;
-    }
-
-    @Override
-    Map<String, Object> rewriteABean_impl(String authority, String schoolnumber, String key, Major bean) {
-        return null;
-    }
-
-    @Override
-    Map<String, Object> modifyABean_impl(String authority, String schoolnumber, String key, Major bean) {
-        return null;
-    }
-
-    /*增--新增一个实体,post*/
-    @Override
-    Map<String, Object> createABean_impl(String authority, String id, Major bean, String name) {
+    Map<String, Object> getAllBeans_impl(String authority, String userid) {
         Map<String, Object> map = new HashMap<>();
-        switch (authority){
-            case AdminAuthority->{
-                map.put("result", majorService.createABean(id, bean));
+
+        switch (authority) {
+            case AdminAuthority -> {
+                map.put(getBeans(), majorService.getAllBeans());
+                map.put("result", "Success");
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -135,26 +111,70 @@ public class MajorController extends BasicController<Major> {
         return map;
     }
 
-    @RequestMapping(value="/major/{majornumber}", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> createABean(@PathVariable("majornumber") String majornumber_str,
-                                                           @RequestBody Major major,
-                                                           @RequestHeader(value="Authentication") String authentication){
-        return super.createABean(majornumber_str, major, authentication);
-
+    @Override
+    @RequestMapping(value = "/majors", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> getAllBeans(String authentication) {
+        return super.getAllBeans(authentication);
     }
 
-    /*改--重写一个实体*/
+    /* 4-增--createABean--新增一个实体*/
     @Override
-    Map<String, Object> rewriteABean_impl(String authority, String id, Major bean) {
+    Map<String, Object> createABean_impl(String authority, String userid, String key, Major bean) {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                Major bean_ori = majorService.getABean(id);
+                map.put("result", majorService.createABean(key, bean));
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
+    }
+
+    @RequestMapping(value="/major/{majorid}", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
+                                                           @PathVariable("majorid") String key,
+                                                           @RequestBody Major major){
+        return super.createABean(authentication, key, major);
+
+    }
+
+    /* 5-增--createBeans--新增多个实体*/
+    @Override
+    Map<String, Object> createBeans_impl(String authority, String userid, List<Major> beans) {
+        Map<String, Object> map = new HashMap<>();
+        switch (authority) {
+            case AdminAuthority -> {
+                map.put("result", majorService.createBeans(beans));
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
+    }
+
+    @Override
+    @RequestMapping(value = "/majors", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createBeans(@RequestHeader(value = "Authentication") String authentication,
+                                                           @RequestBody JSONArray jsonArray, Class<Major> clazz) {
+        return super.createBeans(authentication, jsonArray, clazz);
+    }
+
+
+    /* 6-改--rewriteABean--重写一个实体,put*/
+    @Override
+    Map<String, Object> rewriteABean_impl(String authority, String userid, String key, Major major) {
+        Map<String, Object> map = new HashMap<>();
+        switch (authority){
+            case AdminAuthority->{
+                Major bean_ori = majorService.getABean(key);
                 if (bean_ori == null){
                     map.put("result", "NotFound");
                     return map;
                 }
-                map.put("result", majorService.changeABean(id,bean));
+                map.put("result", majorService.changeABean(key,major));
                 return map;
             }
             default -> {
@@ -165,20 +185,20 @@ public class MajorController extends BasicController<Major> {
     }
 
     @Override
-    @RequestMapping(value="/major/{majornumber}", method = RequestMethod.PUT)
-    public ResponseEntity<Map<String, Object>> rewriteABean(@PathVariable("majornumber") String majornumber_str,
-                                                            @RequestBody Major major,
-                                                            @RequestHeader(value="Authentication") String authentication) {
-        return super.rewriteABean(majornumber_str, major, authentication);
+    @RequestMapping(value="/major/{majorid}", method = RequestMethod.PUT)
+    public ResponseEntity<Map<String, Object>> rewriteABean(@RequestHeader(value = "Authentication") String authentication,
+                                                            @PathVariable("majorid") String key,
+                                                            @RequestBody Major major) {
+        return super.rewriteABean(authentication, key, major);
     }
 
-    /*改--重写一个实体*/
+    /* 7-改--modifyABean--修改一个实体,patch*/
     @Override
-    Map<String, Object> modifyABean_impl(String authority, String id, Major bean) {
+    Map<String, Object> modifyABean_impl(String authority, String schoolnumber, String key, Major bean) {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                Major bean_ori = majorService.getABean(id);
+                Major bean_ori = majorService.getABean(key);
                 if (bean_ori == null){
                     map.put("result", "NotFound");
                     return map;
@@ -188,7 +208,7 @@ public class MajorController extends BasicController<Major> {
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 Major bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
-                map.put("result", majorService.changeABean(id,bean_modified));
+                map.put("result", majorService.changeABean(key,bean_modified));
                 return map;
             }
             default -> {
@@ -199,20 +219,20 @@ public class MajorController extends BasicController<Major> {
     }
 
     @Override
-    @RequestMapping(value="/major/{majornumber}", method = RequestMethod.PATCH)
-    public ResponseEntity<Map<String, Object>> modifyABean(@PathVariable("majornumber") String majornumber_str,
-                                                           @RequestBody Major major,
-                                                           @RequestHeader(value="Authentication") String authentication) {
-        return super.modifyABean(majornumber_str, major, authentication);
+    @RequestMapping(value="/major/{majorid}", method = RequestMethod.PATCH)
+    public ResponseEntity<Map<String, Object>> modifyABean(@RequestHeader(value = "Authentication") String authentication,
+                                                           @PathVariable("majorid") String key,
+                                                           @RequestBody Major major) {
+        return super.modifyABean(authentication, key, major);
     }
 
-    /*删--删除一个实体*/
+    /* 8-删--deleteABean--删除一个实体*/
     @Override
-    Map<String, Object> delBean_impl(String authority, String keyword, String name) {
+    Map<String, Object> delBean_impl(String authority, String userid, String key) {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", majorService.deleteABean(keyword));
+                map.put("result", majorService.deleteABean(key));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -222,32 +242,31 @@ public class MajorController extends BasicController<Major> {
     }
 
     @Override
-    @RequestMapping(value="/major/{majornumber}", method = RequestMethod.DELETE)
-    public ResponseEntity<Map<String, Object>> delBean(@PathVariable("majornumber") String majornumber_str,
+    @RequestMapping(value="/major/{majorid}", method = RequestMethod.DELETE)
+    public ResponseEntity<Map<String, Object>> delBean(@PathVariable("majorid") String majornumber_str,
                                                        @RequestHeader(value="Authentication") String authentication) {
         return super.delBean(majornumber_str, authentication);
     }
 
+    /* 9-删--deleteBeans--删除多个实体*/
     @Override
     Map<String, Object> delBeans_impl(String authority, String schoolnumber, List<?> ids) {
-        return null;
-    }
-
-    /***************未使用的抽象方法******************/
-    @Override
-    Map<String, Object> getAllBeans_impl(String authority) {
-        return null;
-    }
-
-    @Override
-    Map<String, Object> createBeans_impl(String authority, JSONArray jsonArray) {
-        return null;
+        Map<String, Object> map = new HashMap<>();
+        switch (authority) {
+            case AdminAuthority -> {
+                map.put("result", majorService.deleteBeans(ids));
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
     }
 
     @Override
-    Map<String, Object> delBeans_impl(String authority) {
-        return null;
+    @RequestMapping(value = "/majors", method = RequestMethod.DELETE)
+    public ResponseEntity<Map<String, Object>> delBeans(@RequestHeader(value = "Authentication") String authentication,
+                                                        @RequestBody JSONArray jsonArray, Class<?> clazz) {
+        return super.delBeans(authentication, jsonArray, String.class);
     }
-
-
 }

@@ -24,7 +24,7 @@ public class UserSpecServiceImpl implements UserSpecService {
         if (userbean == null) {
             User admin = new User();
             admin.setUsertype(User.Type.admin);
-            admin.setSchoolnumber("10001");
+            admin.setUserid("10001");
             admin.setName("admin");
             admin.setPassword("admin666");
             admin.setIdentitynumber("310101197001010011");

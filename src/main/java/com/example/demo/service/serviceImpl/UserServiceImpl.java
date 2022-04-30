@@ -22,7 +22,7 @@ public class UserServiceImpl implements GeneralService<User> {
     @Override
     public List<String> getAllIds() {
         List<User> userList = userMapper.findAll();
-        return userList.stream().map(User::getSchoolnumber).toList();
+        return userList.stream().map(User::getUserid).toList();
     }
 
     @Override
@@ -43,7 +43,7 @@ public class UserServiceImpl implements GeneralService<User> {
         user1 = userMapper.findBySchoolnumber(schoolnumber);
         if (user1 != null)
             return "Conflict";
-        user.setSchoolnumber(schoolnumber);
+        user.setUserid(schoolnumber);
         user.setPassword("fDu666666");//统一设置初始密码
 
         if (!user.verifyform()) {//检查数据格式
@@ -65,7 +65,7 @@ public class UserServiceImpl implements GeneralService<User> {
         if (user1 == null)
             return "NotFound";
 
-        user.setSchoolnumber(schoolnumber);//保证id不变，是修改而非新增
+        user.setUserid(schoolnumber);//保证id不变，是修改而非新增
         if (!user.verifyform()) {
             return "FormError";
         }

@@ -30,7 +30,7 @@ public class UserController extends BasicController <User>{
 
     @Override
     String getIds() {
-        return "schoolnumbers";
+        return "userids";
     }
 
     @Override
@@ -49,7 +49,7 @@ public class UserController extends BasicController <User>{
 
     /* 1-查--getAllIds--获取所有id*/
     @Override
-    Map<String, Object> getAllIds_impl(String authority, String schoolnumber) {
+    Map<String, Object> getAllIds_impl(String authority, String userid) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority, TeacherAuthority, StudentAuthority -> {
@@ -71,7 +71,7 @@ public class UserController extends BasicController <User>{
 
     /* 2-查--getABean--获取一个实体*/
     @Override
-    Map<String, Object> getABean_impl(String authority, String schoolnumber, String key) {
+    Map<String, Object> getABean_impl(String authority, String userid, String key) {
         Map<String, Object> map = new HashMap<>();
 
         switch (authority) {
@@ -84,7 +84,7 @@ public class UserController extends BasicController <User>{
                 }
             }
             case StudentAuthority, TeacherAuthority ->{
-                if (userService.getABean(key) != null && schoolnumber.equals(key)) {
+                if (userService.getABean(key) != null && userid.equals(key)) {
                     map.put("result", "Success");
                     map.put(getBean(), userService.getABean(key));
                 } else {
@@ -99,15 +99,15 @@ public class UserController extends BasicController <User>{
     }
 
     @Override
-    @RequestMapping(value = "/user/{schoolnumber}", method = RequestMethod.GET)
+    @RequestMapping(value = "/user/{userid}", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getABean(@RequestHeader(value = "Authentication") String authentication,
-                                                        @PathVariable("schoolnumber") String key) {
+                                                        @PathVariable("userid") String key) {
         return super.getABean(authentication, key);
     }
 
     /* 3-查--getAllBeans--获取全部实体*/
     @Override
-    Map<String, Object> getAllBeans_impl(String authority, String schoolnumber) {
+    Map<String, Object> getAllBeans_impl(String authority, String userid) {
         Map<String, Object> map = new HashMap<>();
 
         switch (authority) {
@@ -130,7 +130,7 @@ public class UserController extends BasicController <User>{
 
     /* 4-增--createABean--新增一个实体*/
     @Override
-    Map<String, Object> createABean_impl(String authority, String schoolnumber, String key, User bean) {
+    Map<String, Object> createABean_impl(String authority, String userid, String key, User bean) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
@@ -144,16 +144,16 @@ public class UserController extends BasicController <User>{
     }
 
     @Override
-    @RequestMapping(value = "/user/{schoolnumber}", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/{userid}", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
-                                                           @PathVariable("schoolnumber") String key,
+                                                           @PathVariable("userid") String key,
                                                            @RequestBody User user) {
         return super.createABean(authentication, key, user);
     }
 
     /* 5-增--createBeans--新增多个实体*/
     @Override
-    Map<String, Object> createBeans_impl(String authority, String schoolnumber, List<User> beans) {
+    Map<String, Object> createBeans_impl(String authority, String userid, List<User> beans) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
@@ -175,7 +175,7 @@ public class UserController extends BasicController <User>{
 
     /* 6-改--rewriteABean--重写一个实体,put*/
     @Override
-    Map<String, Object> rewriteABean_impl(String authority, String schoolnumber, String key, User user) {
+    Map<String, Object> rewriteABean_impl(String authority, String userid, String key, User user) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
@@ -183,7 +183,7 @@ public class UserController extends BasicController <User>{
                 if (user_ori == null) {
                     map.put("result", "NotFound");
                     return map;
-                } else if (!Objects.equals(key, user.getSchoolnumber())) {
+                } else if (!Objects.equals(key, user.getUserid())) {
                     map.put("result", "FormError");
                     return map;
                 }
@@ -199,16 +199,16 @@ public class UserController extends BasicController <User>{
     }
 
     @Override
-    @RequestMapping(value = "/user/{schoolnumber}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/user/{userid}", method = RequestMethod.PUT)
     public ResponseEntity<Map<String, Object>> rewriteABean(@RequestHeader(value = "Authentication") String authentication,
-                                                            @PathVariable("schoolnumber") String key,
+                                                            @PathVariable("userid") String key,
                                                             @RequestBody User user) {
         return super.rewriteABean(authentication, key, user);
     }
 
     /* 7-改--modifyABean--修改一个实体,patch*/
     @Override
-    Map<String, Object> modifyABean_impl(String authority, String schoolnumber, String key, User user) {
+    Map<String, Object> modifyABean_impl(String authority, String userid, String key, User user) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
@@ -222,12 +222,12 @@ public class UserController extends BasicController <User>{
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 User user_modified = BeanTools.modify(user_ori, user, changeableList);
-                map.put("result", userService.changeABean(schoolnumber, user_modified));
+                map.put("result", userService.changeABean(userid, user_modified));
                 return map;
             }
             case TeacherAuthority, StudentAuthority -> {
                 User user_ori = userService.getABean(key);
-                if (user_ori == null || !user_ori.getSchoolnumber().equals(schoolnumber)) {
+                if (user_ori == null || !user_ori.getUserid().equals(userid)) {
                     map.put("result", "NotFound");
                     return map;
                 }
@@ -236,7 +236,7 @@ public class UserController extends BasicController <User>{
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(standard));
                 User user_modified = BeanTools.modify(user_ori, user, changeableList);
-                map.put("result", userService.changeABean(schoolnumber, user_modified));
+                map.put("result", userService.changeABean(userid, user_modified));
                 return map;
             }
             default -> {
@@ -247,16 +247,16 @@ public class UserController extends BasicController <User>{
     }
 
     @Override
-    @RequestMapping(value = "/user/{schoolnumber}", method = RequestMethod.PATCH)
+    @RequestMapping(value = "/user/{userid}", method = RequestMethod.PATCH)
     public ResponseEntity<Map<String, Object>> modifyABean(@RequestHeader(value = "Authentication") String authentication,
-                                                           @PathVariable("schoolnumber") String key,
+                                                           @PathVariable("userid") String key,
                                                            @RequestBody User user) {
         return super.modifyABean(authentication, key, user);
     }
 
     /* 8-删--deleteABean--删除一个实体*/
     @Override
-    Map<String, Object> delBean_impl(String authority, String schoolnumber, String key) {
+    Map<String, Object> delBean_impl(String authority, String userid, String key) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
@@ -271,15 +271,15 @@ public class UserController extends BasicController <User>{
     }
 
     @Override
-    @RequestMapping(value = "/user/{schoolnumber}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/user/{userid}", method = RequestMethod.DELETE)
     public ResponseEntity<Map<String, Object>> delBean(@RequestHeader(value = "Authentication") String authentication,
-                                                       @PathVariable("schoolnumber") String schoolnumber) {
-        return super.delBean(authentication, schoolnumber);
+                                                       @PathVariable("userid") String key) {
+        return super.delBean(authentication, key);
     }
 
     /* 9-删--deleteBeans--删除多个实体*/
     @Override
-    Map<String, Object> delBeans_impl(String authority, String schoolnumber, List<?> ids) {
+    Map<String, Object> delBeans_impl(String authority, String userid, List<?> ids) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
@@ -306,7 +306,7 @@ public class UserController extends BasicController <User>{
     public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
         String schoolnumber, password;
 
-        schoolnumber = user.getSchoolnumber();
+        schoolnumber = user.getUserid();
         password = user.getPassword();
 
         Map<String, Object> map = new HashMap<>();
@@ -316,7 +316,7 @@ public class UserController extends BasicController <User>{
         if (userBean != null && userBean.getStatus().toString().equals("enabled")) {//success
             String token;
             Map<String, String> payload = new HashMap<>();//自定义payload
-            payload.put("schoolnumber", userBean.getSchoolnumber());//学号
+            payload.put("userid", userBean.getUserid());//学号
             payload.put("name", userBean.getName());//姓名
             payload.put("usertype", userBean.getUsertype().toString());//用户角色
             if (Objects.equals(password, "fDu666666"))
@@ -332,8 +332,8 @@ public class UserController extends BasicController <User>{
             return new ResponseEntity<>(map, HttpStatus.OK);
         } else {//failure
 
-            map.put("message", "Login failed due to wrong schoolnumber or password.");
-            System.out.println("Login failed due to wrong schoolnumber or password");
+            map.put("message", "Login failed due to wrong userid or password.");
+            System.out.println("Login failed due to wrong userid or password");
             return new ResponseEntity<>(map, HttpStatus.FORBIDDEN);
         }
 

@@ -13,8 +13,8 @@ import javax.persistence.*;
 public class Major {
 
     @Id
-    @Column(name="majornumber", nullable = false, length = 5)
-    private String majornumber;
+    @Column(name="majorid", nullable = false, length = 5)
+    private String majorid;
 
     @Column(name="name", nullable = false, length = 32)
     private String name;

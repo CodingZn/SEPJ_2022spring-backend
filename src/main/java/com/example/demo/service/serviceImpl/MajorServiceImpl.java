@@ -22,7 +22,7 @@ public class MajorServiceImpl implements GeneralService<Major> {
 
         List<Major> majorList = majorMapper.findAll();
 
-        List<String> a = majorList.stream().map( u -> String.valueOf(u.getMajornumber())).toList();
+        List<String> a = majorList.stream().map( u -> String.valueOf(u.getMajorid())).toList();
 
         System.out.println("a"+a);
 
@@ -48,7 +48,7 @@ public class MajorServiceImpl implements GeneralService<Major> {
         Major major1 = getABean(majornumber);
         if (major1 == null) {
 
-            major.setMajornumber(majornumber);
+            major.setMajorid(majornumber);
 
             if (major.getName().equals("") || major.getSchool().equals(""))  return "FormError";
             majorMapper.save(major);
@@ -71,7 +71,7 @@ public class MajorServiceImpl implements GeneralService<Major> {
         if (major.getName().equals("") || major.getSchool().equals(""))
             return "FormError";
 
-        major.setMajornumber(major1.getMajornumber());
+        major.setMajorid(major1.getMajorid());
         majorMapper.save(major);
         return "Success";
     }
