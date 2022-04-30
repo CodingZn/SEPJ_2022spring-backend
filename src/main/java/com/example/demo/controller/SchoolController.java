@@ -2,18 +2,10 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.example.demo.bean.School;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Map;
 
 public class SchoolController extends BasicController<School> {
-
-    @Override
-    String getId() {
-        return null;
-    }
 
     @Override
     String getIds() {
@@ -31,7 +23,7 @@ public class SchoolController extends BasicController<School> {
     }
 
     @Override
-    Map<String, Object> getABean_impl(String authority, String id, String name) {
+    Map<String, Object> getABean_impl(String authority, String id, String searchid) {
         return null;
     }
 

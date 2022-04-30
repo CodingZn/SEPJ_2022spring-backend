@@ -6,7 +6,6 @@ import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -16,21 +15,6 @@ public class MajorServiceImpl implements GeneralService<Major> {
     @Autowired
     public MajorServiceImpl(MajorMapper majorMapper) {
         this.majorMapper = majorMapper;
-    }
-
-    public String getANewId() {//返回一个可用的majornumber(str)
-        List<Major> majorList = majorMapper.findAll();
-        Major maxmajor;
-        if (majorList.stream().max(Comparator.comparing(Major::getMajornumber)).isPresent()){
-            maxmajor = majorList.stream().max(Comparator.comparing(Major::getMajornumber)).get();
-            System.out.println("getMaxMajornumber=");
-            System.out.println(maxmajor.getMajornumber());
-            return String.valueOf(maxmajor.getMajornumber() + 1);
-        }
-        else return "1";
-
-
-
     }
 
     @Override

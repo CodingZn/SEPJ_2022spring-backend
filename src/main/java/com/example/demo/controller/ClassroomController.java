@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.example.demo.bean.trivialBeans.Classroom;
 import com.example.demo.mapper.straightMappers.ClassroomMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,13 +19,14 @@ public class ClassroomController extends BasicController<Classroom> {
 
     private final ClassroomMapper classroomMapper;
 
+    @Autowired
     public ClassroomController(ClassroomMapper classroomMapper) {
         this.classroomMapper = classroomMapper;
     }
 
     /*查--获取单个教室*/
     @Override
-    Map<String, Object> getABean_impl(String authority, String id, String name) {
+    Map<String, Object> getABean_impl(String authority, String id, String searchid) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority, TeacherAuthority -> {
@@ -159,11 +161,6 @@ public class ClassroomController extends BasicController<Classroom> {
 
     @Override
     Map<String, Object> delBean_impl(String authority, String keyword, String name) {
-        return null;
-    }
-
-    @Override
-    String getId() {
         return null;
     }
 

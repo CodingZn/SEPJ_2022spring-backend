@@ -13,9 +13,9 @@ import javax.persistence.*;
 public class LessonRequest {
 
     @Id
-    @Column(name = "request_id", nullable = false)
+    @Column(name = "lessonrequestid", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int requestId;
+    private int lessonrequestid;
 
     @ManyToOne
     @JoinColumn(name = "lesson")

@@ -20,11 +20,6 @@ public class UserServiceImpl implements GeneralService<User> {
     }
 
     @Override
-    public String getANewId() {
-        return null;
-    }
-
-    @Override
     public List<String> getAllIds() {
         List<User> userList = userMapper.findAll();
         return userList.stream().map(User::getSchoolnumber).toList();

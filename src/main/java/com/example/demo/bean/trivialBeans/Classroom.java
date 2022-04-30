@@ -13,6 +13,10 @@ import javax.persistence.*;
 public class Classroom {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, unique = true)
+    private int classroomid;
+
     @Column(nullable = false, length = 20)
     private String name;
 

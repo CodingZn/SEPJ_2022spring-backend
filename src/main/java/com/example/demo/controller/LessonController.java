@@ -27,11 +27,6 @@ public class LessonController extends BasicController<Lesson> {
     /* 该类中所有的方法都来自继承 */
 
     @Override
-    String getId() {
-        return "lessonid";
-    }
-
-    @Override
     String getIds() {
         return "lessonids";
     }
@@ -93,7 +88,7 @@ public class LessonController extends BasicController<Lesson> {
 
     /*查--获取一个实体*/
     @Override
-    Map<String, Object> getABean_impl(String authority, String id, String name) {
+    Map<String, Object> getABean_impl(String authority, String id, String searchid) {
         Map<String, Object> map = new HashMap<>();
 
         switch (authority) {
@@ -116,7 +111,7 @@ public class LessonController extends BasicController<Lesson> {
                 for(int i = 0;i < teachers.size();i++)
                 {
                     if(lesson != null &&
-                            (teachers.get(i).getName().equals(name) || lesson.getStatus().toString().equals("censored")))
+                            (teachers.get(i).getName().equals(searchid) || lesson.getStatus().toString().equals("censored")))
                     {
                         map.put("result", "Success");
                         map.put(getBean(), lesson);

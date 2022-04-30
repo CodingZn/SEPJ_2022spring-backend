@@ -22,11 +22,11 @@ public class ClasstimeController extends BasicController<Classtime> {
 
     /*查--获取一个上课时间对象*/
     @Override
-    Map<String, Object> getABean_impl(String authority, String id, String name) {
+    Map<String, Object> getABean_impl(String authority, String id, String searchid) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority, TeacherAuthority -> {
-                Classtime classtime = classtimeMapper.findByName(name);
+                Classtime classtime = classtimeMapper.findByName(searchid);
 
                 map.put("classtime", classtime);
                 map.put("result", "Success");
@@ -125,11 +125,6 @@ public class ClasstimeController extends BasicController<Classtime> {
 
     @Override
     Map<String, Object> delBean_impl(String authority, String keyword, String name) {
-        return null;
-    }
-
-    @Override
-    String getId() {
         return null;
     }
 

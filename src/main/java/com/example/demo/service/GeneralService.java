@@ -4,8 +4,6 @@ import java.util.List;
 
 public interface GeneralService<T> {
 
-    String getANewId();
-
     List<String> getAllIds();
 
     T getABean(String id);
@@ -14,7 +12,11 @@ public interface GeneralService<T> {
 
     String createABean(String id, T bean);
 
+    String createBeans(List<T> beans);
+
     String changeABean(String id, T bean);
 
     String deleteABean(String id);
+
+    String deleteBeans(List<?> ids);
 }

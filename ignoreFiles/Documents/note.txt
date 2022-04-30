@@ -1,6 +1,5 @@
-To do list:
-1. 将所有控制层函数的返回类型改为统一json
-    ---直接使用Map<String, Object>
-2. 使用模板模式重写控制层函数
-
-3. 利用泛型和类继承复用整个控制类？
+/*
+    * 方法规范：
+    * abstract方法的参数列表：authority, schoolnumber, [key], [<T> bean], [JsonArray]
+    * public方法的参数列表：authentication, [key], [<T> bean], [JsonArray]
+    * */

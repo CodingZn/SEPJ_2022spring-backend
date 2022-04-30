@@ -2,10 +2,7 @@ package com.example.demo.bean.trivialBeans;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Setter
 @Getter
@@ -16,6 +13,10 @@ import javax.persistence.Table;
 public class Classtime {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, unique = true)
+    private int classtimeid;
+
     @Column(nullable = false, length = 5)
     private String name;
 

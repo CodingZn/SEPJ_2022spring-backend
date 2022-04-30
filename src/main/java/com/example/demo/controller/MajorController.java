@@ -27,11 +27,6 @@ public class MajorController extends BasicController<Major> {
 
 
     @Override
-    String getId() {
-        return "majornumber";
-    }
-
-    @Override
     String getIds() {
         return "majornumbers";
     }
@@ -39,6 +34,11 @@ public class MajorController extends BasicController<Major> {
     @Override
     String getBean() {
         return "major";
+    }
+
+    @Override
+    String getBeans() {
+        return null;
     }
 
 
@@ -68,7 +68,7 @@ public class MajorController extends BasicController<Major> {
 
     /*查--获取一个实体*/
     @Override
-    Map<String, Object> getABean_impl(String authority, String id, String name) {
+    Map<String, Object> getABean_impl(String authority, String id, String searchid) {
         Map<String, Object> map = new HashMap<>();
 
         switch (authority){
@@ -93,6 +93,31 @@ public class MajorController extends BasicController<Major> {
     public ResponseEntity<Map<String, Object>> getABean(@PathVariable("majornumber") String majornumber_str,
                                                         @RequestHeader(value="Authentication") String authentication) {
         return super.getABean(majornumber_str, authentication);
+    }
+
+    @Override
+    Map<String, Object> getAllBeans_impl(String authority, String schoolnumber) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> createABean_impl(String authority, String schoolnumber, String key, Major bean) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> createBeans_impl(String authority, String schoolnumber, List<Major> beans) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> rewriteABean_impl(String authority, String schoolnumber, String key, Major bean) {
+        return null;
+    }
+
+    @Override
+    Map<String, Object> modifyABean_impl(String authority, String schoolnumber, String key, Major bean) {
+        return null;
     }
 
     /*增--新增一个实体,post*/
@@ -201,6 +226,11 @@ public class MajorController extends BasicController<Major> {
     public ResponseEntity<Map<String, Object>> delBean(@PathVariable("majornumber") String majornumber_str,
                                                        @RequestHeader(value="Authentication") String authentication) {
         return super.delBean(majornumber_str, authentication);
+    }
+
+    @Override
+    Map<String, Object> delBeans_impl(String authority, String schoolnumber, List<?> ids) {
+        return null;
     }
 
     /***************未使用的抽象方法******************/

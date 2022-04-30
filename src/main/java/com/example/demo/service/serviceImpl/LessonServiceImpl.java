@@ -6,7 +6,6 @@ import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -18,23 +17,6 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     public LessonServiceImpl(LessonMapper lessonMapper, DependValueVerify dependValueVerify) {
         this.lessonMapper = lessonMapper;
         this.dependValueVerify = dependValueVerify;
-    }
-
-    @Override
-    public String getANewId() {
-        List<Lesson> lessonList = lessonMapper.findAll();
-
-        Lesson maxlesson;
-        if (lessonList.stream().max(Comparator.comparing(Lesson::getLessonid)).isPresent()){
-            maxlesson = lessonList.stream().max(Comparator.comparing(Lesson::getLessonid)).get();
-            System.out.println("getMaxMajornumber=");
-            System.out.println(maxlesson.getLessonid());
-
-            return String.valueOf(maxlesson.getLessonid() + 1);
-        }
-        else
-            return "1";
-
     }
 
     @Override
