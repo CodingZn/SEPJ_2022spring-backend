@@ -59,7 +59,7 @@ public class ClassroomController extends BasicController<Classroom> {
     }
 
     @Override
-    @RequestMapping(value="/classrooms", method = RequestMethod.GET)
+    @RequestMapping(value="/classrooms/classroomids", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllIds(@RequestHeader(value="Authentication") String authentication) {
         return super.getAllIds(authentication);
     }

@@ -59,7 +59,7 @@ public class MajorController extends BasicController<Major> {
     }
 
     @Override
-    @RequestMapping(value="/majors", method = RequestMethod.GET)
+    @RequestMapping(value="/majors/majorids", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllIds(@RequestHeader(value="Authentication") String authentication) {
         return super.getAllIds(authentication);
     }

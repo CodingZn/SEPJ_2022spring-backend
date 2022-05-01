@@ -74,7 +74,7 @@ public class LessonController extends BasicController<Lesson> {
     }
 
     @Override
-    @RequestMapping(value = "/lessons", method = RequestMethod.GET)
+    @RequestMapping(value = "/lessons/lessonids", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllIds(@RequestHeader("Authentication") String authentication) {
         return super.getAllIds(authentication);
     }

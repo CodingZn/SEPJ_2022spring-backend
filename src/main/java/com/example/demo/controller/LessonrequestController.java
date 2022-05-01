@@ -14,11 +14,11 @@ import static com.example.demo.utils.JWTUtils.AdminAuthority;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
-public class LessonreqController extends BasicController <Lessonrequest> {
+public class LessonrequestController extends BasicController <Lessonrequest> {
     private final GeneralService<Lessonrequest> lessonreqService;
 
     @Autowired
-    public LessonreqController(GeneralService<Lessonrequest> lessonreqService) {
+    public LessonrequestController(GeneralService<Lessonrequest> lessonreqService) {
         this.lessonreqService = lessonreqService;
     }
 
@@ -54,7 +54,7 @@ public class LessonreqController extends BasicController <Lessonrequest> {
     }
 
     @Override
-    @RequestMapping(value="/lessonrequestids", method = RequestMethod.GET)
+    @RequestMapping(value="/lessonrequests/lessonrequestids", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllIds(@RequestHeader(value="Authentication") String authentication) {
         return super.getAllIds(authentication);
     }

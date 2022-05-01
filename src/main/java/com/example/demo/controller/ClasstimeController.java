@@ -56,7 +56,7 @@ public class ClasstimeController extends BasicController<Classtime> {
     }
 
     @Override
-    @RequestMapping(value="/classtimes", method = RequestMethod.GET)
+    @RequestMapping(value="/classtimes/classtimeids", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllIds(@RequestHeader(value="Authentication") String authentication) {
         return super.getAllIds(authentication);
     }

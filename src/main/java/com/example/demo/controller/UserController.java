@@ -64,7 +64,7 @@ public class UserController extends BasicController <User>{
     }
 
     @Override
-    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    @RequestMapping(value = "/users/userids", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllIds(@RequestHeader(value = "Authentication") String authentication) {
         return super.getAllIds(authentication);
     }
