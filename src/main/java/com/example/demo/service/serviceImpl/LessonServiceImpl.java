@@ -7,34 +7,26 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class LessonServiceImpl implements GeneralService<Lesson> {
     private final LessonMapper lessonMapper;
-    private final DependValueVerify dependValueVerify;
 
     @Autowired
-    public LessonServiceImpl(LessonMapper lessonMapper, DependValueVerify dependValueVerify) {
+    public LessonServiceImpl(LessonMapper lessonMapper) {
         this.lessonMapper = lessonMapper;
-        this.dependValueVerify = dependValueVerify;
     }
 
     @Override
     public List<String> getAllIds() {
         List<Lesson> lessonList = lessonMapper.findAll();
-
-        List<String> a = lessonList.stream().map( u -> String.valueOf(u.getLessonid())).toList();
-
-        System.out.println("a"+a);
-
-        return a;
+        return lessonList.stream().map(u -> String.valueOf(u.getLessonid())).toList();
     }
 
     @Override
     public Lesson getABean(String lessonid) {
-        Lesson lesson;
-        lesson = lessonMapper.findByLessonid(lessonid);
-        return lesson;
+        return lessonMapper.findByLessonid(Integer.parseInt(lessonid));
 
     }
 
@@ -49,21 +41,19 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
         Lesson lesson1 = getABean(lessonid);
         if (lesson1 == null){
             lesson.setLessonid(Integer.parseInt(lessonid));
-            if ((lesson.getLessonname().equals("") || lesson.getSchool().equals("")))
-                return "FormError";
-            else if (!dependValueVerify.lessonDependCheck(lesson))
-                return "DependError";
-            else{
-                lessonMapper.save(lesson);
-                return "Success";
-            }
+            lessonMapper.save(lesson);
+            return "Success";
         }
         else return "Conflict";
     }
 
     @Override
     public String createBeans(List<Lesson> beans) {
-        return null;
+        beans.removeIf(Objects::isNull);
+        for(Lesson lesson : beans){
+            createABean(String.valueOf(lesson.getLessonid()), lesson);
+        }
+        return "Success";
     }
 
     @Override
@@ -74,19 +64,13 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
             return "NotFound";
         else{
             lesson.setLessonid(Integer.parseInt(lessonid));
-            if ((lesson.getLessonname().equals("") || lesson.getSchool().equals("")))
-                return "FormError";
-            else if (!dependValueVerify.lessonDependCheck(lesson))
-                return "DependError";
-            else{
-                lessonMapper.save(lesson);
-                return "Success";
-            }
+
+            lessonMapper.save(lesson);
+            return "Success";
         }
     }
 
-    @Override
-    public String deleteABean(String lessonid) {
+    private String deleteABean(int lessonid){
         Lesson lesson = lessonMapper.findByLessonid(lessonid);
         if (lesson != null) {
             lessonMapper.delete(lesson);
@@ -97,8 +81,18 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     }
 
     @Override
+    public String deleteABean(String lessonid) {
+        int lessonid_int = Integer.parseInt(lessonid);
+        return deleteABean(lessonid_int);
+    }
+
+    @Override
     public String deleteBeans(List<?> ids) {
-        return null;
+        List<Integer> lessonids = (List<Integer>) ids;
+        for(Integer lessonid : lessonids) {
+            lessonMapper.deleteById(String.valueOf(lessonid));
+        }
+        return "Success";
     }
 
 }

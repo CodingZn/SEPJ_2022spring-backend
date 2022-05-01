@@ -8,8 +8,5 @@ import java.util.List;
 
 @Repository
 public interface LessonMapper extends JpaRepository <Lesson, String> {
-    Lesson findByLessonid(String lessonid);
-    List<Lesson> findAllByTeacher(String teachername);
-    List<Lesson> findAllByStatus(String status);
-    List<Lesson> findAllByTeacherOrStatus(String teachername, String status);
+    Lesson findByLessonid(int lessonid);
 }
