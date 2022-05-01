@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class MajorServiceImpl implements GeneralService<Major> {
@@ -19,73 +20,72 @@ public class MajorServiceImpl implements GeneralService<Major> {
 
     @Override
     public List<String> getAllIds() {
-
         List<Major> majorList = majorMapper.findAll();
-
-        List<String> a = majorList.stream().map( u -> String.valueOf(u.getMajorid())).toList();
-
-        System.out.println("a"+a);
-
-        return a;
+        return majorList.stream().map(Major::getMajorid).toList();
     }
 
     @Override
-    public Major getABean(String majornumber) {
-        Major major;
-        major = majorMapper.findByMajornumber(majornumber);
-        return major;
-
+    public Major getABean(String majorid) {
+        return majorMapper.findByMajorid(majorid);
     }
 
     @Override
     public List<Major> getAllBeans() {
-        return null;
+        return majorMapper.findAll();
     }
 
     @Override
-    public String createABean(String majornumber, Major major) {//只创建，不修改
+    public String createABean(String majorid, Major major) {//只创建，不修改
 
-        Major major1 = getABean(majornumber);
+        Major major1 = getABean(majorid);
         if (major1 == null) {
-
-            major.setMajorid(majornumber);
-
-            if (major.getName().equals("") || major.getSchool().equals(""))  return "FormError";
+            major.setMajorid(majorid);
             majorMapper.save(major);
             return "Success";
-
         }
         else{
             return "Conflict";
         }
-
-
     }
 
     @Override
-    public String changeABean(String majornumber, Major major) {//只根据主键修改，不创建
-        Major major1 = getABean(majornumber);
+    public String createBeans(List<Major> beans) {
+        beans.removeIf(Objects::isNull);
+        for(Major major : beans){
+            createABean(major.getMajorid(), major);
+        }
+        return "Success";
+    }
+
+    @Override
+    public String changeABean(String majorid, Major major) {//只根据主键修改，不创建
+        Major major1 = getABean(majorid);
         if (major1 == null) {
             return "NotFound";
         }
-        if (major.getName().equals("") || major.getSchool().equals(""))
-            return "FormError";
-
         major.setMajorid(major1.getMajorid());
         majorMapper.save(major);
         return "Success";
     }
 
     @Override
-    public String deleteABean(String majornumber) {
+    public String deleteABean(String majorid) {
 
-
-        Major major = majorMapper.findByMajornumber(majornumber);
+        Major major = majorMapper.findByMajorid(majorid);
         if (major != null) {
             majorMapper.delete(major);
             return "Success";
         } else {
             return "NotFound";
         }
+    }
+
+    @Override
+    public String deleteBeans(List<?> ids) {
+        List<String> majorids = (List<String>) ids;
+        for(String majorid : majorids) {
+            majorMapper.deleteById(majorid);
+        }
+        return "Success";
     }
 }
