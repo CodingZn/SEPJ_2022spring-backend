@@ -1,6 +1,7 @@
 package com.example.demo.bean;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -10,9 +11,11 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name="major")
+@GenericGenerator(name = "majorgenerator", strategy = "com.example.demo.bean.generators.MajoridGenerator")
 public class Major {//admin changeable
 
     @Id
+    @GeneratedValue(generator = "majorgenerator")
     @Column(name="majorid", nullable = false, length = 5)
     private String majorid;//unchangeable
 
