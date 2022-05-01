@@ -1,7 +1,7 @@
 package com.example.demo.service.serviceImpl;
 
 import com.example.demo.bean.Classtime;
-import com.example.demo.mapper.straightMappers.ClasstimeMapper;
+import com.example.demo.mapper.ClasstimeMapper;
 import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,17 +19,18 @@ public class ClasstimeServiceImpl implements GeneralService<Classtime> {
 
     @Override
     public List<String> getAllIds() {
-        return null;
+        List<Classtime> classtimeList = classtimeMapper.findAll();
+        return classtimeList.stream().map(u -> String.valueOf(u.getClasstimeid())).toList();
     }
 
     @Override
     public Classtime getABean(String id) {
-        return null;
+        return classtimeMapper.findByClasstimeid(Integer.parseInt(id));
     }
 
     @Override
     public List<Classtime> getAllBeans() {
-        return null;
+        return classtimeMapper.findAll();
     }
 
     @Override

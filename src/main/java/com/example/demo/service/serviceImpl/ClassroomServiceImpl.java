@@ -1,7 +1,7 @@
 package com.example.demo.service.serviceImpl;
 
 import com.example.demo.bean.Classroom;
-import com.example.demo.mapper.straightMappers.ClassroomMapper;
+import com.example.demo.mapper.ClassroomMapper;
 import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

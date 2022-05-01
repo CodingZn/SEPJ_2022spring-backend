@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.example.demo.bean.Classroom;
 import com.example.demo.bean.Classtime;
-import com.example.demo.mapper.straightMappers.ClasstimeMapper;
 import com.example.demo.service.GeneralService;
 import com.example.demo.utils.BeanTools;
 import org.springframework.beans.factory.annotation.Autowired;
