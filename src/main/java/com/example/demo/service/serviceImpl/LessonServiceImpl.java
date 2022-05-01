@@ -90,7 +90,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     public String deleteBeans(List<?> ids) {
         List<Integer> lessonids = (List<Integer>) ids;
         for(Integer lessonid : lessonids) {
-            lessonMapper.deleteById(String.valueOf(lessonid));
+            lessonMapper.deleteByLessonid(lessonid);
         }
         return "Success";
     }
