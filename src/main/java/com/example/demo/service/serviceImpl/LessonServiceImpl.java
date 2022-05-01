@@ -48,7 +48,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     public String createABean(String lessonid, Lesson lesson) {
         Lesson lesson1 = getABean(lessonid);
         if (lesson1 == null){
-            lesson.setLessonid(lessonid);
+            lesson.setLessonid(Integer.parseInt(lessonid));
             if ((lesson.getLessonname().equals("") || lesson.getSchool().equals("")))
                 return "FormError";
             else if (!dependValueVerify.lessonDependCheck(lesson))
@@ -62,13 +62,18 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     }
 
     @Override
+    public String createBeans(List<Lesson> beans) {
+        return null;
+    }
+
+    @Override
     public String changeABean(String lessonid, Lesson lesson) {
 
         Lesson lesson1 = getABean(lessonid);
         if (lesson1 == null)
             return "NotFound";
         else{
-            lesson.setLessonid(lessonid);
+            lesson.setLessonid(Integer.parseInt(lessonid));
             if ((lesson.getLessonname().equals("") || lesson.getSchool().equals("")))
                 return "FormError";
             else if (!dependValueVerify.lessonDependCheck(lesson))
@@ -89,6 +94,11 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
         } else {
             return "NotFound";
         }
+    }
+
+    @Override
+    public String deleteBeans(List<?> ids) {
+        return null;
     }
 
 }

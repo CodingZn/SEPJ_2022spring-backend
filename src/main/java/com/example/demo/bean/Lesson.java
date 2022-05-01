@@ -14,10 +14,14 @@ import java.util.List;
 public class Lesson {//changeable
 
     @Id
-    @Column(name = "lessonid", nullable = false, length = 20)
-    private String lessonid;//unchangeable
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "lessonid", nullable = false)
+    private int lessonid;//unchangeable
 
-    @Column(name = "lessoncode", nullable = false, length = 20)
+    @Column(name = "lessonnumber", nullable = false, length = 20)
+    private String lessonnumber;//unchangeable
+
+    @Column(name = "lessoncode", nullable = false, length = 15)
     private String lessoncode;//unchangeable
 
     @Column(name = "lessonname", nullable = false, length = 32)

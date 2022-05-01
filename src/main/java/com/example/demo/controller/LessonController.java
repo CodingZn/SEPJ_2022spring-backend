@@ -363,7 +363,7 @@ public class LessonController extends BasicController<Lesson> {
                 lessonList.removeIf(Objects::isNull);
                 lessonList.removeIf( u -> !u.getTeacher().stream().map(User::getUserid).toList().contains(userid)
                         && !Objects.equals(u.getStatus(), Lesson.Status.censored));
-                lessonidList = lessonList.stream().map(Lesson::getLessonid).toList();
+                lessonidList = lessonList.stream().map(u -> String.valueOf(u.getLessonid())).toList();
                 lessonService.deleteBeans(lessonidList);
             }
             default -> {
