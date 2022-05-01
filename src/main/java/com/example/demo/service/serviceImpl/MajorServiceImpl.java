@@ -25,8 +25,8 @@ public class MajorServiceImpl implements GeneralService<Major> {
     }
 
     @Override
-    public Major getABean(String majorid) {
-        return majorMapper.findByMajorid(majorid);
+    public Major getABean(String id) {
+        return majorMapper.findByMajorid(id);
     }
 
     @Override
@@ -35,12 +35,12 @@ public class MajorServiceImpl implements GeneralService<Major> {
     }
 
     @Override
-    public String createABean(String majorid, Major major) {//只创建，不修改
+    public String createABean(String id, Major bean) {//只创建，不修改
 
-        Major major1 = getABean(majorid);
-        if (major1 == null) {
-            major.setMajorid(majorid);
-            majorMapper.save(major);
+        Major bean1 = getABean(id);
+        if (bean1 == null) {
+            bean.setMajorid(id);
+            majorMapper.save(bean);
             return "Success";
         }
         else{
@@ -51,29 +51,29 @@ public class MajorServiceImpl implements GeneralService<Major> {
     @Override
     public String createBeans(List<Major> beans) {
         beans.removeIf(Objects::isNull);
-        for(Major major : beans){
-            createABean(major.getMajorid(), major);
+        for(Major bean : beans){
+            createABean(bean.getMajorid(), bean);
         }
         return "Success";
     }
 
     @Override
-    public String changeABean(String majorid, Major major) {//只根据主键修改，不创建
-        Major major1 = getABean(majorid);
-        if (major1 == null) {
+    public String changeABean(String id, Major bean) {//只根据主键修改，不创建
+        Major bean1 = getABean(id);
+        if (bean1 == null) {
             return "NotFound";
         }
-        major.setMajorid(major1.getMajorid());
-        majorMapper.save(major);
+        bean.setMajorid(bean1.getMajorid());
+        majorMapper.save(bean);
         return "Success";
     }
 
     @Override
-    public String deleteABean(String majorid) {
+    public String deleteABean(String id) {
 
-        Major major = majorMapper.findByMajorid(majorid);
-        if (major != null) {
-            majorMapper.delete(major);
+        Major bean = majorMapper.findByMajorid(id);
+        if (bean != null) {
+            majorMapper.delete(bean);
             return "Success";
         } else {
             return "NotFound";
@@ -82,9 +82,9 @@ public class MajorServiceImpl implements GeneralService<Major> {
 
     @Override
     public String deleteBeans(List<?> ids) {
-        List<String> majorids = (List<String>) ids;
-        for(String majorid : majorids) {
-            majorMapper.deleteById(majorid);
+        List<String> idList = (List<String>) ids;
+        for(String id : idList) {
+            majorMapper.deleteById(id);
         }
         return "Success";
     }

@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MajorMapper extends JpaRepository<Major, String> {
     Major findByMajorid(String majorid);
-    Major findFirstByName(String name);
 }
