@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ClassroomServiceImpl implements GeneralService<Classroom> {
@@ -19,41 +20,77 @@ public class ClassroomServiceImpl implements GeneralService<Classroom> {
 
     @Override
     public List<String> getAllIds() {
-        return null;
+        List<Classroom> beans = classroomMapper.findAll();
+        return beans.stream().map(u -> String.valueOf(u.getClassroomid())).toList();
     }
 
     @Override
     public Classroom getABean(String id) {
-        return null;
+        return classroomMapper.findByClassroomid(Integer.parseInt(id));
     }
 
     @Override
     public List<Classroom> getAllBeans() {
-        return null;
+        return classroomMapper.findAll();
     }
 
     @Override
     public String createABean(String id, Classroom bean) {
-        return null;
+        Classroom bean1 = getABean(id);
+        if (bean1 == null){
+            bean.setClassroomid(Integer.parseInt(id));
+            classroomMapper.save(bean);
+            return "Success";
+        }
+        else{
+            return "Conflict";
+        }
     }
 
     @Override
     public String createBeans(List<Classroom> beans) {
-        return null;
+        beans.removeIf(Objects::isNull);
+        for(Classroom bean : beans){
+            createABean(String.valueOf(bean.getClassroomid()), bean);
+        }
+        return "Success";
     }
 
     @Override
     public String changeABean(String id, Classroom bean) {
-        return null;
+        Classroom bean1 = getABean(id);
+        if (bean1 == null)
+            return "NotFound";
+        else{
+            bean.setClassroomid(Integer.parseInt(id));
+
+            classroomMapper.save(bean);
+            return "Success";
+        }
+    }
+
+    private String deleteABean(int id){
+        Classroom bean1 = classroomMapper.findByClassroomid(id);
+        if (bean1 != null) {
+            classroomMapper.delete(bean1);
+            return "Success";
+        } else {
+            return "NotFound";
+        }
     }
 
     @Override
     public String deleteABean(String id) {
-        return null;
+        int id_int = Integer.parseInt(id);
+        return deleteABean(id_int);
     }
 
     @Override
     public String deleteBeans(List<?> ids) {
-        return null;
+        List<Integer> beanids = (List<Integer>) ids;
+        for(Integer beanid : beanids) {
+            classroomMapper.deleteByClassroomid(beanid);
+        }
+        return "Success";
     }
 }

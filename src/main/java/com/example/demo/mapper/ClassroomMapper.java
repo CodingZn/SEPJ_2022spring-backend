@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ClassroomMapper extends JpaRepository<Classroom, String> {
     Classroom findByClassroomid(int classroomid);
+    void deleteByClassroomid(int classroomid);
 }
