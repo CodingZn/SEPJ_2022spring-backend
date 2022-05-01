@@ -10,7 +10,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Table(name = "lessonrequest")
 @Entity
-public class LessonRequest {//admin|student_self changeable
+public class Lessonrequest {//admin|student_self changeable
 
     @Id
     @Column(name = "lessonrequestid", nullable = false)

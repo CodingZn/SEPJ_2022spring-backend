@@ -67,7 +67,7 @@ public class User {//admin|self changeable
     private List<Lesson> lessonsTaken;//admin changeable
 
     @OneToMany(mappedBy = "student")
-    private List<LessonRequest> lessonRequests;//self-only changeable
+    private List<Lessonrequest> lessonrequests;//self-only changeable
 
 
     public boolean verifyform(){
