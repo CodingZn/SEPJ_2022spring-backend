@@ -1,12 +1,15 @@
 package com.example.demo.service.serviceImpl;
 
 import com.example.demo.bean.Classtime;
+import com.example.demo.bean.Lesson;
+import com.example.demo.bean.Major;
 import com.example.demo.mapper.ClasstimeMapper;
 import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ClasstimeServiceImpl implements GeneralService<Classtime> {
@@ -19,8 +22,8 @@ public class ClasstimeServiceImpl implements GeneralService<Classtime> {
 
     @Override
     public List<String> getAllIds() {
-        List<Classtime> classtimeList = classtimeMapper.findAll();
-        return classtimeList.stream().map(u -> String.valueOf(u.getClasstimeid())).toList();
+        List<Classtime> beans = classtimeMapper.findAll();
+        return beans.stream().map(u -> String.valueOf(u.getClasstimeid())).toList();
     }
 
     @Override
@@ -35,26 +38,61 @@ public class ClasstimeServiceImpl implements GeneralService<Classtime> {
 
     @Override
     public String createABean(String id, Classtime bean) {
-        return null;
+        Classtime bean1 = getABean(id);
+        if (bean1 == null){
+            bean.setClasstimeid(Integer.parseInt(id));
+            classtimeMapper.save(bean);
+            return "Success";
+        }
+        else{
+            return "Conflict";
+        }
     }
 
     @Override
     public String createBeans(List<Classtime> beans) {
-        return null;
+        beans.removeIf(Objects::isNull);
+        for(Classtime bean : beans){
+            createABean(String.valueOf(bean.getClasstimeid()), bean);
+        }
+        return "Success";
     }
 
     @Override
     public String changeABean(String id, Classtime bean) {
-        return null;
+        Classtime bean1 = getABean(id);
+        if (bean1 == null)
+            return "NotFound";
+        else{
+            bean.setClasstimeid(Integer.parseInt(id));
+
+            classtimeMapper.save(bean);
+            return "Success";
+        }
+    }
+
+    private String deleteABean(int id){
+        Classtime bean1 = classtimeMapper.findByClasstimeid(id);
+        if (bean1 != null) {
+            classtimeMapper.delete(bean1);
+            return "Success";
+        } else {
+            return "NotFound";
+        }
     }
 
     @Override
     public String deleteABean(String id) {
-        return null;
+        int id_int = Integer.parseInt(id);
+        return deleteABean(id_int);
     }
 
     @Override
     public String deleteBeans(List<?> ids) {
-        return null;
+        List<Integer> beanids = (List<Integer>) ids;
+        for(Integer beanid : beanids) {
+            classtimeMapper.deleteByClasstimeid(beanid);
+        }
+        return "Success";
     }
 }
