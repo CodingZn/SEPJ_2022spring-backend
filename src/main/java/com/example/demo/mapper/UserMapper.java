@@ -7,11 +7,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserMapper extends JpaRepository<User, String> {
 
-    User findByUseridAndPassword(String schoolnumber, String password);
-    User findByUserid(String schoolnumber);
+    User findByUseridAndPassword(String userid, String password);
+    User findByUserid(String userid);
     User findByIdentitynumber(String identitynumber);
     User findByUsertype(User.Type usertype);
-    User findFirstByUsertypeAndName(User.Type usertype, String name);
 
-    
 }

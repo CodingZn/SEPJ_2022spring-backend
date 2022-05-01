@@ -6,6 +6,6 @@ public interface UserSpecService {
 
     void createAdmin();
 
-    User login(String schoolnumber, String password);
+    User login(String userid, String password);
 
 }

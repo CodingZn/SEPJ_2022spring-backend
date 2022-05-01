@@ -181,7 +181,7 @@ DependValueVerify --* ClassroomMapper
 class User
 {
 - usertype
-- schoolnumber
+- userid
 - name
 - identitynumber
 - email

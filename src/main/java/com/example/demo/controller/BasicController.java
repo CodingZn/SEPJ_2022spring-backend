@@ -28,10 +28,10 @@ public abstract class BasicController <T>{
     abstract String getBeans();
 
     /*
-    * 方法规范：
-    * 具体方法的参数列表：authentication, [key], [<T> bean], [JsonArray]
-    * 抽象方法的参数列表：authority, userid, [key] [<T> bean], [JsonArray]
-    * */
+     * 方法规范：
+     * 具体方法的参数列表：authentication, [key], [<T> bean], [JsonArray]
+     * 抽象方法的参数列表：authority, userid, [key] [<T> bean], [JsonArray]
+     * */
 
     /* 1-查--getAllIds--获取所有id*/
     abstract Map<String, Object> getAllIds_impl(String authority, String userid);
@@ -41,10 +41,10 @@ public abstract class BasicController <T>{
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         String authority = ControllerOperation.getAuthority(authentication);
-        String schoolnumber = JWTUtils.decodeToGetValue(authentication.substring(7), "schoolnumber");
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
 
         if (credit.equals(ValidJWTToken)) {
-            map = getAllIds_impl(authority, schoolnumber);
+            map = getAllIds_impl(authority, userid);
             String result = (String) map.get("result");
             map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);
@@ -61,10 +61,10 @@ public abstract class BasicController <T>{
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         String authority = ControllerOperation.getAuthority(authentication);
-        String schoolnumber = JWTUtils.decodeToGetValue(authentication.substring(7), "schoolnumber");
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
 
         if (credit.equals(ValidJWTToken)) {
-            map = getABean_impl(authority, schoolnumber, key);
+            map = getABean_impl(authority, userid, key);
             String result = (String) map.get("result");
             map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);
@@ -81,10 +81,10 @@ public abstract class BasicController <T>{
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         String authority = ControllerOperation.getAuthority(authentication);
-        String schoolnumber = JWTUtils.decodeToGetValue(authentication.substring(7), "schoolnumber");
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
 
         if (credit.equals(ValidJWTToken)) {
-            map = getAllBeans_impl(authority, schoolnumber);
+            map = getAllBeans_impl(authority, userid);
             String result = (String) map.get("result");
             map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);
@@ -101,10 +101,10 @@ public abstract class BasicController <T>{
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         String authority = ControllerOperation.getAuthority(authentication);
-        String schoolnumber = JWTUtils.decodeToGetValue(authentication.substring(7), "schoolnumber");
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
 
         if (credit.equals(ValidJWTToken)) {
-            map = createABean_impl(authority, schoolnumber, key, bean);
+            map = createABean_impl(authority, userid, key, bean);
             String result = (String) map.get("result");
             map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);
@@ -121,11 +121,11 @@ public abstract class BasicController <T>{
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         String authority = ControllerOperation.getAuthority(authentication);
-        String schoolnumber = JWTUtils.decodeToGetValue(authentication.substring(7), "schoolnumber");
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
 
         if (credit.equals(ValidJWTToken)) {
             List<T> beans = jsonArray.toJavaList(clazz);
-            map = createBeans_impl(authority, schoolnumber, beans);
+            map = createBeans_impl(authority, userid, beans);
             String result = (String) map.get("result");
             map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);
@@ -141,10 +141,10 @@ public abstract class BasicController <T>{
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         String authority = ControllerOperation.getAuthority(authentication);
-        String schoolnumber = JWTUtils.decodeToGetValue(authentication.substring(7), "schoolnumber");
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
 
         if (credit.equals(ValidJWTToken)) {
-            map = rewriteABean_impl(authority, schoolnumber, key, bean);
+            map = rewriteABean_impl(authority, userid, key, bean);
             String result = (String) map.get("result");
             map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);
@@ -161,10 +161,10 @@ public abstract class BasicController <T>{
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         String authority = ControllerOperation.getAuthority(authentication);
-        String schoolnumber = JWTUtils.decodeToGetValue(authentication.substring(7), "schoolnumber");
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
 
         if (credit.equals(ValidJWTToken)) {
-            map = modifyABean_impl(authority, schoolnumber, key, bean);
+            map = modifyABean_impl(authority, userid, key, bean);
             String result = (String) map.get("result");
             map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);
@@ -181,10 +181,10 @@ public abstract class BasicController <T>{
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         String authority = ControllerOperation.getAuthority(authentication);
-        String schoolnumber = JWTUtils.decodeToGetValue(authentication.substring(7), "schoolnumber");
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
 
         if (credit.equals(ValidJWTToken)) {
-            map = delBean_impl(authority, schoolnumber, key);
+            map = delBean_impl(authority, userid, key);
             String result = (String) map.get("result");
             map.remove("result");
             return ControllerOperation.getConductResponse(result, map);
@@ -201,11 +201,11 @@ public abstract class BasicController <T>{
 
         String credit = ControllerOperation.checkAuthentication(authentication);
         String authority = ControllerOperation.getAuthority(authentication);
-        String schoolnumber = JWTUtils.decodeToGetValue(authentication.substring(7), "schoolnumber");
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
 
         if (credit.equals(ValidJWTToken)) {
             List<?> ids = jsonArray.toJavaList(clazz);//int or String
-            map = delBeans_impl(authority, schoolnumber, ids);
+            map = delBeans_impl(authority, userid, ids);
             String result = (String) map.get("result");
             map.remove("result");
             return ControllerOperation.getConductResponse(result, map);

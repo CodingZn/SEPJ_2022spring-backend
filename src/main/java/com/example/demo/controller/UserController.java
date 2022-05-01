@@ -295,14 +295,14 @@ public class UserController extends BasicController <User>{
     /*!!!查==登录操作*/
     @RequestMapping(value = "/token", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> login(@RequestBody User user) {
-        String schoolnumber, password;
+        String userid, password;
 
-        schoolnumber = user.getUserid();
+        userid = user.getUserid();
         password = user.getPassword();
 
         Map<String, Object> map = new HashMap<>();
 
-        User userBean = userSpecService.login(schoolnumber, password);
+        User userBean = userSpecService.login(userid, password);
 
         if (userBean != null && userBean.getStatus().toString().equals("enabled")) {//success
             String token;
