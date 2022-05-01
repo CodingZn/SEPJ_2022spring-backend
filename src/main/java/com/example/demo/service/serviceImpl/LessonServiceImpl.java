@@ -40,7 +40,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     public String createABean(String lessonid, Lesson lesson) {
         Lesson lesson1 = getABean(lessonid);
         if (lesson1 == null){
-            lesson.setLessonid(Integer.parseInt(lessonid));
+            //id is generated
             lessonMapper.save(lesson);
             return "Success";
         }

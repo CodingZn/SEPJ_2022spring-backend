@@ -12,12 +12,10 @@ import java.util.Objects;
 @Service
 public class UserServiceImpl implements GeneralService<User> {
     private final UserMapper userMapper;
-    private final DependValueVerify dependValueVerify;
 
     @Autowired
-    public UserServiceImpl(UserMapper userMapper, DependValueVerify dependValueVerify) {
+    public UserServiceImpl(UserMapper userMapper) {
         this.userMapper = userMapper;
-        this.dependValueVerify = dependValueVerify;
     }
 
     /* ************************************ */
@@ -53,9 +51,6 @@ public class UserServiceImpl implements GeneralService<User> {
         if (!user.verifyform()) {//检查数据格式
             return "FormError";
         }
-//        else if (!dependValueVerify.userDependCheck(user)){//检查依赖属性
-//            return "DependError";
-//        }
         else{
             userMapper.save(user);
             return "Success";
@@ -82,9 +77,6 @@ public class UserServiceImpl implements GeneralService<User> {
         if (!user.verifyform()) {
             return "FormError";
         }
-//        else if (!dependValueVerify.userDependCheck(user)){
-//            return "DependError";
-//        }
         else{
             userMapper.save(user);
             return "Success";
