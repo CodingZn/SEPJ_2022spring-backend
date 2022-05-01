@@ -1,8 +1,6 @@
 package com.example.demo.service.serviceImpl;
 
 import com.example.demo.bean.Classtime;
-import com.example.demo.bean.Lesson;
-import com.example.demo.bean.Major;
 import com.example.demo.mapper.ClasstimeMapper;
 import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
