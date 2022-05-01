@@ -135,8 +135,8 @@ public class MajorController extends BasicController<Major> {
     @RequestMapping(value="/major/{majorid}", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
                                                            @PathVariable("majorid") String key,
-                                                           @RequestBody Major major){
-        return super.createABean(authentication, key, major);
+                                                           @RequestBody Major bean){
+        return super.createABean(authentication, key, bean);
 
     }
 
@@ -165,11 +165,11 @@ public class MajorController extends BasicController<Major> {
 
     /* 6-改--rewriteABean--重写一个实体,put*/
     @Override
-    Map<String, Object> rewriteABean_impl(String authority, String userid, String key, Major major) {
+    Map<String, Object> rewriteABean_impl(String authority, String userid, String key, Major bean) {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", majorService.changeABean(key, major));
+                map.put("result", majorService.changeABean(key, bean));
                 return map;
             }
             default -> {
@@ -183,8 +183,8 @@ public class MajorController extends BasicController<Major> {
     @RequestMapping(value="/major/{majorid}", method = RequestMethod.PUT)
     public ResponseEntity<Map<String, Object>> rewriteABean(@RequestHeader(value = "Authentication") String authentication,
                                                             @PathVariable("majorid") String key,
-                                                            @RequestBody Major major) {
-        return super.rewriteABean(authentication, key, major);
+                                                            @RequestBody Major bean) {
+        return super.rewriteABean(authentication, key, bean);
     }
 
     /* 7-改--modifyABean--修改一个实体,patch*/
@@ -217,8 +217,8 @@ public class MajorController extends BasicController<Major> {
     @RequestMapping(value="/major/{majorid}", method = RequestMethod.PATCH)
     public ResponseEntity<Map<String, Object>> modifyABean(@RequestHeader(value = "Authentication") String authentication,
                                                            @PathVariable("majorid") String key,
-                                                           @RequestBody Major major) {
-        return super.modifyABean(authentication, key, major);
+                                                           @RequestBody Major bean) {
+        return super.modifyABean(authentication, key, bean);
     }
 
     /* 8-删--deleteABean--删除一个实体*/
