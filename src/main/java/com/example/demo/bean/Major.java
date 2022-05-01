@@ -11,11 +11,11 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name="major")
-@GenericGenerator(name = "majorgenerator", strategy = "com.example.demo.bean.generators.MajoridGenerator")
+//@GenericGenerator(name = "majorgenerator", strategy = "com.example.demo.bean.generators.MajoridGenerator")
 public class Major {//admin changeable
 
     @Id
-    @GeneratedValue(generator = "majorgenerator")
+//    @GeneratedValue(generator = "majorgenerator")
     @Column(name="majorid", nullable = false, length = 5)
     private String majorid;//unchangeable
 
