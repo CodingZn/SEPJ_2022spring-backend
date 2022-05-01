@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserServiceImpl implements GeneralService<User> {
@@ -19,6 +20,8 @@ public class UserServiceImpl implements GeneralService<User> {
         this.dependValueVerify = dependValueVerify;
     }
 
+    /* ************************************ */
+
     @Override
     public List<String> getAllIds() {
         List<User> userList = userMapper.findAll();
@@ -26,32 +29,33 @@ public class UserServiceImpl implements GeneralService<User> {
     }
 
     @Override
-    public User getABean(String schoolnumber) {
-        return userMapper.findBySchoolnumber(schoolnumber);
+    public User getABean(String userid) {
+        return userMapper.findByUserid(userid);
     }
 
     @Override
     public List<User> getAllBeans() {
-        return null;
+        return userMapper.findAll();
     }
 
     @Override
-    public String createABean(String schoolnumber, User user) {
-//        b = userMapper.findByIdentitynumber(newidentitynumber);//是否检查身份证号冲突
+    public String createABean(String userid, User user) {
 
-        User user1;
-        user1 = userMapper.findBySchoolnumber(schoolnumber);
-        if (user1 != null)
+        User user1, user2;
+        user1 = userMapper.findByUserid(userid);
+        String newidentitynumber = user.getIdentitynumber();
+        user2 = userMapper.findByIdentitynumber(newidentitynumber);//检查身份证号冲突
+        if (user1 != null || user2 != null)
             return "Conflict";
-        user.setUserid(schoolnumber);
+        user.setUserid(userid);
         user.setPassword("fDu666666");//统一设置初始密码
 
         if (!user.verifyform()) {//检查数据格式
             return "FormError";
         }
-        else if (!dependValueVerify.userDependCheck(user)){//检查依赖属性
-            return "DependError";
-        }
+//        else if (!dependValueVerify.userDependCheck(user)){//检查依赖属性
+//            return "DependError";
+//        }
         else{
             userMapper.save(user);
             return "Success";
@@ -60,18 +64,27 @@ public class UserServiceImpl implements GeneralService<User> {
     }
 
     @Override
-    public String changeABean(String schoolnumber, User user) {
-        User user1 = userMapper.findBySchoolnumber(schoolnumber);
+    public String createBeans(List<User> beans) {
+        beans.removeIf(Objects::isNull);
+        for(User user : beans){
+            createABean(user.getUserid(), user);
+        }
+        return "Success";
+    }
+
+    @Override
+    public String changeABean(String userid, User user) {
+        User user1 = userMapper.findByUserid(userid);
         if (user1 == null)
             return "NotFound";
 
-        user.setUserid(schoolnumber);//保证id不变，是修改而非新增
+        user.setUserid(userid);//保证id不变，是修改而非新增
         if (!user.verifyform()) {
             return "FormError";
         }
-        else if (!dependValueVerify.userDependCheck(user)){
-            return "DependError";
-        }
+//        else if (!dependValueVerify.userDependCheck(user)){
+//            return "DependError";
+//        }
         else{
             userMapper.save(user);
             return "Success";
@@ -79,8 +92,8 @@ public class UserServiceImpl implements GeneralService<User> {
     }
 
     @Override
-    public String deleteABean(String schoolnumber) {
-        User user = userMapper.findBySchoolnumber(schoolnumber);
+    public String deleteABean(String userid) {
+        User user = userMapper.findByUserid(userid);
 
         if (user != null) {
             userMapper.delete(user);
@@ -88,5 +101,14 @@ public class UserServiceImpl implements GeneralService<User> {
         } else {
             return "NotFound";
         }
+    }
+
+    @Override
+    public String deleteBeans(List<?> ids) {
+        List<String> userids = (List<String>) ids;
+        for(String userid : userids) {
+            userMapper.deleteById(userid);
+        }
+        return "Success";
     }
 }
