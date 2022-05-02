@@ -1,5 +1,6 @@
 package com.example.demo.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -22,6 +23,7 @@ public class Major {//admin changeable
     @Column(name="name", nullable = false, length = 32)
     private String name;//changeable
 
+    @JsonIgnoreProperties(value = "majors")
     @ManyToOne
     @JoinColumn(name= "major_schoolid")
     private School school;//changeable

@@ -1,6 +1,8 @@
 package com.example.demo.bean;
 
-import com.example.demo.utils.UserFormVerify;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnoreType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -41,13 +43,16 @@ public class User {//admin|self changeable
     @Column(name = "phonenumber", length = 32)
     private String phonenumber;//changeable
 
+    @JsonIgnore
     @Column(name = "password", nullable = false, length = 32)
     private String password;//self-only changeable
 
+    @JsonIgnoreProperties(value = {"majors"})
     @ManyToOne
     @JoinColumn(name = "school")
     private School school;//admin changeable
 
+    @JsonIgnoreProperties(value = {"school"})
     @ManyToOne
     @JoinColumn(name = "major")
     private Major major;//admin changeable
@@ -59,13 +64,16 @@ public class User {//admin|self changeable
     @Column(name = "status",nullable = false, length = 10)
     private Status status = Status.enabled;//admin changeable
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "classmates")
     private List<Lesson> lessonsTaking;//changeable
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(name="students_lessons_taken")
     private List<Lesson> lessonsTaken;//admin changeable
 
+    @JsonIgnore
     @OneToMany(mappedBy = "student")
     private List<Lessonrequest> lessonrequests;//self-only changeable
 

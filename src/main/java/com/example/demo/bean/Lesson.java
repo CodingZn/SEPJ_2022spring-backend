@@ -1,5 +1,7 @@
 package com.example.demo.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,6 +29,7 @@ public class Lesson {//changeable
     @Column(name = "lessonname", nullable = false, length = 32)
     private String lessonname;//admin|teacher_self changeable
 
+    @JsonIgnoreProperties(value = {"majors"})
     @ManyToOne
     @JoinColumn(name = "school")
     private School school;//admin changeable
@@ -37,6 +40,9 @@ public class Lesson {//changeable
     @Column(name = "credit", nullable = false)
     private int credit;//admin changeable
 
+    @JsonIgnoreProperties(value = {"usertype",
+            "identitynumber","email","phonenumber","school",
+            "major", "grade", "status"})
     @ManyToMany
     @JoinTable(name="lessons_teacher_taking")
     private List<User> teacher;//admin changeable
@@ -44,6 +50,7 @@ public class Lesson {//changeable
     @Column(name = "introduction")
     private String introduction;//admin|teacher_self changeable
 
+    @JsonIgnoreProperties(value = {"uplesson"})
     @OneToMany(mappedBy = "uplesson")
     private List<Classarrange> arranges;//admin changeable
 
@@ -64,7 +71,8 @@ public class Lesson {//changeable
         censored, pending
     }
 
-    @ManyToMany()
+    @JsonIgnore
+    @ManyToMany
     @JoinTable(name="lessons_students_taking")
     private List<User> classmates;//admin|student_self changeable
 
