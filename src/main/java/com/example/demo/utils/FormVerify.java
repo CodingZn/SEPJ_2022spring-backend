@@ -1,8 +1,8 @@
 package com.example.demo.utils;
 
 import com.example.demo.bean.*;
-import com.example.demo.bean.trivialBeans.Classroom;
-import com.example.demo.bean.trivialBeans.Classtime;
+import com.example.demo.bean.Classroom;
+import com.example.demo.bean.Classtime;
 
 public class FormVerify {
     //user,major,school,lesson,lessonrequest
@@ -11,14 +11,31 @@ public class FormVerify {
     //user
 
     public static String user_formverify(User user){
-        boolean a = user.verifyform();
-        boolean b = user.getGrade().matches("\\d{2}");
+
+        UserFormVerify check = new UserFormVerify();
+        boolean a, b, c, d;
+        a = check.name_verify(user.getName())
+                && check.id_verify(user.getIdentitynumber())
+                && check.password_verify(user.getPassword())
+                && check.major_verify(user.getMajor().getName())
+                && check.school_verify(user.getSchool().getName());
+        b = user.getEmail() == null || check.email_verify(user.getEmail());
+        c = user.getPhonenumber() == null || check.phone_verify(user.getPhonenumber());
+
+        d = switch (user.getUsertype()) {
+            case student -> check.stuid_verify(user.getUserid());
+            case teacher -> check.workid_verify(user.getUserid());
+            case admin -> true;
+        };
+
+
+        boolean e = user.getGrade().matches("\\d{2}");
         return "";
     }
 
     //major
     public static String major_formverify(Major major){
-        boolean a = major.getMajornumber().matches("\\d{3}");
+        boolean a = major.getMajorid().matches("\\d{3}");
         boolean b = major.getName().matches("[\u4e00-\u9fa5A-Za-z]+");
         return "";
     }
@@ -33,14 +50,14 @@ public class FormVerify {
     //lesson
     public static String lesson_formverify(Lesson lesson){
         boolean a = lesson.getLessonnumber().matches("[A-Z]{4}\\d{6}\\.\\d{2}");
-        boolean b = lesson.getLessoncode().matches("[A-Z]{4}\\d{6}");
+        boolean b = lesson.getLessoncode().equals(lesson.getLessonnumber().substring(0,10));
         boolean c = lesson.getLessonname().matches("[\u4e00-\u9fa5A-Za-z]+");
         boolean d = (lesson.getHour() > 0) && (lesson.getCredit() >= 0);
         boolean e = lesson.getIntroduction().matches("\\w{0,255}");
         boolean f = lesson.getCapacity() > 0;
-        boolean g = lesson.getSemester().equals(lesson.getLessonid().substring(0,5));
+        boolean g = lesson.getSemester().matches("(19\\d{2})|(20[0-1]\\d)|(202[0-2])[AB]");
         boolean h = lesson.getMajorallowed().equals("all")
-                || lesson.getMajorallowed().matches("( ((0\\d)|(1\\d)|(2[0-2]))-\\d{3}, )*( ((0\\d)|(1\\d)|(2[0-2]))-\\d{3} )");
+                || lesson.getMajorallowed().matches("(((0\\d)|(1\\d)|(2[0-2]))-\\d{3},)*(((0\\d)|(1\\d)|(2[0-2]))-\\d{3})");
         return "";
     }
 
@@ -66,57 +83,11 @@ public class FormVerify {
     }
 
     //lessonRequest
-    public static String lessonRequest_formverify(LessonRequest lessonRequest){
-        boolean a = lessonRequest.getSemester().matches("[A-Z]{4}\\d{6}");
-        boolean b = lessonRequest.getRequestReason().matches("\\w{0,999}");
+    public static String lessonRequest_formverify(Lessonrequest lessonrequest){
+        boolean a = lessonrequest.getSemester().matches("[A-Z]{4}\\d{6}");
+        boolean b = lessonrequest.getRequestReason().matches("\\w{0,999}");
         return "";
     }
 
 
-
-
-    /*//user
-    private static final String REGEX_ID_CARD18 = "^[1-9]\\d{5}[1-2]\\d{3}((0\\d)|(1[0-2]))(([0|1|2]\\d)|3[0-1])\\d{3}([0-9Xx])$";
-    private static final String REGEX_EMAIL = "^\\s*\\w+(?:\\.{0,1}[\\w-]+)*@[a-zA-Z0-9]+(?:[-.][a-zA-Z0-9]+)*\\.[a-zA-Z]+\\s*$";
-    private static final String REGEX_PHONE_1 = "1\\d{10}";
-
-    private  boolean id_verify(String id){
-        return id.matches(REGEX_ID_CARD18);
-    }
-
-    private boolean email_verify(String email){
-
-        return (email == "") || email.matches(REGEX_EMAIL);
-    }
-
-    private boolean phone_verify(String phone){
-        return (phone == "") || phone.matches(REGEX_PHONE_1);
-    }
-
-    private boolean password_verify(String password){
-        int len = password.length();
-        int kinds = (password.matches(".*\\d+.*") ? 1 :0 )
-                +(password.matches(".*[a-zA-Z]+.*") ? 1 : 0)
-                +(password.matches(".*[-_]+.*") ? 1 : 0);
-        boolean isillegal = password.matches(".*[^[-\\w]]+.*");//匹配到不支持的字符
-
-        return 6 <= len && len <= 32 && kinds >= 2 && !isillegal;
-    }
-    private boolean name_verify(String name){
-        return name.matches("[\u4e00-\u9fa5A-Za-z]+");//中英文
-
-    }
-    private boolean workid_verify(String number){
-        return number.matches("((0\\d)|(1\\d)|(2[0-2]))\\d{6}");//前两位00~22，共八位
-    }
-    private boolean stuid_verify(String number){
-        return number.matches("((0\\d)|(1\\d)|(2[0-2]))\\d{4}");//前两位00~22，共六位
-    }
-    private boolean school_verify(String school){
-        return school.matches("[\u4e00-\u9fa5A-Za-z]+");//中英文
-    }
-    private boolean major_verify(String major){
-        return major.matches("[\u4e00-\u9fa5A-Za-z]+");//中英文
-    }
-*/
 }
