@@ -303,7 +303,7 @@ public class UserController extends BasicController <User>{
 
         User userBean = userSpecService.login(userid, password);
 
-        if (userBean != null && userBean.getStatus().toString().equals("enabled")) {//success
+        if (userBean != null && userBean.getStatus().equals(User.Status.enabled)) {//success
             String token;
             Map<String, String> payload = new HashMap<>();//自定义payload
             payload.put("userid", userBean.getUserid());//学号
