@@ -10,7 +10,7 @@ public interface GeneralService<T> {
 
     List<T> getAllBeans();
 
-    String createABean(String id, T bean);
+    String createABean(T bean);
 
     String createBeans(List<T> beans);
 

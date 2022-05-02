@@ -173,17 +173,17 @@ public class LessonController extends BasicController<Lesson> {
 
     /* 4-增--createABean--新增一个实体*/
     @Override
-    Map<String, Object> createABean_impl(String authority, String userid, String key, Lesson lesson) {
+    Map<String, Object> createABean_impl(String authority, String userid, Lesson lesson) {
 
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
-                map.put("result", lessonService.createABean(userid, lesson));
+                map.put("result", lessonService.createABean(lesson));
             }
             case TeacherAuthority -> {
                 /*!!!               lesson.setTeacher(name);*/
                 lesson.setStatus(Lesson.Status.pending);
-                map.put("result", lessonService.createABean(userid, lesson));
+                map.put("result", lessonService.createABean(lesson));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -193,11 +193,10 @@ public class LessonController extends BasicController<Lesson> {
     }
 
     @Override
-    @RequestMapping(value = "/lesson/{lessonid}", method = RequestMethod.POST)
+    @RequestMapping(value = "/lesson", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
-                                                           @PathVariable("lessonid") String key,
                                                            @RequestBody Lesson lesson) {
-        return super.createABean(authentication, key, lesson);
+        return super.createABean(authentication, lesson);
     }
 
     /* 5-增--createBeans--新增多个实体*/

@@ -37,21 +37,16 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     }
 
     @Override
-    public String createABean(String lessonid, Lesson lesson) {
-        Lesson lesson1 = getABean(lessonid);
-        if (lesson1 == null){
-            //id is generated
-            lessonMapper.save(lesson);
-            return "Success";
-        }
-        else return "Conflict";
+    public String createABean(Lesson lesson) {
+        lessonMapper.save(lesson);
+        return "Success";
     }
 
     @Override
     public String createBeans(List<Lesson> beans) {
         beans.removeIf(Objects::isNull);
         for(Lesson lesson : beans){
-            createABean(String.valueOf(lesson.getLessonid()), lesson);
+            createABean(lesson);
         }
         return "Success";
     }

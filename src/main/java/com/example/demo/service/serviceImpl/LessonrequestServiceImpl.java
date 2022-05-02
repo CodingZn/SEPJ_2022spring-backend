@@ -36,23 +36,16 @@ public class LessonrequestServiceImpl implements GeneralService<Lessonrequest> {
     }
 
     @Override
-    public String createABean(String id, Lessonrequest bean) {
-        Lessonrequest bean1 = getABean(id);
-        if (bean1 == null){
-            bean.setLessonrequestid(Integer.parseInt(id));
-            lessonrequestMapper.save(bean);
-            return "Success";
-        }
-        else{
-            return "Conflict";
-        }
+    public String createABean(Lessonrequest bean) {
+        lessonrequestMapper.save(bean);
+        return "Success";
     }
 
     @Override
     public String createBeans(List<Lessonrequest> beans) {
         beans.removeIf(Objects::isNull);
         for(Lessonrequest bean : beans){
-            createABean(String.valueOf(bean.getLessonrequestid()), bean);
+            createABean(bean);
         }
         return "Success";
     }

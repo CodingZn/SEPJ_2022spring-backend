@@ -60,8 +60,8 @@ public abstract class BasicController <T>{
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
-        String authority = ControllerOperation.getAuthority(authentication);
-        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
+        String authority = ControllerOperation.getAuthority(authentication);System.out.println(authority);
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");System.out.println(userid);
 
         if (credit.equals(ValidJWTToken)) {
             map = getABean_impl(authority, userid, key);
@@ -94,9 +94,9 @@ public abstract class BasicController <T>{
     }
 
     /* 4-增--createABean--新增一个实体*/
-    abstract Map<String, Object> createABean_impl(String authority, String userid, String key, T bean);
+    abstract Map<String, Object> createABean_impl(String authority, String userid, T bean);
 
-    public ResponseEntity<Map<String, Object>> createABean(String authentication, String key, T bean) {
+    public ResponseEntity<Map<String, Object>> createABean(String authentication, T bean) {
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
@@ -104,7 +104,7 @@ public abstract class BasicController <T>{
         String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
 
         if (credit.equals(ValidJWTToken)) {
-            map = createABean_impl(authority, userid, key, bean);
+            map = createABean_impl(authority, userid, bean);
             String result = (String) map.get("result");
             map.remove("result");//不要返回额外的信息
             return ControllerOperation.getConductResponse(result, map);

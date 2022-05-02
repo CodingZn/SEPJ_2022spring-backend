@@ -33,24 +33,16 @@ public class SchoolServiceImpl implements GeneralService<School> {
     }
 
     @Override
-    public String createABean(String id, School bean) {//只创建，不修改
-
-        School bean1 = getABean(id);
-        if (bean1 == null) {
-            bean.setSchoolid(id);
-            schoolMapper.save(bean);
-            return "Success";
-        }
-        else{
-            return "Conflict";
-        }
+    public String createABean(School bean) {
+        schoolMapper.save(bean);
+        return "Success";
     }
 
     @Override
     public String createBeans(List<School> beans) {
         beans.removeIf(Objects::isNull);
         for(School bean : beans){
-            createABean(bean.getSchoolid(), bean);
+            createABean(bean);
         }
         return "Success";
     }

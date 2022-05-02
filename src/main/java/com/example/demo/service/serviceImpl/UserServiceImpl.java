@@ -37,15 +37,14 @@ public class UserServiceImpl implements GeneralService<User> {
     }
 
     @Override
-    public String createABean(String userid, User user) {
+    public String createABean(User user) {
 
-        User user1, user2;
-        user1 = userMapper.findByUserid(userid);
+        User user1;
         String newidentitynumber = user.getIdentitynumber();
-        user2 = userMapper.findByIdentitynumber(newidentitynumber);//检查身份证号冲突
-        if (user1 != null || user2 != null)
+        user1 = userMapper.findByIdentitynumber(newidentitynumber);//检查身份证号冲突
+
+        if (user1 != null)
             return "Conflict";
-        user.setUserid(userid);
         user.setPassword("fDu666666");//统一设置初始密码
 
         if (!user.verifyform()) {//检查数据格式
@@ -62,7 +61,7 @@ public class UserServiceImpl implements GeneralService<User> {
     public String createBeans(List<User> beans) {
         beans.removeIf(Objects::isNull);
         for(User user : beans){
-            createABean(user.getUserid(), user);
+            createABean(user);
         }
         return "Success";
     }

@@ -118,11 +118,11 @@ public class MajorController extends BasicController<Major> {
 
     /* 4-增--createABean--新增一个实体*/
     @Override
-    Map<String, Object> createABean_impl(String authority, String userid, String key, Major bean) {
+    Map<String, Object> createABean_impl(String authority, String userid, Major bean) {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", majorService.createABean(key, bean));
+                map.put("result", majorService.createABean(bean));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -134,9 +134,8 @@ public class MajorController extends BasicController<Major> {
     @Override
     @RequestMapping(value="/major/{majorid}", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
-                                                           @PathVariable("majorid") String key,
                                                            @RequestBody Major bean){
-        return super.createABean(authentication, key, bean);
+        return super.createABean(authentication, bean);
 
     }
 

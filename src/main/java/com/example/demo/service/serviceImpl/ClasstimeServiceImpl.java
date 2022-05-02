@@ -35,23 +35,16 @@ public class ClasstimeServiceImpl implements GeneralService<Classtime> {
     }
 
     @Override
-    public String createABean(String id, Classtime bean) {
-        Classtime bean1 = getABean(id);
-        if (bean1 == null){
-            bean.setClasstimeid(Integer.parseInt(id));
-            classtimeMapper.save(bean);
-            return "Success";
-        }
-        else{
-            return "Conflict";
-        }
+    public String createABean(Classtime bean) {
+        classtimeMapper.save(bean);
+        return "Success";
     }
 
     @Override
     public String createBeans(List<Classtime> beans) {
         beans.removeIf(Objects::isNull);
         for(Classtime bean : beans){
-            createABean(String.valueOf(bean.getClasstimeid()), bean);
+            createABean(bean);
         }
         return "Success";
     }

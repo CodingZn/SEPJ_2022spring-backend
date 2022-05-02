@@ -35,24 +35,17 @@ public class MajorServiceImpl implements GeneralService<Major> {
     }
 
     @Override
-    public String createABean(String id, Major bean) {//只创建，不修改
+    public String createABean(Major bean) {//只创建，不修改
 
-        Major bean1 = getABean(id);
-        if (bean1 == null) {
-            bean.setMajorid(id);
-            majorMapper.save(bean);
-            return "Success";
-        }
-        else{
-            return "Conflict";
-        }
+        majorMapper.save(bean);
+        return "Success";
     }
 
     @Override
     public String createBeans(List<Major> beans) {
         beans.removeIf(Objects::isNull);
         for(Major bean : beans){
-            createABean(bean.getMajorid(), bean);
+            createABean(bean);
         }
         return "Success";
     }

@@ -130,11 +130,11 @@ public class UserController extends BasicController <User>{
 
     /* 4-增--createABean--新增一个实体*/
     @Override
-    Map<String, Object> createABean_impl(String authority, String userid, String key, User bean) {
+    Map<String, Object> createABean_impl(String authority, String userid, User bean) {
         Map<String, Object> map = new HashMap<>();
         switch (authority) {
             case AdminAuthority -> {
-                map.put("result", userService.createABean(key, bean));
+                map.put("result", userService.createABean(bean));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -142,13 +142,14 @@ public class UserController extends BasicController <User>{
         }
         return map;
     }
-
+/**
+ * 清理新增操作的路径变量！
+ * **/
     @Override
-    @RequestMapping(value = "/user/{userid}", method = RequestMethod.POST)
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
-                                                           @PathVariable("userid") String key,
                                                            @RequestBody User user) {
-        return super.createABean(authentication, key, user);
+        return super.createABean(authentication, user);
     }
 
     /* 5-增--createBeans--新增多个实体*/

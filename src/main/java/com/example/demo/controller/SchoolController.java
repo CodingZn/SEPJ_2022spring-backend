@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.example.demo.bean.Major;
 import com.example.demo.bean.School;
 import com.example.demo.service.GeneralService;
 import com.example.demo.utils.BeanTools;
@@ -119,11 +118,11 @@ public class SchoolController extends BasicController<School> {
 
     /* 4-增--createABean--新增一个实体*/
     @Override
-    Map<String, Object> createABean_impl(String authority, String userid, String key, School bean) {
+    Map<String, Object> createABean_impl(String authority, String userid, School bean) {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", schoolService.createABean(key, bean));
+                map.put("result", schoolService.createABean(bean));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -133,11 +132,10 @@ public class SchoolController extends BasicController<School> {
     }
 
     @Override
-    @RequestMapping(value="/school/{schoolid}", method = RequestMethod.POST)
+    @RequestMapping(value="/school", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
-                                                           @PathVariable("schoolid") String key,
                                                            @RequestBody School bean) {
-        return super.createABean(authentication, key, bean);
+        return super.createABean(authentication, bean);
     }
 
     /* 5-增--createBeans--新增多个实体*/

@@ -115,11 +115,11 @@ public class ClasstimeController extends BasicController<Classtime> {
 
     /* 4-增--createABean--新增一个实体*/
     @Override
-    Map<String, Object> createABean_impl(String authority, String userid, String key, Classtime bean) {
+    Map<String, Object> createABean_impl(String authority, String userid, Classtime bean) {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
-                map.put("result", classtimeService.createABean(key, bean));
+                map.put("result", classtimeService.createABean(bean));
             }
             default -> {
                 map.put("result", "NoAuth");
@@ -129,11 +129,10 @@ public class ClasstimeController extends BasicController<Classtime> {
     }
 
     @Override
-    @RequestMapping(value="/classtime/{classtimeid}", method = RequestMethod.POST)
+    @RequestMapping(value="/classtime", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
-                                                           @PathVariable("classtimeid") String key,
                                                            @RequestBody Classtime bean){
-        return super.createABean(authentication, key, bean);
+        return super.createABean(authentication, bean);
 
     }
 
