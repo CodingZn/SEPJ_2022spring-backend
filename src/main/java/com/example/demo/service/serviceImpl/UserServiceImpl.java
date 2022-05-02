@@ -47,13 +47,13 @@ public class UserServiceImpl implements GeneralService<User> {
             return "Conflict";
         user.setPassword("fDu666666");//统一设置初始密码
 
-        if (!user.verifyform()) {//检查数据格式
-            return "FormError";
-        }
-        else{
+//        if (!user.verifyform()) {//检查数据格式
+//            return "FormError";
+//        }
+//        else{
             userMapper.save(user);
             return "Success";
-        }
+//        }
 
     }
 
@@ -73,13 +73,13 @@ public class UserServiceImpl implements GeneralService<User> {
             return "NotFound";
 
         user.setUserid(userid);//保证id不变，是修改而非新增
-        if (!user.verifyform()) {
-            return "FormError";
-        }
-        else{
+//        if (!user.verifyform()) {
+//            return "FormError";
+//        }
+//        else{
             userMapper.save(user);
             return "Success";
-        }
+//        }
     }
 
     @Override

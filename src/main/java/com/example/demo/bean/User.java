@@ -70,24 +70,24 @@ public class User {//admin|self changeable
     private List<Lessonrequest> lessonrequests;//self-only changeable
 
 
-    public boolean verifyform(){
-        UserFormVerify check = new UserFormVerify();
-        boolean a, b, c, d;
-        a = check.name_verify(name)
-                && check.id_verify(identitynumber)
-                && check.password_verify(password)
-                && check.major_verify(major.getName())
-                && check.school_verify(school.getName());
-        b = email == null || check.email_verify(email);
-        c = phonenumber == null || check.phone_verify(phonenumber);
-
-        d = switch (usertype) {
-            case student -> check.stuid_verify(userid);
-            case teacher -> check.workid_verify(userid);
-            case admin -> true;
-        };
-
-        return a && b && c && d;
-
-    }
+//    public boolean verifyform(){
+//        UserFormVerify check = new UserFormVerify();
+//        boolean a, b, c, d;
+//        a = check.name_verify(name)
+//                && check.id_verify(identitynumber)
+//                && check.password_verify(password)
+//                && check.major_verify(major.getName())
+//                && check.school_verify(school.getName());
+//        b = email == null || check.email_verify(email);
+//        c = phonenumber == null || check.phone_verify(phonenumber);
+//
+//        d = switch (usertype) {
+//            case student -> check.stuid_verify(userid);
+//            case teacher -> check.workid_verify(userid);
+//            case admin -> true;
+//        };
+//
+//        return a && b && c && d;
+//
+//    }
 }
