@@ -1,6 +1,8 @@
 package com.example.demo.service.serviceImpl;
 
+import com.example.demo.bean.Classarrange;
 import com.example.demo.bean.Lesson;
+import com.example.demo.mapper.ClassarrangeMapper;
 import com.example.demo.mapper.LessonMapper;
 import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,12 @@ import java.util.Objects;
 @Service
 public class LessonServiceImpl implements GeneralService<Lesson> {
     private final LessonMapper lessonMapper;
+    private final ClassarrangeMapper classarrangeMapper;
 
     @Autowired
-    public LessonServiceImpl(LessonMapper lessonMapper) {
+    public LessonServiceImpl(LessonMapper lessonMapper, ClassarrangeMapper classarrangeMapper) {
         this.lessonMapper = lessonMapper;
+        this.classarrangeMapper = classarrangeMapper;
     }
 
     @Override
@@ -38,6 +42,8 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
 
     @Override
     public String createABean(Lesson lesson) {
+        List<Classarrange> arranges = lesson.getArranges();
+        classarrangeMapper.saveAll(arranges);
         lessonMapper.save(lesson);
         return "Success";
     }
@@ -59,8 +65,14 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
             return "NotFound";
         else{
             lesson.setLessonid(Integer.parseInt(lessonid));
-
+            List<Classarrange> list_common = lesson1.getArranges();
+            list_common.retainAll(lesson.getArranges());
+            List<Classarrange> list_new = lesson.getArranges(), list_old = lesson1.getArranges();
+            list_new.removeAll(list_common);
+            list_old.removeAll(list_common);
+            classarrangeMapper.saveAll(list_new);
             lessonMapper.save(lesson);
+            classarrangeMapper.deleteAll(list_old);
             return "Success";
         }
     }
@@ -69,6 +81,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
         Lesson lesson = lessonMapper.findByLessonid(lessonid);
         if (lesson != null) {
             lessonMapper.delete(lesson);
+            classarrangeMapper.deleteAll(lesson.getArranges());
             return "Success";
         } else {
             return "NotFound";
