@@ -1,5 +1,7 @@
 package com.example.demo.utils;
 
+
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -9,8 +11,11 @@ public class BeanTools {
 
         try{
             for(String name:changableKeys){
-                if(BeanTools.get(modifiedBean,
-                        "get"+name.substring(0, 1).toUpperCase() + name.substring(1))==null){
+                if(!(BeanTools.get(modifiedBean,
+                        "get"+name.substring(0, 1).toUpperCase() + name.substring(1)) instanceof Integer)
+                && BeanTools.get(modifiedBean,
+                        "get"+name.substring(0, 1).toUpperCase() + name.substring(1)) != null){
+
                 }
                 else{
                     BeanTools.set(originBean,"set"+name.substring(0, 1).toUpperCase() + name.substring(1),
@@ -39,6 +44,5 @@ public class BeanTools {
         return method.invoke(bean);
     }
     //"get"+name.substring(0, 1).toUpperCase() + name.substring(1)
-
 
 }
