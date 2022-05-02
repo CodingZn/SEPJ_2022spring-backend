@@ -142,9 +142,7 @@ public class UserController extends BasicController <User>{
         }
         return map;
     }
-/**
- * 清理新增操作的路径变量！
- * **/
+
     @Override
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,

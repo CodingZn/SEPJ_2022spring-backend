@@ -132,7 +132,7 @@ public class MajorController extends BasicController<Major> {
     }
 
     @Override
-    @RequestMapping(value="/major/{majorid}", method = RequestMethod.POST)
+    @RequestMapping(value="/major", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
                                                            @RequestBody Major bean){
         return super.createABean(authentication, bean);
