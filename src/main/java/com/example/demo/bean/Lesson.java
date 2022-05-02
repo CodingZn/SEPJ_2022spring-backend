@@ -16,7 +16,7 @@ import java.util.List;
 public class Lesson {//changeable
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lessonid", nullable = false)
     private int lessonid;//unchangeable
 
@@ -51,7 +51,8 @@ public class Lesson {//changeable
     private String introduction;//admin|teacher_self changeable
 
     @JsonIgnoreProperties(value = {"uplesson"})
-    @OneToMany(mappedBy = "uplesson")
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "lessons_arranges")
     private List<Classarrange> arranges;//admin changeable
 
     @Column(name = "capacity")

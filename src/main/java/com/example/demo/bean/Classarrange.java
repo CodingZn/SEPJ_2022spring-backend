@@ -34,6 +34,5 @@ public class Classarrange {
             "introduction", "arranges", "capacity", "semester",
             "majorallowed", "status"})
     @ManyToOne
-    @JoinColumn(name = "uplesson")
     private Lesson uplesson;
 }
