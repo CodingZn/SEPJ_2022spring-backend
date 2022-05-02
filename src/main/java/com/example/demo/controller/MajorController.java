@@ -158,7 +158,8 @@ public class MajorController extends BasicController<Major> {
     @RequestMapping(value = "/majors", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createBeans(@RequestHeader(value = "Authentication") String authentication,
                                                            @RequestBody JSONArray jsonArray, Class<Major> clazz) {
-        return super.createBeans(authentication, jsonArray, clazz);
+
+        return super.createBeans(authentication, jsonArray, Major.class);
     }
 
 

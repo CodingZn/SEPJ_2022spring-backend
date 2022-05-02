@@ -155,7 +155,7 @@ public class ClasstimeController extends BasicController<Classtime> {
     @RequestMapping(value = "/classtimes", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createBeans(@RequestHeader(value = "Authentication") String authentication,
                                                            @RequestBody JSONArray jsonArray, Class<Classtime> clazz) {
-        return super.createBeans(authentication, jsonArray, clazz);
+        return super.createBeans(authentication, jsonArray, Classtime.class);
     }
 
 

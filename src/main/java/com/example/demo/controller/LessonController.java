@@ -218,7 +218,7 @@ public class LessonController extends BasicController<Lesson> {
     @RequestMapping(value = "/lessons", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createBeans(@RequestHeader(value = "Authentication") String authentication,
                                                            @RequestBody JSONArray jsonArray, Class<Lesson> clazz) {
-        return super.createBeans(authentication, jsonArray, clazz);
+        return super.createBeans(authentication, jsonArray, Lesson.class);
     }
 
     /* 6-改--rewriteABean--重写一个实体,put*/

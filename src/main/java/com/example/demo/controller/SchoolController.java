@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.example.demo.bean.Major;
 import com.example.demo.bean.School;
 import com.example.demo.service.GeneralService;
 import com.example.demo.utils.BeanTools;
@@ -157,7 +158,7 @@ public class SchoolController extends BasicController<School> {
     @RequestMapping(value = "/schools", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createBeans(@RequestHeader(value = "Authentication") String authentication,
                                                            @RequestBody JSONArray jsonArray, Class<School> clazz) {
-        return super.createBeans(authentication, jsonArray, clazz);
+        return super.createBeans(authentication, jsonArray, School.class);
     }
 
     /* 6-改--rewriteABean--重写一个实体,put*/

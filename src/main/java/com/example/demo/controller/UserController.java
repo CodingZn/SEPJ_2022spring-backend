@@ -169,7 +169,7 @@ public class UserController extends BasicController <User>{
     @RequestMapping(value = "/users", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createBeans(@RequestHeader(value = "Authentication") String authentication,
                                                            @RequestBody JSONArray jsonArray, Class<User> clazz) {
-        return super.createBeans(authentication, jsonArray, clazz);
+        return super.createBeans(authentication, jsonArray, User.class);
     }
 
     /* 6-改--rewriteABean--重写一个实体,put*/
