@@ -38,6 +38,7 @@ public class Lessonrequest {//admin|student_self changeable
     @Column(name = "request_reason", nullable = false, length = 1024)
     private String requestReason;//student_self changeable
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 10)
     private Status status = Status.pending;//admin changeable
 
