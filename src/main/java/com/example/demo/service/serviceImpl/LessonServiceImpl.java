@@ -1,10 +1,12 @@
 package com.example.demo.service.serviceImpl;
 
+import com.alibaba.fastjson.JSON;
 import com.example.demo.bean.Classarrange;
 import com.example.demo.bean.Lesson;
 import com.example.demo.mapper.ClassarrangeMapper;
 import com.example.demo.mapper.LessonMapper;
 import com.example.demo.service.GeneralService;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,16 +65,13 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
         Lesson lesson1 = getABean(lessonid);
         if (lesson1 == null)
             return "NotFound";
-        else{//问题：原有的安排有id，新增的安排无id，如何进行比较
+        else{
             lesson.setLessonid(Integer.parseInt(lessonid));
-            List<Classarrange> list_common = lesson1.getArranges();
-            list_common.retainAll(lesson.getArranges());
-            List<Classarrange> list_new = lesson.getArranges(), list_old = lesson1.getArranges();
-            list_new.removeAll(list_common);
-            list_old.removeAll(list_common);
-            classarrangeMapper.saveAll(list_new);
+            classarrangeMapper.saveAll(lesson.getArranges());
             lessonMapper.save(lesson);
-            classarrangeMapper.deleteAll(list_old);
+
+            //需要删除不用了的arranges
+
             return "Success";
         }
     }
