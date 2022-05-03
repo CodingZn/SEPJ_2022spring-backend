@@ -3,6 +3,7 @@ package com.example.demo.utils;
 import com.example.demo.bean.*;
 import com.example.demo.bean.Classroom;
 import com.example.demo.bean.Classtime;
+import com.example.demo.bean.School;
 
 public class FormVerify {
     //user,major,school,lesson,lessonrequest
