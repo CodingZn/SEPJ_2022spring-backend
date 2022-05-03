@@ -3,6 +3,7 @@ package com.example.demo.bean;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,9 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "school")
+@GenericGenerator(name = "schoolidGenerator",
+        strategy = "com.example.demo.bean.generators.SchoolidGenerator")
 public class School {//admin changeable
 
     @Id
+    @GeneratedValue(generator = "schoolidGenerator")
     @Column(name="schoolid", nullable = false, length = 5)
     private String schoolid;//unchangeable
 

@@ -1,6 +1,9 @@
 package com.example.demo.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.example.demo.bean.generators.UseridGenerator;
+import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
 import com.example.demo.utils.BeanTools;
 import com.example.demo.utils.JWTUtils;
 import com.example.demo.bean.User;
@@ -20,12 +23,52 @@ import static com.example.demo.utils.JWTUtils.*;
 public class UserController extends BasicController <User>{
     private final UserSpecService userSpecService;
     private final GeneralService<User> userService;
+    private final UltimatecontrolMapper control;
+
+    private static String now_year;
 
     @Autowired
-    public UserController(UserSpecService userSpecService, GeneralService<User> userService) {
+    public UserController(UserSpecService userSpecService, GeneralService<User> userService, UltimatecontrolMapper control) {
         this.userSpecService = userSpecService;
         this.userService = userService;
+        this.control = control;
         userSpecService.createAdmin();
+        setGeneratorInit();
+    }
+
+    private void setGeneratorInit() {
+        List<User> students = userSpecService.getAllByUsertype(User.Type.student);
+        List<User> teachers = userSpecService.getAllByUsertype(User.Type.teacher);
+        now_year = control.findByName("now_year").getStatus();
+        UseridGenerator.setNow_year(now_year);
+
+        List<Integer> studentIds = students.stream().map(u -> {
+            if(u.getUserid().substring(0,2).equals(now_year))
+                return Integer.parseInt(u.getUserid().substring(2));
+            else return null;
+        }).toList();
+        try {
+            studentIds.removeIf(Objects::isNull);
+            int a = Collections.max(studentIds);
+            UseridGenerator.setNextStudentid(1 + a);
+
+        }catch (Exception e){
+            UseridGenerator.setNextStudentid(1);
+        }
+
+        List<Integer> teacherIds = teachers.stream().map(u -> {
+            if(u.getUserid().substring(0,2).equals(now_year))
+                return Integer.parseInt(u.getUserid().substring(2));
+            else return null;
+        }).toList();
+        try{
+            teacherIds.removeIf(Objects::isNull);
+            int a = Collections.max(teacherIds);
+            UseridGenerator.setNextTeacherid(1+a);
+        }catch (Exception e){
+            UseridGenerator.setNextTeacherid(1);
+        }
+
     }
 
     @Override

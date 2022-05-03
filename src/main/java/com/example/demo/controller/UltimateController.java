@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.bean.specialBean.Ultimatectrl;
 import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,7 @@ public class UltimateController {
     * 目前只有选课开关的控制 */
     private final UltimatecontrolMapper ultimatecontrolMapper;
 
-
+    @Autowired
     public UltimateController(UltimatecontrolMapper ultimatecontrolMapper) {
         this.ultimatecontrolMapper = ultimatecontrolMapper;
         Ultimatectrl ultimatectrl;

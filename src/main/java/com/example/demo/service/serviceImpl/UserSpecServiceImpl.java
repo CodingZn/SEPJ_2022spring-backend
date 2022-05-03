@@ -6,6 +6,8 @@ import com.example.demo.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class UserSpecServiceImpl implements UserSpecService {
     private final UserMapper userMapper;
@@ -35,6 +37,11 @@ public class UserSpecServiceImpl implements UserSpecService {
     @Override
     public User login(String userid, String password) {
         return userMapper.findByUseridAndPassword(userid, password);
+    }
+
+    @Override
+    public List<User> getAllByUsertype(User.Type usertype) {
+        return userMapper.findAllByUsertype(usertype);
     }
 
 }

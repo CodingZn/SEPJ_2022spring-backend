@@ -1,15 +1,20 @@
 package com.example.test;
 
-import com.example.demo.bean.Major;
+import com.example.demo.bean.generators.UseridGenerator;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 
 public class MajoridGeneratorTest {
 
     @Test
     public void testMajoridGenerator(){
-        Major major = new Major();
-        major.setName("测试专业");
-
+        List<Integer> list = new ArrayList<>();
+        list.add(null);list.add(null);list.add(null);list.add(null);list.add(null);
+        list.removeIf(Objects::isNull);
     }
 }

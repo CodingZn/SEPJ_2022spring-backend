@@ -1,10 +1,9 @@
 package com.example.demo.bean;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIgnoreType;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.data.repository.query.Param;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,6 +14,9 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "user")
+@GenericGenerator(name = "usergenerator",
+        strategy = "com.example.demo.bean.generators.UseridGenerator",
+        parameters = {@org.hibernate.annotations.Parameter(name = "User", value = "usertype")})
 public class User {//admin|self changeable
 
     public enum Type {
@@ -24,11 +26,13 @@ public class User {//admin|self changeable
         enabled, disabled
     }
 
+
     @Column(name = "usertype", nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
     private Type usertype;//unchangeable
 
     @Id
+    @GeneratedValue(generator = "usergenerator")
     @Column(name = "userid", nullable = false, length = 32)
     private String userid;//unchangeable
 

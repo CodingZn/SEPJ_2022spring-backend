@@ -3,6 +3,8 @@ package com.example.demo.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.example.demo.bean.Major;
 import com.example.demo.bean.School;
+import com.example.demo.bean.generators.MajoridGenerator;
+import com.example.demo.bean.generators.SchoolidGenerator;
 import com.example.demo.service.GeneralService;
 import com.example.demo.utils.BeanTools;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +24,19 @@ public class SchoolController extends BasicController<School> {
     @Autowired
     public SchoolController(GeneralService<School> schoolService) {
         this.schoolService = schoolService;
+        setGenerator(schoolService);
     }
 
+    private void setGenerator(GeneralService<School> schoolService) {
+        List<School> schools = schoolService.getAllBeans();
+        Optional<School> max_school = schools.stream().max(Comparator.comparing(u -> Integer.parseInt(u.getSchoolid())));
+        if (max_school.isPresent()){
+            SchoolidGenerator.setNextSchoolid(Integer.parseInt(max_school.get().getSchoolid()) + 1);
+        }
+        else{
+            SchoolidGenerator.setNextSchoolid(1);
+        }
+    }
 
     /* 该类中所有的方法都来自继承 */
 

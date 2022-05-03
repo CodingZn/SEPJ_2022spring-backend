@@ -1,6 +1,7 @@
 package com.example.demo.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -23,6 +24,7 @@ public class Major {//admin changeable
     @Column(name="name", nullable = false, length = 32)
     private String name;//changeable
 
+    @JsonDeserialize(using = MajorDeserializer.class)
     @JsonIgnoreProperties(value = "majors")
     @ManyToOne
     @JoinColumn(name= "major_schoolid")
