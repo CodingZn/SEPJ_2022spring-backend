@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.example.demo.bean.generators.MajoridGenerator;
 import com.example.demo.utils.BeanTools;
 import com.example.demo.bean.Major;
 import com.example.demo.service.GeneralService;
@@ -20,6 +21,18 @@ public class MajorController extends BasicController<Major> {
     @Autowired
     public MajorController(GeneralService<Major> majorService) {
         this.majorService = majorService;
+        setGenerator(majorService);
+    }
+
+    private void setGenerator(GeneralService<Major> majorService) {
+        List<Major> majors = majorService.getAllBeans();
+        Optional<Major> max_major = majors.stream().max(Comparator.comparing(u -> Integer.parseInt(u.getMajorid())));
+        if (max_major.isPresent()){
+            MajoridGenerator.setNextMajorid(Integer.parseInt(max_major.get().getMajorid()) + 1);
+        }
+        else{
+            MajoridGenerator.setNextMajorid(1);
+        }
     }
 
 
