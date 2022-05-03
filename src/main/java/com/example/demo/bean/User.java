@@ -1,6 +1,12 @@
 package com.example.demo.bean;
 
+import com.example.demo.bean.jsonUtils.MajorDeserializer;
+import com.example.demo.bean.jsonUtils.MajorSerializer;
+import com.example.demo.bean.jsonUtils.SchoolDeserializer;
+import com.example.demo.bean.jsonUtils.SchoolSerializer;
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -51,12 +57,14 @@ public class User {//admin|self changeable
     @Column(name = "password", nullable = false, length = 32)
     private String password;//self-only changeable
 
-    @JsonIgnoreProperties(value = {"majors"})
+    @JsonSerialize(using = SchoolSerializer.class)
+    @JsonDeserialize(using = SchoolDeserializer.class)
     @ManyToOne
     @JoinColumn(name = "school")
     private School school;//admin changeable
 
-    @JsonIgnoreProperties(value = {"school"})
+    @JsonSerialize(using = MajorSerializer.class)
+    @JsonDeserialize(using = MajorDeserializer.class)
     @ManyToOne
     @JoinColumn(name = "major")
     private Major major;//admin changeable

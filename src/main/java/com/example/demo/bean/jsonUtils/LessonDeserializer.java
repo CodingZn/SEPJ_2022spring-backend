@@ -1,16 +1,19 @@
 package com.example.demo.bean.jsonUtils;
 
-import com.example.demo.bean.Major;
+import com.example.demo.bean.Lesson;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 
 import java.io.IOException;
 
-public class MajorDeserializer extends BasicDeserializer<Major> {
+public class LessonDeserializer extends BasicDeserializer<Lesson> {
+
     @Override
-    Major getBean(String id) {
-        Major bean = new Major();
-        bean.setMajorid(id);
+    Lesson getBean(String id) {
+        Lesson bean = new Lesson();
+        bean.setLessonid(Integer.parseInt(id));
         return bean;
     }
 

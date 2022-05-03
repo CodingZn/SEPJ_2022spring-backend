@@ -1,15 +1,17 @@
 package com.example.demo.bean.jsonUtils;
 
-import com.example.demo.bean.Major;
+import com.example.demo.bean.Lesson;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
 
-public class MajorSerializer extends BasicSerializer<Major> {
+public class LessonSerializer extends BasicSerializer<Lesson> {
+
     @Override
-    Object getId(Major bean) {
-        return bean.getMajorid();
+    Object getId(Lesson bean) {
+        return bean.getLessonid();
     }
 
     @Override

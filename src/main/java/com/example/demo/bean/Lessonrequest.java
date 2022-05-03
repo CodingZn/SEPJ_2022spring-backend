@@ -1,6 +1,12 @@
 package com.example.demo.bean;
 
+import com.example.demo.bean.jsonUtils.LessonDeserializer;
+import com.example.demo.bean.jsonUtils.LessonSerializer;
+import com.example.demo.bean.jsonUtils.UserDeserializer;
+import com.example.demo.bean.jsonUtils.UserSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import javax.persistence.*;
@@ -18,16 +24,14 @@ public class Lessonrequest {//admin|student_self changeable
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int lessonrequestid;//unchangeable
 
-    @JsonIgnoreProperties(value = {
-            "school", "hour", "teacher",
-            "introduction", "arranges", "capacity", "semester",
-            "majorallowed", "status"})
+    @JsonSerialize(using = LessonSerializer.class)
+    @JsonDeserialize(using = LessonDeserializer.class)
     @ManyToOne
     @JoinColumn(name = "lesson")
     private Lesson lesson;//unchangeable
 
-    @JsonIgnoreProperties(value = {"usertype",
-            "identitynumber","email","phonenumber", "status"})
+    @JsonDeserialize(using = UserDeserializer.class)
+    @JsonSerialize(using = UserSerializer.class)
     @ManyToOne
     @JoinColumn(name = "student")
     private User student;//unchangeable

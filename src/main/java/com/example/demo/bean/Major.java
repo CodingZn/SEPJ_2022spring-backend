@@ -1,8 +1,7 @@
 package com.example.demo.bean;
 
-import com.example.demo.bean.jsonUtils.MajorDeserializer;
-import com.example.demo.bean.jsonUtils.MajorSerializer;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.example.demo.bean.jsonUtils.SchoolDeserializer;
+import com.example.demo.bean.jsonUtils.SchoolSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
@@ -27,9 +26,8 @@ public class Major {//admin changeable
     @Column(name="name", nullable = false, length = 32)
     private String name;//changeable
 
-    @JsonDeserialize(using = MajorDeserializer.class)
-    @JsonSerialize(using = MajorSerializer.class)
-    @JsonIgnoreProperties(value = "majors")
+    @JsonDeserialize(using = SchoolDeserializer.class)
+    @JsonSerialize(using = SchoolSerializer.class)
     @ManyToOne
     @JoinColumn(name= "major_schoolid")
     private School school;//changeable

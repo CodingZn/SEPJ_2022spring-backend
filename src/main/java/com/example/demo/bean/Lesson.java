@@ -1,7 +1,12 @@
 package com.example.demo.bean;
 
+import com.example.demo.bean.jsonUtils.SchoolDeserializer;
+import com.example.demo.bean.jsonUtils.SchoolSerializer;
+import com.example.demo.bean.jsonUtils.UserListDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import javax.persistence.*;
@@ -16,7 +21,7 @@ import java.util.List;
 public class Lesson {//changeable
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lessonid", nullable = false)
     private int lessonid;//unchangeable
 
@@ -29,7 +34,8 @@ public class Lesson {//changeable
     @Column(name = "lessonname", nullable = false, length = 32)
     private String lessonname;//admin|teacher_self changeable
 
-    @JsonIgnoreProperties(value = {"majors"})
+    @JsonDeserialize(using = SchoolDeserializer.class)
+    @JsonSerialize(using = SchoolSerializer.class)
     @ManyToOne
     @JoinColumn(name = "school")
     private School school;//admin changeable
@@ -40,9 +46,7 @@ public class Lesson {//changeable
     @Column(name = "credit", nullable = false)
     private int credit;//admin changeable
 
-    @JsonIgnoreProperties(value = {"usertype",
-            "identitynumber","email","phonenumber","school",
-            "major", "grade", "status"})
+//    @JsonDeserialize(using = UserListDeserializer.class)
     @ManyToMany
     @JoinTable(name="lessons_teacher_taking")
     private List<User> teacher;//admin changeable
