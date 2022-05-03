@@ -1,9 +1,7 @@
 package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
-import com.example.demo.bean.Major;
 import com.example.demo.bean.School;
-import com.example.demo.bean.generators.MajoridGenerator;
 import com.example.demo.bean.generators.SchoolidGenerator;
 import com.example.demo.service.GeneralService;
 import com.example.demo.utils.BeanTools;

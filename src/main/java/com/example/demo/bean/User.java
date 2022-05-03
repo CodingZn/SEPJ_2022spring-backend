@@ -3,7 +3,6 @@ package com.example.demo.bean;
 import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import org.springframework.data.repository.query.Param;
 
 import javax.persistence.*;
 import java.util.List;
