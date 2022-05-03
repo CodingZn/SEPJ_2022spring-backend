@@ -33,11 +33,19 @@ public class UseridGenerator extends UUIDGenerator {
     @Override
     public Serializable generate(SharedSessionContractImplementor session, Object object) throws HibernateException {
         User user = (User) object;
+        if (nextStudentid > 9999 || nextStudentid < 0)
+            throw new HibernateException("同年级学生数量超过最大限制！");
+        if (nextTeacherid > 999999 || nextTeacherid < 0)
+            throw new HibernateException("教师数量超过最大限制！");
         if (user.getUsertype() == User.Type.student){
-            return now_year + String.format("%04d",nextStudentid);
+            String id = now_year + String.format("%04d",nextStudentid);
+            nextStudentid = nextStudentid + 1;
+            return id;
         }
         else if (user.getUsertype() == User.Type.teacher) {
-            return now_year + String.format("%06d",nextTeacherid);
+            String id = now_year + String.format("%06d",nextTeacherid);
+            nextTeacherid = nextTeacherid + 1;
+            return id;
         }
         else {
             throw new HibernateException("不能创建管理员！");
