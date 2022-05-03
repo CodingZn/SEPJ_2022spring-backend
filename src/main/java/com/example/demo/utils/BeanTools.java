@@ -1,5 +1,7 @@
 package com.example.demo.utils;
 
+
+
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -7,19 +9,17 @@ import java.util.List;
 
 public class BeanTools {
     public static <T> T modify(T originBean, T modifiedBean, List<String> changableKeys){//可变参数数量
-        System.out.println("method");
+        //System.out.println("method");
         try{
             for(String name:changableKeys){
                 String methodname_get = "get" + name.substring(0, 1).toUpperCase() + name.substring(1);
-                System.out.println(methodname_get);
-                System.out.println(BeanTools.get(modifiedBean,
-                        methodname_get));
-                System.out.println("set"+name.substring(0, 1).toUpperCase() + name.substring(1));
+                //System.out.println(methodname_get);
+                //System.out.println(BeanTools.get(modifiedBean,methodname_get));
+                //System.out.println("set"+name.substring(0, 1).toUpperCase() + name.substring(1));
                 if(!(BeanTools.get(modifiedBean,
                         methodname_get) instanceof Integer)
                         && BeanTools.get(modifiedBean,
                         methodname_get) == null){
-
                 }
                 else{
                     if(BeanTools.get(modifiedBean,
@@ -41,10 +41,10 @@ public class BeanTools {
                         continue;
                     }
 
-                    System.out.println("run!");
+                    //System.out.println("run!");
                     BeanTools.set(originBean,"set"+name.substring(0, 1).toUpperCase() + name.substring(1),
                             BeanTools.get(modifiedBean, methodname_get));
-                    System.out.println("run:"+"set"+name.substring(0, 1).toUpperCase() + name.substring(1));
+                    //System.out.println("run:"+"set"+name.substring(0, 1).toUpperCase() + name.substring(1));
                 }
             }
 
@@ -88,7 +88,7 @@ public class BeanTools {
         PropertyDescriptor propertyDescriptor = new PropertyDescriptor(propertyName, clazz);
         Method setMethod = propertyDescriptor.getWriteMethod();
         setMethod.invoke(obj, value);
-        System.out.println("内省机制: " );
+        //System.out.println("内省机制: " );
     }
 
 
