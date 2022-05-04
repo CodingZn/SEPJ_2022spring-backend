@@ -3,6 +3,7 @@ package com.example.demo.bean;
 import com.example.demo.bean.jsonUtils.SchoolDeserializer;
 import com.example.demo.bean.jsonUtils.SchoolSerializer;
 import com.example.demo.bean.jsonUtils.UserListDeserializer;
+import com.example.demo.bean.jsonUtils.UserListSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -46,7 +47,8 @@ public class Lesson {//changeable
     @Column(name = "credit", nullable = false)
     private int credit;//admin changeable
 
-//    @JsonDeserialize(using = UserListDeserializer.class)
+    @JsonDeserialize(using = UserListDeserializer.class)
+    @JsonSerialize(using = UserListSerializer.class)
     @ManyToMany
     @JoinTable(name="lessons_teacher_taking")
     private List<User> teacher;//admin changeable
