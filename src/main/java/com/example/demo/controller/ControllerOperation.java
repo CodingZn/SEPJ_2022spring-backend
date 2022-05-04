@@ -100,4 +100,19 @@ public class ControllerOperation {
             }
         }
     }
+
+    public static ResponseEntity<Map<String, Object>> getMessageResponse(String message, Map<String, Object> map){
+        switch (message){
+            case "Success" ->{
+                System.out.println("Successfully conducted!");
+                map.put("message", "操作成功！");
+                return new ResponseEntity<>(map, HttpStatus.OK);
+            }
+            default -> {
+                System.out.println("Bad Request!");
+                map.put("message", message);
+                return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+            }
+        }
+    }
 }

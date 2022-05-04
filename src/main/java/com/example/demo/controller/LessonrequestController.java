@@ -1,7 +1,10 @@
 package com.example.demo.controller;
 
+import com.example.demo.bean.Lesson;
 import com.example.demo.bean.Lessonrequest;
+import com.example.demo.bean.User;
 import com.example.demo.service.GeneralService;
+import com.example.demo.service.LessonConductService;
 import com.example.demo.utils.BeanTools;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +19,12 @@ import static com.example.demo.utils.JWTUtils.AdminAuthority;
 @CrossOrigin("http://localhost:3000")
 public class LessonrequestController extends BasicController <Lessonrequest> {
     private final GeneralService<Lessonrequest> lessonreqService;
+    private final LessonConductService lessonConductService;
 
     @Autowired
-    public LessonrequestController(GeneralService<Lessonrequest> lessonreqService) {
+    public LessonrequestController(GeneralService<Lessonrequest> lessonreqService, LessonConductService lessonConductService) {
         this.lessonreqService = lessonreqService;
+        this.lessonConductService = lessonConductService;
     }
 
     @Override
@@ -196,9 +201,14 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                 }
                 map.put("result", "Success");
                 String [] adminauth = {"status"};
-//自动选课！写到服务层更好？
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 Lessonrequest bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
+
+                if(bean_ori.getStatus() == Lessonrequest.Status.pending && bean_modified.getStatus() == Lessonrequest.Status.accepted){
+                    User student = bean.getStudent();
+                    Lesson lesson = bean.getLesson();
+                    lessonConductService.autoSelectALesson(student, lesson);
+                }
                 map.put("result", lessonreqService.changeABean(key,bean_modified));
                 return map;
             }
