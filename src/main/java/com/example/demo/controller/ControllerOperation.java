@@ -93,6 +93,10 @@ public class ControllerOperation {
                 map.put("message", "输入信息含有不存在的依赖属性！");
                 return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
             }
+            case "Message"-> {//代表 map 里已经存在 "message" 了，即service层方法执行完毕返回自定义message
+                System.out.println("Self-defined message!");
+                return getMessageResponse(map);
+            }
             default -> {
                 System.out.println("Unknown Error");
                 map.put("message", "未知错误！");
@@ -101,16 +105,17 @@ public class ControllerOperation {
         }
     }
 
-    public static ResponseEntity<Map<String, Object>> getMessageResponse(String message, Map<String, Object> map){
-        switch (message){
+    //解析自定义 message 消息
+    private static ResponseEntity<Map<String, Object>> getMessageResponse(Map<String, Object> map){
+        switch ((String) map.get("message")){
             case "Success" ->{
                 System.out.println("Successfully conducted!");
+                map.remove("message");
                 map.put("message", "操作成功！");
                 return new ResponseEntity<>(map, HttpStatus.OK);
             }
             default -> {
                 System.out.println("Bad Request!");
-                map.put("message", message);
                 return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
             }
         }
