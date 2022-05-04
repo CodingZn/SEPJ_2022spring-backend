@@ -30,7 +30,7 @@ public class LessonConductService {
         this.controls = controls;
     }
 
-    //此方法返回 "Success" 或提示信息
+    //学生选课--此方法返回 "Success" 或提示信息
     public String selectALesson(String userid, String lessonid) {
         User user = userMapper.findByUserid(userid);
         Lesson lesson = lessonMapper.findByLessonid(Integer.parseInt(lessonid));
@@ -68,10 +68,9 @@ public class LessonConductService {
         lesson.getClassmates().add(user);
         lessonMapper.save(lesson);
         return "Success";
-
     }
 
-    //此方法返回 "Success" 或提示信息
+    //学生退课--此方法返回 "Success" 或提示信息
     public String quitALesson(String userid, String lessonid){
         User user = userMapper.findByUserid(userid);
         Lesson lesson = lessonMapper.findByLessonid(Integer.parseInt(lessonid));
@@ -90,10 +89,32 @@ public class LessonConductService {
         return "Success";
     }
 
-    public void autoSelectALesson(User user, Lesson lesson){
+    //管理员通过选课申请时，系统自动给学生选课--此方法返回 "Success" 或提示信息
+    public String autoSelectALesson(User user, Lesson lesson){
         lesson.getClassmates().add(user);
         lesson.setCapacity(lesson.getCapacity()+1);
         lessonMapper.save(lesson);
+        //具体逻辑改天再写，有关于选课申请通过时的合法性验证
+
+        return "Success";
+    }
+
+    public void kickExceededClassmates(Lesson lesson){
+        /*
+        * 将某门课超过课程容量的学生踢掉
+        *
+        * 踢人原则：
+        * 首先踢掉不符合专业限制条件的学生（正常情况应该没有）
+        * 之后，如果课程容量小于学生人数，则按照下面规则踢人：
+        * 优先保留高年级学生，即只在最低年级的学生中间踢，若踢光最低年级学生仍超量，则再从剩余学生中重复上述操作。
+        * 课程设定仅有一种专业可选时，踢人时，年级相同的同学被踢掉的概率相等
+        * 课程设定有多种专业可选或所有专业可选时，年级之间踢人的规则不变，同年级内踢人时，要保证每个专业同学被踢掉的概率近似相等
+        * 若某门课没有专业限制，其对应属性用 "all" 表示
+        *
+        * 踢完人后应保证学生数量等于课程容量
+        *
+        * */
+
     }
 
     private boolean checkMajorConstraint(User user, Lesson lesson){
