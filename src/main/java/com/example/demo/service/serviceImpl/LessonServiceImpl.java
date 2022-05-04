@@ -1,12 +1,8 @@
 package com.example.demo.service.serviceImpl;
 
-import com.alibaba.fastjson.JSON;
-import com.example.demo.bean.Classarrange;
 import com.example.demo.bean.Lesson;
-import com.example.demo.mapper.ClassarrangeMapper;
 import com.example.demo.mapper.LessonMapper;
 import com.example.demo.service.GeneralService;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +12,10 @@ import java.util.Objects;
 @Service
 public class LessonServiceImpl implements GeneralService<Lesson> {
     private final LessonMapper lessonMapper;
-    private final ClassarrangeMapper classarrangeMapper;
 
     @Autowired
-    public LessonServiceImpl(LessonMapper lessonMapper, ClassarrangeMapper classarrangeMapper) {
+    public LessonServiceImpl(LessonMapper lessonMapper) {
         this.lessonMapper = lessonMapper;
-        this.classarrangeMapper = classarrangeMapper;
     }
 
     @Override
@@ -44,8 +38,6 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
 
     @Override
     public String createABean(Lesson lesson) {
-        List<Classarrange> arranges = lesson.getArranges();
-        classarrangeMapper.saveAll(arranges);
         lessonMapper.save(lesson);
         return "Success";
     }
@@ -67,11 +59,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
             return "NotFound";
         else{
             lesson.setLessonid(Integer.parseInt(lessonid));
-            classarrangeMapper.saveAll(lesson.getArranges());
             lessonMapper.save(lesson);
-
-            //需要删除不用了的arranges
-
             return "Success";
         }
     }
@@ -80,7 +68,6 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
         Lesson lesson = lessonMapper.findByLessonid(lessonid);
         if (lesson != null) {
             lessonMapper.delete(lesson);
-            classarrangeMapper.deleteAll(lesson.getArranges());
             return "Success";
         } else {
             return "NotFound";
