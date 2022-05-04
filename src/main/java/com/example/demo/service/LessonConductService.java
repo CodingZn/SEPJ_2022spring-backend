@@ -44,13 +44,13 @@ public class LessonConductService {
             return "选课未开放！";
         if(!Objects.equals(lesson.getSemester(), now_semester))
             return "本学期不开放此课程！";
-        if(checkTakingConstraint(user, lesson))
+        if(!checkTakingConstraint(user, lesson))
             return "不能重复选择课程代码相同的课程！";
-        if(checkTakenConstraint(user, lesson))
+        if(!checkTakenConstraint(user, lesson))
             return "不能选择已经修过的课程！";
-        if(checkTimeArrangeConstraint(user, lesson))
+        if(!checkTimeArrangeConstraint(user, lesson))
             return "该课与其他课程存在时间冲突！";
-        if(checkMajorConstraint(user, lesson))
+        if(!checkMajorConstraint(user, lesson))
             return "您所在的年级专业不可选此课程！";
 
         switch (classcontrol){
@@ -58,7 +58,7 @@ public class LessonConductService {
 
             }
             case CLASS_CONTROL_SECOND -> {
-                if(checkCapacityConstraint(user, lesson))
+                if(!checkCapacityConstraint(user, lesson))
                     return "课程容量已满，请关注课程余量！";
             }
             default -> {
