@@ -35,7 +35,7 @@ public class ClassroomServiceImpl implements GeneralService<Classroom> {
     }
 
     @Override
-    public String createABean(Classroom bean) {//对于自我生成型id，不需要在新增时判断冲突！
+    public String createABean(Classroom bean) {
         classroomMapper.save(bean);
         return "Success";
     }

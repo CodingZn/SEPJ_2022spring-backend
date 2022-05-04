@@ -9,7 +9,7 @@ public class FormVerify {
     //user,major,school,lesson,lessonrequest
     //classroom,classtime
 
-    public static boolean password_verify(String password){
+    private static boolean password_verify(String password){
         int len = password.length();
         int kinds = (password.matches(".*\\d+.*") ? 1 :0 )
                 +(password.matches(".*[a-zA-Z]+.*") ? 1 : 0)
@@ -17,6 +17,31 @@ public class FormVerify {
         boolean isillegal = password.matches(".*[^[-\\w]]+.*");//匹配到不支持的字符
 
         return 6 <= len && len <= 32 && kinds >= 2 && !isillegal;
+    }
+
+    public static String formverify(Object o, Class clazz) {
+        if (User.class.equals(clazz)) {
+            return user_formverify((User) o);
+        }
+        if (Major.class.equals(clazz)) {
+            return major_formverify((Major) o);
+        }
+        if (School.class.equals(clazz)) {
+            return school_formverify((School) o);
+        }
+        if (Lesson.class.equals(clazz)) {
+            return lesson_formverify((Lesson) o);
+        }
+        if (Classtime.class.equals(clazz)) {
+            return classtime_formverify((Classtime) o);
+        }
+        if (Classroom.class.equals(clazz)) {
+            return classroom_formverify((Classroom) o);
+        }
+        if (Lessonrequest.class.equals(clazz)) {
+            return lessonRequest_formverify((Lessonrequest) o);
+        }
+        else return "ClassError";
     }
 
     //user
