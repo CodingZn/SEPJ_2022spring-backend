@@ -1,4 +1,4 @@
-package com.example.demo.service.serviceImpl;
+package com.example.demo.bean.specialBean;
 
 import com.example.demo.bean.Lesson;
 import lombok.AllArgsConstructor;
@@ -31,10 +31,5 @@ public class LessonQuery {
     private List<Lesson> result;
 
     private boolean is_processed = false;
-
-    public boolean process(){
-
-        return false;
-    }
 
 }
