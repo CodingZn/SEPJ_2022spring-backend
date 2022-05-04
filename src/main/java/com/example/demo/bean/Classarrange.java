@@ -1,7 +1,11 @@
 package com.example.demo.bean;
 
+import com.example.demo.bean.jsonUtils.LessonDeserializer;
+import com.example.demo.bean.jsonUtils.LessonSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,10 +34,8 @@ public class Classarrange {
     @JoinColumn(name = "classroom")
     private Classroom classroom;
 
-    @JsonIgnoreProperties(value = {"lessonnumber", "lessoncode",
-            "lessonname", "school", "hour", "credit", "teacher",
-            "introduction", "arranges", "capacity", "semester",
-            "majorallowed", "status"})
+    @JsonSerialize(using = LessonSerializer.class)
+    @JsonDeserialize(using = LessonDeserializer.class)
     @ManyToOne
     private Lesson uplesson;
 }

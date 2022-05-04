@@ -1,9 +1,6 @@
 package com.example.demo.bean;
 
-import com.example.demo.bean.jsonUtils.SchoolDeserializer;
-import com.example.demo.bean.jsonUtils.SchoolSerializer;
-import com.example.demo.bean.jsonUtils.UserListDeserializer;
-import com.example.demo.bean.jsonUtils.UserListSerializer;
+import com.example.demo.bean.jsonUtils.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -56,7 +53,8 @@ public class Lesson {//changeable
     @Column(name = "introduction")
     private String introduction;//admin|teacher_self changeable
 
-    @JsonIgnoreProperties(value = {"uplesson"})
+    @JsonDeserialize(using = ClassarrangeListDeserializer.class)
+    @JsonSerialize(using = ClassarrangeListSerializer.class)
     @OneToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "lessons_arranges")
     private List<Classarrange> arranges;//admin changeable
