@@ -37,10 +37,12 @@ public class SelectLessonController {
                 case StudentAuthority -> {
                     if(!Objects.equals(userid, userid_url)){
                         result="NoAuth";
-                        return ControllerOperation.getConductResponse(result, map);
                     }
-                    result = lessonConductService.selectALesson(userid, lessonid);
-                    return ControllerOperation.getMessageResponse(result, map);
+                    else {
+                        String message = lessonConductService.selectALesson(userid, lessonid);
+                        map.put("message", message);
+                        result = "Message";
+                    }
                 }
                 default ->{
                     result="NoAuth";

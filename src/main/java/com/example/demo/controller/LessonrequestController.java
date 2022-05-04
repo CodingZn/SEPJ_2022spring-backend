@@ -203,11 +203,17 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                 String [] adminauth = {"status"};
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 Lessonrequest bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
-
+                //通过申请时自动选课
                 if(bean_ori.getStatus() == Lessonrequest.Status.pending && bean_modified.getStatus() == Lessonrequest.Status.accepted){
                     User student = bean.getStudent();
                     Lesson lesson = bean.getLesson();
-                    lessonConductService.autoSelectALesson(student, lesson);
+                    String message = lessonConductService.autoSelectALesson(student, lesson);
+                    if (!message.equals("Success")){
+                        map.put("message", message);
+                        map.put("result", "Message");
+                        return map;
+                    }
+
                 }
                 map.put("result", lessonreqService.changeABean(key,bean_modified));
                 return map;
