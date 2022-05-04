@@ -256,7 +256,7 @@ public class UserController extends BasicController <User>{
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 User user_modified = BeanTools.modify(user_ori, user, changeableList);
-                map.put("result", userService.changeABean(userid, user_modified));
+                map.put("result", userService.changeABean(key, user_modified));
                 return map;
             }
             case TeacherAuthority, StudentAuthority -> {
@@ -270,7 +270,7 @@ public class UserController extends BasicController <User>{
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(standard));
                 User user_modified = BeanTools.modify(user_ori, user, changeableList);
-                map.put("result", userService.changeABean(userid, user_modified));
+                map.put("result", userService.changeABean(key, user_modified));
                 return map;
             }
             default -> {
