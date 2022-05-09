@@ -114,10 +114,7 @@ public class LessonQueryService {
 
         int distance = d[sourceLen][targetLen];
         double score = (double) distance / Math.max(source.length(), target.length());
-        if (score < 0.4)
-            return true;
-        else
-            return false;
+        return score < 0.4;
     }
 
 }
