@@ -5,10 +5,12 @@ import com.example.demo.bean.Lesson;
 import com.example.demo.bean.User;
 import com.example.demo.bean.specialBean.LessonQuery;
 import com.example.demo.mapper.LessonMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class LessonQueryService {
     private final LessonMapper lessonMapper;
 

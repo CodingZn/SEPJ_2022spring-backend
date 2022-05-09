@@ -96,6 +96,14 @@ public class LessonConductService {
         return "Success";
     }
 
+    public void kickAllExceededClassmates(){
+        List<Lesson> lessonList = lessonMapper.findAll();
+
+        for(Lesson lesson : lessonList){
+            kickExceededClassmates(lesson);
+        }
+    }
+
     public static void kickExceededClassmates(Lesson lesson) {
 
         if (!lesson.getMajorallowed().equals("all")) {

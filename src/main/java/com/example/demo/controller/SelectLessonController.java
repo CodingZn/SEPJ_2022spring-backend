@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.bean.specialBean.LessonQuery;
 import com.example.demo.service.LessonConductService;
 import com.example.demo.utils.JWTUtils;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class SelectLessonController {
     }
 
     //选课
-    @RequestMapping(value = "user/{userid}/lessonsTaking/{lessonid}", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/{userid}/lessonsTaking/{lessonid}", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> selectALesson(@RequestHeader("Authentication") String authentication,
                                                              @PathVariable("userid") String userid_url,
                                                              @PathVariable("lessonid") String lessonid){
@@ -54,7 +55,7 @@ public class SelectLessonController {
     }
 
     //退课
-    @RequestMapping(value = "user/{userid}/lessonsTaking/{lessonid}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/user/{userid}/lessonsTaking/{lessonid}", method = RequestMethod.DELETE)
     public ResponseEntity<Map<String, Object>> quitALesson(@RequestHeader("Authentication") String authentication,
                                                            @PathVariable("userid") String userid_url,
                                                            @PathVariable("lessonid") String lessonid){
@@ -82,4 +83,31 @@ public class SelectLessonController {
         }
         else return ControllerOperation.getErrorResponse(credit, map);
     }
+
+    //踢人
+    @RequestMapping(value = "/lessons/kickoff", method = RequestMethod.PATCH)
+    public ResponseEntity<Map<String, Object>> kickOffAllExceededStudent(@RequestHeader("Authentication") String authentication){
+        Map<String, Object> map = new HashMap<>();
+
+        String credit = ControllerOperation.checkAuthentication(authentication);
+        String authority = ControllerOperation.getAuthority(authentication);
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
+
+        if (credit.equals(ValidJWTToken)){
+            String result;
+            switch (authority) {
+                case AdminAuthority -> {
+                    result = "Success";
+                    lessonConductService.kickAllExceededClassmates();
+                }
+                default ->{
+                    result="NoAuth";
+                }
+            }
+            return ControllerOperation.getConductResponse(result, map);
+        }
+        else return ControllerOperation.getErrorResponse(credit, map);
+    }
+
+
 }
