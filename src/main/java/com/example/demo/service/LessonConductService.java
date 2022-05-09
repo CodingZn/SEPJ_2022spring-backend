@@ -96,7 +96,7 @@ public class LessonConductService {
         return "Success";
     }
 
-    public void kickExceededClassmates(Lesson lesson) {
+    public static void kickExceededClassmates(Lesson lesson) {
 
         if (!lesson.getMajorallowed().equals("all")) {
             lesson.getClassmates().removeIf(user -> !lesson.getMajorallowed().contains(user.getMajor().getName()));
@@ -107,12 +107,17 @@ public class LessonConductService {
         if (amount <= lesson.getCapacity()) return;
 
         //X年级数量
-        int[] amount_grade = new int[4];
+        int[] amount_grade = new int[23];
 
-        for (int grade = 0; grade < 4; grade++) {
+        for (int grade = 0; grade < 23; grade++) {
 
             amount_grade[grade] = 0;//初始化X年级学生数量
-            String pat = "0" + (grade + 1);
+            String pat;
+            if (grade < 10)
+                pat = "0" + grade;
+            else
+                pat = "" + grade;
+
             for (User user : lesson.getClassmates()) {//获得X年级学生数量
                 if (user.getGrade().equals(pat))
                     amount_grade[grade]++;
@@ -156,7 +161,7 @@ public class LessonConductService {
                 //按专业删除
                 Random r = new Random();
                 for (int i = 0; i < amount_major; i++) {
-                    int delnumInMajor = (int) p * numInMajor[i];//该专业删除人数
+                    int delnumInMajor = (int) (p * numInMajor[i]);//该专业删除人数
                     for (int j = 0; j < delnumInMajor; j++) {
                         int x = r.nextInt(numInMajor[i]);
 
@@ -165,15 +170,15 @@ public class LessonConductService {
                         for (int k = 0; k < amount; k++) {
                             if (lesson.getClassmates().get(k).getGrade().equals(pat)
                                     && lesson.getClassmates().get(k).getMajor().getName().equals(majorname.get(i))) {
-                                flag++;
                                 if (flag == x) {
                                     lesson.getClassmates().remove(k);
                                     k--;
+                                    amount--;
                                 }
+                                flag++;
                             }
                         }
                         numInMajor[i]--;
-                        amount--;
                     }
                 }
 
