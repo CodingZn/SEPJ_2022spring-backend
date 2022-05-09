@@ -27,10 +27,10 @@ public class LessonQueryService {
             if (query.getSemester() == null || lesson.getSemester().equals(query.getSemester())) {
                 int flag = 0;
                 for (Classarrange classarrange : lesson.getArranges()) {
-                    if (classarrange.getClassroom().getName().equals(query.getClassroom_name())
-                            || query.getClassroom_name() == null) {
-                        if (classarrange.getClasstime().getName().equals(query.getClasstime_name())
-                                || query.getClasstime_name() == null) {
+                    if (query.getClassroom_name() == null ||
+                            classarrange.getClassroom().getName().equals(query.getClassroom_name())) {
+                        if (query.getClasstime_name() == null ||
+                                classarrange.getClasstime().getName().equals(query.getClasstime_name())) {
                             flag = 1;
                         }
                     }
@@ -42,12 +42,16 @@ public class LessonQueryService {
         }
 
         for (Lesson lesson : lessonList) {
-            boolean a = query.getFuzzyLessonCode().equals(lesson.getLessoncode());//judgeStrings(query.getFuzzyLessonCode(), lesson.getLessoncode());
-            boolean b = judgeStrings(query.getFuzzyLessonName(), lesson.getLessonname());
+            boolean a = query.getFuzzyLessonCode() == null || query.getFuzzyLessonCode().equals(lesson.getLessoncode());//judgeStrings(query.getFuzzyLessonCode(), lesson.getLessoncode());
+            boolean b = query.getFuzzyLessonName() == null || judgeStrings(query.getFuzzyLessonName(), lesson.getLessonname());
             boolean c = false;
-            for (User teacher : lesson.getTeacher()) {
-                if (judgeStrings(query.getFuzzyLessonTeacherName(), teacher.getName()))
-                    c = true;
+            if (lesson.getTeacher() == null)
+                c = true;
+            else {
+                for (User teacher : lesson.getTeacher()) {
+                    if (judgeStrings(query.getFuzzyLessonTeacherName(), teacher.getName()))
+                        c = true;
+                }
             }
             if (a && b && c)
                 lessonList2.add(lesson);
