@@ -51,11 +51,9 @@ public class LessonQueryService {
                 lessonList2.add(lesson);
         }
 
-//        query.getResult() = lessonList1;
-        for (Lesson lesson:lessonList1)
-            query.getResult().add(lesson);
+        lessonList1.retainAll(lessonList2);
 
-        query.getResult().retainAll(lessonList2);
+        query.setResult(lessonList1);
 
         return query;
         /*
