@@ -10,10 +10,7 @@ import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static com.example.demo.bean.specialBean.Ultimatectrl.*;
 
@@ -24,7 +21,7 @@ public class LessonConductService {
     private final UltimatecontrolMapper controls;
 
     @Autowired
-    public LessonConductService(UserMapper userMapper, LessonMapper lessonMapper, UltimatecontrolMapper controls){
+    public LessonConductService(UserMapper userMapper, LessonMapper lessonMapper, UltimatecontrolMapper controls) {
         this.userMapper = userMapper;
         this.lessonMapper = lessonMapper;
         this.controls = controls;
@@ -36,29 +33,29 @@ public class LessonConductService {
         Lesson lesson = lessonMapper.findByLessonid(Integer.parseInt(lessonid));
         String now_semester = controls.findByName(SEMESTER_CONTROL).getStatus();
         String classcontrol = controls.findByName(CLASS_CONTROL).getStatus();
-        if(user == null)
+        if (user == null)
             return "无此用户！";
-        if(lesson == null || lesson.getStatus() == Lesson.Status.pending)
+        if (lesson == null || lesson.getStatus() == Lesson.Status.pending)
             return "课程不存在！";
-        if(classcontrol.equals(CLASS_CONTROL_DISABLED))
+        if (classcontrol.equals(CLASS_CONTROL_DISABLED))
             return "选课未开放！";
-        if(!Objects.equals(lesson.getSemester(), now_semester))
+        if (!Objects.equals(lesson.getSemester(), now_semester))
             return "本学期不开放此课程！";
-        if(!checkTakingConstraint(user, lesson))
+        if (!checkTakingConstraint(user, lesson))
             return "不能重复选择课程代码相同的课程！";
-        if(!checkTakenConstraint(user, lesson))
+        if (!checkTakenConstraint(user, lesson))
             return "不能选择已经修过的课程！";
-        if(!checkTimeArrangeConstraint(user, lesson))
+        if (!checkTimeArrangeConstraint(user, lesson))
             return "该课与其他课程存在时间冲突！";
-        if(!checkMajorConstraint(user, lesson))
+        if (!checkMajorConstraint(user, lesson))
             return "您所在的年级专业不可选此课程！";
 
-        switch (classcontrol){
+        switch (classcontrol) {
             case CLASS_CONTROL_FIRST -> {
 
             }
             case CLASS_CONTROL_SECOND -> {
-                if(!checkCapacityConstraint(user, lesson))
+                if (!checkCapacityConstraint(user, lesson))
                     return "课程容量已满，请关注课程余量！";
             }
             default -> {
@@ -71,53 +68,274 @@ public class LessonConductService {
     }
 
     //学生退课--此方法返回 "Success" 或提示信息
-    public String quitALesson(String userid, String lessonid){
+    public String quitALesson(String userid, String lessonid) {
         User user = userMapper.findByUserid(userid);
         Lesson lesson = lessonMapper.findByLessonid(Integer.parseInt(lessonid));
         String now_semester = controls.findByName(SEMESTER_CONTROL).getStatus();
         String classcontrol = controls.findByName(CLASS_CONTROL).getStatus();
-        if(user == null)
+        if (user == null)
             return "无此用户！";
-        if(lesson == null || lesson.getStatus() == Lesson.Status.pending)
+        if (lesson == null || lesson.getStatus() == Lesson.Status.pending)
             return "课程不存在！";
-        if(classcontrol.equals(CLASS_CONTROL_DISABLED))
+        if (classcontrol.equals(CLASS_CONTROL_DISABLED))
             return "退课未开放！";
-        if(!Objects.equals(lesson.getSemester(), now_semester))
+        if (!Objects.equals(lesson.getSemester(), now_semester))
             return "本学期不开放此课程！";
-        if(!user.getLessonsTaking().contains(lesson))
+        if (!user.getLessonsTaking().contains(lesson))
             return "您没有选上此课程！";
         return "Success";
     }
 
     //管理员通过选课申请时，系统自动给学生选课--此方法返回 "Success" 或提示信息
-    public String autoSelectALesson(User user, Lesson lesson){
+    public String autoSelectALesson(User user, Lesson lesson) {
         lesson.getClassmates().add(user);
-        lesson.setCapacity(lesson.getCapacity()+1);
+        lesson.setCapacity(lesson.getCapacity() + 1);
         lessonMapper.save(lesson);
         //具体逻辑改天再写，有关于选课申请通过时的合法性验证
 
         return "Success";
     }
 
-    public void kickExceededClassmates(Lesson lesson){
+    public void kickExceededClassmates(Lesson lesson) {
+
+        if (!lesson.getMajorallowed().equals("all")) {
+            lesson.getClassmates().removeIf(user -> !lesson.getMajorallowed().contains(user.getMajor().getName()));
+        }//首先踢掉不符合专业限制条件的学生（正常情况应该没有）
+
+        int amount = lesson.getClassmates().size();
+
+        if (amount <= lesson.getCapacity()) return;
+
+        //X年级数量
+        int[] amount_grade = new int[4];
+
+        for (int grade = 0; grade < 4; grade++) {
+
+            amount_grade[grade] = 0;//初始化X年级学生数量
+            String pat = "0" + (grade + 1);
+            for (User user : lesson.getClassmates()) {//获得X年级学生数量
+                if (user.getGrade().equals(pat))
+                    amount_grade[grade]++;
+            }
+
+            if ((amount - amount_grade[grade]) > lesson.getCapacity()) {//该年级全删完仍数量大于容量
+                lesson.getClassmates().removeIf(user -> user.getGrade().equals(pat));
+
+                amount = lesson.getClassmates().size();
+            } else {//只需删除该年级部分学生
+
+                //统计专业数
+                List<String> majorname = new ArrayList<>();
+                for (User user : lesson.getClassmates()) {
+
+                    //仅统计X年级数据
+                    if (!user.getGrade().equals(pat))
+                        continue;
+
+                    if (majorname.contains(user.getMajor().getName()))
+                        continue;
+                    else
+                        majorname.add(user.getMajor().getName());
+                }
+                int amount_major = majorname.size();
+
+                int numbersToDelete = amount - lesson.getCapacity();//待删除人数
+                double p = 1.0 * numbersToDelete / amount_grade[grade];//被踢概率
+
+
+                //统计各专业人数
+                int[] numInMajor = new int[amount_major];
+                for (User user : lesson.getClassmates()) {
+                    //仅统计X年级数据
+                    if (!user.getGrade().equals(pat))
+                        continue;
+
+                    numInMajor[majorname.indexOf(user.getMajor().getName())]++;
+                }
+
+                //按专业删除
+                Random r = new Random();
+                for (int i = 0; i < amount_major; i++) {
+                    int delnumInMajor = (int) p * numInMajor[i];//该专业删除人数
+                    for (int j = 0; j < delnumInMajor; j++) {
+                        int x = r.nextInt(numInMajor[i]);
+
+//                        lesson.getClassmates().remove(x);
+                        int flag = 0;
+                        for (int k = 0; k < amount; k++) {
+                            if (lesson.getClassmates().get(k).getGrade().equals(pat)
+                                    && lesson.getClassmates().get(k).getMajor().getName().equals(majorname.get(i))) {
+                                flag++;
+                                if (flag == x) {
+                                    lesson.getClassmates().remove(k);
+                                }
+                            }
+                        }
+                        numInMajor[i]--;
+                        amount--;
+                    }
+                }
+
+                //上面计算每个专业要删除人数时数据类型转换，每个专业可能要删掉不足平均一个人，现从头开始每个专业删一个人至 数量 = 专业人数
+                int i = 0;
+                for (int k = 0; k < amount; k++) {
+
+                    if (amount <= lesson.getCapacity())
+                        break;
+
+                    if (lesson.getClassmates().get(k).getGrade().equals(pat)
+                            && lesson.getClassmates().get(k).getMajor().getName().equals(majorname.get(i))) {
+
+                        lesson.getClassmates().remove(k);
+
+                        amount--;
+                        i++;
+                    }
+                }
+                return;
+            }
+        }
+
+        /*//一年级学生数量
+        int amount_01 = 0;
+        for (User user : lesson.getClassmates()) {
+            if (user.getGrade().matches("01"))
+                amount_01++;
+        }
+
+        if ((amount - amount_01) > lesson.getCapacity()) {//该年级全删完仍数量大于容量
+            lesson.getClassmates().removeIf(user -> user.getGrade().matches("01"));
+
+            amount = lesson.getClassmates().size();
+        } else {
+            if (lesson.getMajorallowed().contains(",") || lesson.getMajorallowed().equals("all")) {//多个专业
+
+                //统计专业数
+                List<String> majorname = new ArrayList<>();
+                for (User user : lesson.getClassmates()) {
+                    //仅统计一年级数据
+                    if (!user.getGrade().matches("01"))
+                        continue;
+
+                    if (majorname.contains(user.getMajor().getName()))
+                        continue;
+                    else
+                        majorname.add(user.getMajor().getName());
+                }
+                int amount_major = majorname.size();
+
+                int numbersToDelete = amount - lesson.getCapacity();//待删除人数
+                double p = numbersToDelete / amount_01;//被踢概率
+
+
+                //统计各专业人数
+                int[] numInMajor = new int[amount_major];
+                for (User user : lesson.getClassmates()) {
+                    //仅统计一年级数据
+                    if (!user.getGrade().matches("01"))
+                        continue;
+
+                    numInMajor[majorname.indexOf(user.getMajor().getName())]++;
+                }
+
+                //按专业删除
+                Random r = new Random();
+                for (int i = 0; i < amount_major; i++) {
+                    int delnumInMajor = (int) p * numInMajor[i];//该专业删除人数
+                    for (int j = 0; j < delnumInMajor; j++) {
+                        int x = r.nextInt(numInMajor[i]);
+
+//                        lesson.getClassmates().remove(x);
+                        int flag = 0;
+                        for (int k = 0; k < amount; k++) {
+                            if (lesson.getClassmates().get(k).getGrade().matches("01")
+                                    && lesson.getClassmates().get(k).getMajor().getName().equals(majorname.get(i))) {
+                                flag++;
+                                if (flag == x) {
+                                    lesson.getClassmates().remove(k);
+                                }
+                            }
+                        }
+                        numInMajor[i]--;
+                        amount--;
+                    }
+                }
+
+                //上面计算每个专业要删除人数时数据类型转换，每个专业要删掉不足平均一个人，现从头开始每个专业删一个人至 数量 = 专业人数
+                int i = 0;
+                for (int k = 0; k < amount; k++) {
+                    if (lesson.getClassmates().get(k).getGrade().matches("01")
+                            && lesson.getClassmates().get(k).getMajor().getName().equals(majorname.get(i))) {
+                        lesson.getClassmates().remove(k);
+                        amount--;
+                        i++;
+                        if (amount <= lesson.getCapacity())
+                            break;
+                    }
+                }
+
+
+            } else {//仅一个专业
+
+                int numbersToDelete = amount - lesson.getCapacity();//待删除人数
+
+                Random r = new Random();
+
+                for (int j = 0; j < numbersToDelete; j++) {
+                    int x = r.nextInt(amount_01 - j);
+
+//                        lesson.getClassmates().remove(x);
+                    int flag = 0;
+                    for (int k = 0; k < amount; k++) {
+                        if (lesson.getClassmates().get(k).getGrade().matches("01")) {
+                            flag++;
+                            if (flag == x) {
+                                lesson.getClassmates().remove(k);
+                            }
+                        }
+                    }
+                }
+            }
+            return;
+        }*/
+
+
+
+        /*//四年级学生数量
+        int amount_04 = 0;
+        for (User user : lesson.getClassmates()) {
+            if (user.getGrade().matches("04"))
+                amount_04++;
+        }
+        if ((amount - amount_01) > lesson.getCapacity()){
+            for (User user : lesson.getClassmates()) {
+                if (user.getGrade().matches("01"))
+                    lesson.getClassmates().remove(user);
+            }
+        }
+        else {
+
+            return;
+        }*/
+
         /*
-        * 将某门课超过课程容量的学生踢掉
-        *
-        * 踢人原则：
-        * 首先踢掉不符合专业限制条件的学生（正常情况应该没有）
-        * 之后，如果课程容量小于学生人数，则按照下面规则踢人：
-        * 优先保留高年级学生，即只在最低年级的学生中间踢，若踢光最低年级学生仍超量，则再从剩余学生中重复上述操作。
-        * 课程设定仅有一种专业可选时，踢人时，年级相同的同学被踢掉的概率相等
-        * 课程设定有多种专业可选或所有专业可选时，年级之间踢人的规则不变，同年级内踢人时，要保证每个专业同学被踢掉的概率近似相等
-        * 若某门课没有专业限制，其对应属性用 "all" 表示
-        *
-        * 踢完人后应保证学生数量等于课程容量
-        *
-        * */
+         * 将某门课超过课程容量的学生踢掉
+         *
+         * 踢人原则：
+         * 首先踢掉不符合专业限制条件的学生（正常情况应该没有）
+         * 之后，如果课程容量小于学生人数，则按照下面规则踢人：
+         * 优先保留高年级学生，即只在最低年级的学生中间踢，若踢光最低年级学生仍超量，则再从剩余学生中重复上述操作。
+         * 课程设定仅有一种专业可选时，踢人时，年级相同的同学被踢掉的概率相等
+         * 课程设定有多种专业可选或所有专业可选时，年级之间踢人的规则不变，同年级内踢人时，要保证每个专业同学被踢掉的概率近似相等
+         * 若某门课没有专业限制，其对应属性用 "all" 表示
+         *
+         * 踢完人后应保证学生数量等于课程容量
+         *
+         * */
 
     }
 
-    private boolean checkMajorConstraint(User user, Lesson lesson){
+    private boolean checkMajorConstraint(User user, Lesson lesson) {
         String user_majorid = user.getMajor().getMajorid();
         String user_grade = user.getGrade();
         String lesson_majorallowed = lesson.getMajorallowed();
@@ -125,21 +343,21 @@ public class LessonConductService {
         return lesson_majorallowed.contains(user_info);
     }
 
-    private boolean checkCapacityConstraint(User user, Lesson lesson){
+    private boolean checkCapacityConstraint(User user, Lesson lesson) {
         return (lesson.getClassmates().size() < lesson.getCapacity());
     }
 
-    private boolean checkTakenConstraint(User user, Lesson lesson){
+    private boolean checkTakenConstraint(User user, Lesson lesson) {
         String lessoncode = lesson.getLessoncode();
         return (!user.getLessonsTaken().stream().map(Lesson::getLessoncode).toList().contains(lessoncode));
     }
 
-    private boolean checkTakingConstraint(User user, Lesson lesson){
+    private boolean checkTakingConstraint(User user, Lesson lesson) {
         String lessoncode = lesson.getLessoncode();
         return (!user.getLessonsTaking().stream().map(Lesson::getLessoncode).toList().contains(lessoncode));
     }
 
-    private boolean checkTimeArrangeConstraint(User user, Lesson lesson){
+    private boolean checkTimeArrangeConstraint(User user, Lesson lesson) {
         List<Classtime> classtimes_occupied = new ArrayList<>();
         List<Classtime> classtimes_required = new ArrayList<>();
         List<Lesson> lessonsTaking = user.getLessonsTaking();
