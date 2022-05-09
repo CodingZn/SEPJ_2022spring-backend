@@ -168,6 +168,7 @@ public class LessonConductService {
                                 flag++;
                                 if (flag == x) {
                                     lesson.getClassmates().remove(k);
+                                    k--;
                                 }
                             }
                         }
@@ -187,6 +188,7 @@ public class LessonConductService {
                             && lesson.getClassmates().get(k).getMajor().getName().equals(majorname.get(i))) {
 
                         lesson.getClassmates().remove(k);
+                        k--;
 
                         amount--;
                         i++;
@@ -196,127 +198,11 @@ public class LessonConductService {
             }
         }
 
-        /*//一年级学生数量
-        int amount_01 = 0;
-        for (User user : lesson.getClassmates()) {
-            if (user.getGrade().matches("01"))
-                amount_01++;
-        }
-
-        if ((amount - amount_01) > lesson.getCapacity()) {//该年级全删完仍数量大于容量
-            lesson.getClassmates().removeIf(user -> user.getGrade().matches("01"));
-
-            amount = lesson.getClassmates().size();
-        } else {
-            if (lesson.getMajorallowed().contains(",") || lesson.getMajorallowed().equals("all")) {//多个专业
-
-                //统计专业数
-                List<String> majorname = new ArrayList<>();
-                for (User user : lesson.getClassmates()) {
-                    //仅统计一年级数据
-                    if (!user.getGrade().matches("01"))
-                        continue;
-
-                    if (majorname.contains(user.getMajor().getName()))
-                        continue;
-                    else
-                        majorname.add(user.getMajor().getName());
-                }
-                int amount_major = majorname.size();
-
-                int numbersToDelete = amount - lesson.getCapacity();//待删除人数
-                double p = numbersToDelete / amount_01;//被踢概率
-
-
-                //统计各专业人数
-                int[] numInMajor = new int[amount_major];
-                for (User user : lesson.getClassmates()) {
-                    //仅统计一年级数据
-                    if (!user.getGrade().matches("01"))
-                        continue;
-
-                    numInMajor[majorname.indexOf(user.getMajor().getName())]++;
-                }
-
-                //按专业删除
-                Random r = new Random();
-                for (int i = 0; i < amount_major; i++) {
-                    int delnumInMajor = (int) p * numInMajor[i];//该专业删除人数
-                    for (int j = 0; j < delnumInMajor; j++) {
-                        int x = r.nextInt(numInMajor[i]);
-
-//                        lesson.getClassmates().remove(x);
-                        int flag = 0;
-                        for (int k = 0; k < amount; k++) {
-                            if (lesson.getClassmates().get(k).getGrade().matches("01")
-                                    && lesson.getClassmates().get(k).getMajor().getName().equals(majorname.get(i))) {
-                                flag++;
-                                if (flag == x) {
-                                    lesson.getClassmates().remove(k);
-                                }
-                            }
-                        }
-                        numInMajor[i]--;
-                        amount--;
-                    }
-                }
-
-                //上面计算每个专业要删除人数时数据类型转换，每个专业要删掉不足平均一个人，现从头开始每个专业删一个人至 数量 = 专业人数
-                int i = 0;
-                for (int k = 0; k < amount; k++) {
-                    if (lesson.getClassmates().get(k).getGrade().matches("01")
-                            && lesson.getClassmates().get(k).getMajor().getName().equals(majorname.get(i))) {
-                        lesson.getClassmates().remove(k);
-                        amount--;
-                        i++;
-                        if (amount <= lesson.getCapacity())
-                            break;
-                    }
-                }
-
-
-            } else {//仅一个专业
-
-                int numbersToDelete = amount - lesson.getCapacity();//待删除人数
-
-                Random r = new Random();
-
-                for (int j = 0; j < numbersToDelete; j++) {
-                    int x = r.nextInt(amount_01 - j);
-
-//                        lesson.getClassmates().remove(x);
-                    int flag = 0;
-                    for (int k = 0; k < amount; k++) {
-                        if (lesson.getClassmates().get(k).getGrade().matches("01")) {
-                            flag++;
-                            if (flag == x) {
-                                lesson.getClassmates().remove(k);
-                            }
-                        }
-                    }
-                }
-            }
-            return;
-        }*/
 
 
 
-        /*//四年级学生数量
-        int amount_04 = 0;
-        for (User user : lesson.getClassmates()) {
-            if (user.getGrade().matches("04"))
-                amount_04++;
-        }
-        if ((amount - amount_01) > lesson.getCapacity()){
-            for (User user : lesson.getClassmates()) {
-                if (user.getGrade().matches("01"))
-                    lesson.getClassmates().remove(user);
-            }
-        }
-        else {
 
-            return;
-        }*/
+
 
         /*
          * 将某门课超过课程容量的学生踢掉
