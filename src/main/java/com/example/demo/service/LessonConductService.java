@@ -104,7 +104,7 @@ public class LessonConductService {
         }
     }
 
-    public static void kickExceededClassmates(Lesson lesson) {
+    public void kickExceededClassmates(Lesson lesson) {
 
         if (!lesson.getMajorallowed().equals("all")) {
             lesson.getClassmates().removeIf(user -> !lesson.getMajorallowed().contains(user.getMajor().getName()));
@@ -207,6 +207,7 @@ public class LessonConductService {
                         i++;
                     }
                 }
+                lessonMapper.save(lesson);
                 return;
             }
         }
