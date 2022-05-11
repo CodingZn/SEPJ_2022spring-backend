@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.alibaba.fastjson.JSON;
 import com.example.demo.bean.Classarrange;
 import com.example.demo.bean.Classtime;
 import com.example.demo.bean.Lesson;
@@ -105,20 +106,29 @@ public class LessonConductService {
     }
 
     public void kickExceededClassmates(Lesson lesson) {
-
+        System.out.println(JSON.toJSONString(lesson));System.out.println(1);
         if (!lesson.getMajorallowed().equals("all")) {
-            lesson.getClassmates().removeIf(user -> !lesson.getMajorallowed().contains(user.getMajor().getName()));
+            lesson.getClassmates().removeIf(user -> {
+                String a = user.getGrade()+"-"+user.getMajor().getMajorid();
+                return !lesson.getMajorallowed().contains(a);
+            });
         }//首先踢掉不符合专业限制条件的学生（正常情况应该没有）
 
         int amount = lesson.getClassmates().size();
-
-        if (amount <= lesson.getCapacity()) return;
+        System.out.println(JSON.toJSONString(lesson));System.out.println(2);
+        System.out.println("amount and capacity: ");
+        System.out.println(amount);System.out.println(lesson.getCapacity());
+        if (amount <= lesson.getCapacity()) {
+            System.out.println(JSON.toJSONString(lesson));System.out.println(4);
+            lessonMapper.save(lesson);
+            return;
+        }
 
         //X年级数量
         int[] amount_grade = new int[23];
 
         for (int grade = 0; grade < 23; grade++) {
-
+            System.out.println(JSON.toJSONString(lesson));System.out.println(3);
             amount_grade[grade] = 0;//初始化X年级学生数量
             String pat;
             if (grade < 10)
@@ -145,10 +155,10 @@ public class LessonConductService {
                     if (!user.getGrade().equals(pat))
                         continue;
 
-                    if (majorname.contains(user.getMajor().getName()))
+                    if (majorname.contains(user.getMajor().getMajorid()))
                         continue;
                     else
-                        majorname.add(user.getMajor().getName());
+                        majorname.add(user.getMajor().getMajorid());
                 }
                 int amount_major = majorname.size();
 
@@ -163,7 +173,7 @@ public class LessonConductService {
                     if (!user.getGrade().equals(pat))
                         continue;
 
-                    numInMajor[majorname.indexOf(user.getMajor().getName())]++;
+                    numInMajor[majorname.indexOf(user.getMajor().getMajorid())]++;
                 }
 
                 //按专业删除
@@ -177,7 +187,7 @@ public class LessonConductService {
                         int flag = 0;
                         for (int k = 0; k < amount; k++) {
                             if (lesson.getClassmates().get(k).getGrade().equals(pat)
-                                    && lesson.getClassmates().get(k).getMajor().getName().equals(majorname.get(i))) {
+                                    && lesson.getClassmates().get(k).getMajor().getMajorid().equals(majorname.get(i))) {
                                 if (flag == x) {
                                     lesson.getClassmates().remove(k);
                                     k--;
@@ -198,7 +208,7 @@ public class LessonConductService {
                         break;
 
                     if (lesson.getClassmates().get(k).getGrade().equals(pat)
-                            && lesson.getClassmates().get(k).getMajor().getName().equals(majorname.get(i))) {
+                            && lesson.getClassmates().get(k).getMajor().getMajorid().equals(majorname.get(i))) {
 
                         lesson.getClassmates().remove(k);
                         k--;
@@ -209,9 +219,11 @@ public class LessonConductService {
                 }
                 /*Lesson lessonInData = lessonMapper.findByLessonid(lesson.getLessonid());
                 lessonInData.setClassmates(lesson.getClassmates());*/
-                lessonMapper.saveAndFlush(lesson);
+                System.out.println(JSON.toJSONString(lesson));System.out.println(4);
+                lessonMapper.save(lesson);
                 return;
             }
+
         }
 
 
