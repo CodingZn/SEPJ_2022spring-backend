@@ -217,9 +217,7 @@ public class LessonConductService {
                         i++;
                     }
                 }
-                Lesson lessonInData = lessonMapper.findByLessonid(lesson.getLessonid());
-                lessonInData.setClassmates(lesson.getClassmates());
-//                lessonMapper.saveAndFlush(lesson);
+                lessonMapper.save(lesson);
                 return;
             }
         }
