@@ -127,8 +127,8 @@ public class LessonConductService {
         //X年级数量
         int[] amount_grade = new int[23];
 
-        for (int grade = 0; grade < 23; grade++) {
-            System.out.println(JSON.toJSONString(lesson));System.out.println(3);
+        for (int grade = 22; grade >= 0; grade--) {
+
             amount_grade[grade] = 0;//初始化X年级学生数量
             String pat;
             if (grade < 10)
@@ -217,10 +217,9 @@ public class LessonConductService {
                         i++;
                     }
                 }
-                /*Lesson lessonInData = lessonMapper.findByLessonid(lesson.getLessonid());
-                lessonInData.setClassmates(lesson.getClassmates());*/
-                System.out.println(JSON.toJSONString(lesson));System.out.println(4);
-                lessonMapper.save(lesson);
+                Lesson lessonInData = lessonMapper.findByLessonid(lesson.getLessonid());
+                lessonInData.setClassmates(lesson.getClassmates());
+//                lessonMapper.saveAndFlush(lesson);
                 return;
             }
         }
