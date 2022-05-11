@@ -117,7 +117,7 @@ public class LessonConductService {
         //X年级数量
         int[] amount_grade = new int[23];
 
-        for (int grade = 0; grade < 23; grade++) {
+        for (int grade = 22; grade >= 0; grade--) {
 
             amount_grade[grade] = 0;//初始化X年级学生数量
             String pat;
