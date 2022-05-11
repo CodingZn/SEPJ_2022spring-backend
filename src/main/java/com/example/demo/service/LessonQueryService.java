@@ -42,7 +42,7 @@ public class LessonQueryService {
         }
 
         for (Lesson lesson : lessonList) {
-            boolean a = query.getFuzzyLessonCode() == null || query.getFuzzyLessonCode().equals(lesson.getLessoncode());//judgeStrings(query.getFuzzyLessonCode(), lesson.getLessoncode());
+            boolean a = query.getFuzzyLessonCode() == null || lesson.getLessoncode().contains(query.getFuzzyLessonCode());
             boolean b = query.getFuzzyLessonName() == null || judgeStrings(query.getFuzzyLessonName(), lesson.getLessonname());
             boolean c = false;
             if (query.getFuzzyLessonTeacherName() == null)
