@@ -26,15 +26,18 @@ public class LessonQueryService {
         for (Lesson lesson : lessonList) {
             if (query.getSemester() == null || lesson.getSemester().equals(query.getSemester())) {
                 int flag = 0;
-                for (Classarrange classarrange : lesson.getArranges()) {
-                    if (query.getClassroom_name() == null ||
-                            classarrange.getClassroom().getName().equals(query.getClassroom_name())) {
-                        if (query.getClasstime_name() == null ||
-                                classarrange.getClasstime().getName().equals(query.getClasstime_name())) {
-                            flag = 1;
+                if(lesson.getArranges() == null || lesson.getArranges().size() == 0)
+                    flag = 1;
+                else
+                    for (Classarrange classarrange : lesson.getArranges()) {
+                        if (query.getClassroom_name() == null ||
+                                classarrange.getClassroom().getName().equals(query.getClassroom_name())) {
+                            if (query.getClasstime_name() == null ||
+                                    classarrange.getClasstime().getName().equals(query.getClasstime_name())) {
+                                flag = 1;
+                            }
                         }
                     }
-                }
                 if (1 == flag) {
                     lessonList1.add(lesson);
                 }
