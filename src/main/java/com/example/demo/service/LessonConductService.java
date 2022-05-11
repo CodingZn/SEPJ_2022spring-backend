@@ -107,7 +107,7 @@ public class LessonConductService {
     public void kickExceededClassmates(Lesson lesson) {
 
         if (!lesson.getMajorallowed().equals("all")) {
-            lesson.getClassmates().removeIf(user -> !lesson.getMajorallowed().contains(user.getMajor().getName()));
+            lesson.getClassmates().removeIf(user -> !lesson.getMajorallowed().contains(user.getMajor().getMajorid()));
         }//首先踢掉不符合专业限制条件的学生（正常情况应该没有）
 
         int amount = lesson.getClassmates().size();
@@ -145,10 +145,10 @@ public class LessonConductService {
                     if (!user.getGrade().equals(pat))
                         continue;
 
-                    if (majorname.contains(user.getMajor().getName()))
+                    if (majorname.contains(user.getMajor().getMajorid()))
                         continue;
                     else
-                        majorname.add(user.getMajor().getName());
+                        majorname.add(user.getMajor().getMajorid());
                 }
                 int amount_major = majorname.size();
 
@@ -163,7 +163,7 @@ public class LessonConductService {
                     if (!user.getGrade().equals(pat))
                         continue;
 
-                    numInMajor[majorname.indexOf(user.getMajor().getName())]++;
+                    numInMajor[majorname.indexOf(user.getMajor().getMajorid())]++;
                 }
 
                 //按专业删除
@@ -177,7 +177,7 @@ public class LessonConductService {
                         int flag = 0;
                         for (int k = 0; k < amount; k++) {
                             if (lesson.getClassmates().get(k).getGrade().equals(pat)
-                                    && lesson.getClassmates().get(k).getMajor().getName().equals(majorname.get(i))) {
+                                    && lesson.getClassmates().get(k).getMajor().getMajorid().equals(majorname.get(i))) {
                                 if (flag == x) {
                                     lesson.getClassmates().remove(k);
                                     k--;
@@ -198,7 +198,7 @@ public class LessonConductService {
                         break;
 
                     if (lesson.getClassmates().get(k).getGrade().equals(pat)
-                            && lesson.getClassmates().get(k).getMajor().getName().equals(majorname.get(i))) {
+                            && lesson.getClassmates().get(k).getMajor().getMajorid().equals(majorname.get(i))) {
 
                         lesson.getClassmates().remove(k);
                         k--;
@@ -207,9 +207,9 @@ public class LessonConductService {
                         i++;
                     }
                 }
-                /*Lesson lessonInData = lessonMapper.findByLessonid(lesson.getLessonid());
-                lessonInData.setClassmates(lesson.getClassmates());*/
-                lessonMapper.saveAndFlush(lesson);
+                Lesson lessonInData = lessonMapper.findByLessonid(lesson.getLessonid());
+                lessonInData.setClassmates(lesson.getClassmates());
+//                lessonMapper.saveAndFlush(lesson);
                 return;
             }
         }
