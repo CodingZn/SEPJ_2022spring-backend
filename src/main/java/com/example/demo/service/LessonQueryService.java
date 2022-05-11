@@ -45,10 +45,12 @@ public class LessonQueryService {
             boolean a = query.getFuzzyLessonCode() == null || query.getFuzzyLessonCode().equals(lesson.getLessoncode());//judgeStrings(query.getFuzzyLessonCode(), lesson.getLessoncode());
             boolean b = query.getFuzzyLessonName() == null || judgeStrings(query.getFuzzyLessonName(), lesson.getLessonname());
             boolean c = false;
-            if (lesson.getTeacher() == null)
+            if (query.getFuzzyLessonTeacherName() == null)
                 c = true;
             else {
                 for (User teacher : lesson.getTeacher()) {
+                    /*if(teacher.getName() == null)
+                        continue;*/
                     if (judgeStrings(query.getFuzzyLessonTeacherName(), teacher.getName()))
                         c = true;
                 }
