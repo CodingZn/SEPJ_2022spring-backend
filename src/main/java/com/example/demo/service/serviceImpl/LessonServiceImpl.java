@@ -1,6 +1,8 @@
 package com.example.demo.service.serviceImpl;
 
+import com.example.demo.bean.Classarrange;
 import com.example.demo.bean.Lesson;
+import com.example.demo.mapper.ClassarrangeMapper;
 import com.example.demo.mapper.LessonMapper;
 import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,12 @@ import java.util.Objects;
 @Service
 public class LessonServiceImpl implements GeneralService<Lesson> {
     private final LessonMapper lessonMapper;
+    private final ClassarrangeMapper arrangeMapper;
 
     @Autowired
-    public LessonServiceImpl(LessonMapper lessonMapper) {
+    public LessonServiceImpl(LessonMapper lessonMapper, ClassarrangeMapper arrangeMapper) {
         this.lessonMapper = lessonMapper;
+        this.arrangeMapper = arrangeMapper;
     }
 
     @Override
@@ -38,7 +42,14 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
 
     @Override
     public String createABean(Lesson lesson) {
+        List<Classarrange> arranges = lesson.getArranges();//此处的arrange无id
         lessonMapper.save(lesson);
+        for (Classarrange arrange : arranges){
+            Classarrange arrange0 = arrangeMapper.findByClassroomAndClasstime(arrange.getClassroom(),arrange.getClasstime());
+            arrange.setId(arrange0.getId());
+            arrange.setUplesson(lesson);
+            arrangeMapper.save(arrange);
+        }
         return "Success";
     }
 
@@ -59,6 +70,16 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
             return "NotFound";
         else{
             lesson.setLessonid(Integer.parseInt(lessonid));
+            List<Classarrange> arranges1 = lesson1.getArranges();
+            for (Classarrange arrange : arranges1){
+                arrange.setUplesson(null);
+                arrangeMapper.save(arrange);
+            }
+            List<Classarrange> arranges = lesson.getArranges();
+            for (Classarrange arrange : arranges){
+                arrange.setUplesson(lesson);
+                arrangeMapper.save(arrange);
+            }
             lessonMapper.save(lesson);
             return "Success";
         }
@@ -67,6 +88,13 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     private String deleteABean(int lessonid){
         Lesson lesson = lessonMapper.findByLessonid(lessonid);
         if (lesson != null) {
+            List<Classarrange> arranges = lesson.getArranges();
+            for (Classarrange arrange : arranges){
+                Classarrange arrange0 = arrangeMapper.findByClassroomAndClasstime(arrange.getClassroom(),arrange.getClasstime());
+                arrange.setId(arrange0.getId());
+                arrange.setUplesson(null);
+                arrangeMapper.save(arrange);
+            }
             lessonMapper.delete(lesson);
             return "Success";
         } else {

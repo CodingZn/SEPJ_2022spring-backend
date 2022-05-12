@@ -1,7 +1,11 @@
 package com.example.demo.service.serviceImpl;
 
+import com.example.demo.bean.Classarrange;
 import com.example.demo.bean.Classroom;
+import com.example.demo.bean.Classtime;
+import com.example.demo.mapper.ClassarrangeMapper;
 import com.example.demo.mapper.ClassroomMapper;
+import com.example.demo.mapper.ClasstimeMapper;
 import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,10 +16,49 @@ import java.util.Objects;
 @Service
 public class ClassroomServiceImpl implements GeneralService<Classroom> {
     private final ClassroomMapper classroomMapper;
+    private final ClasstimeMapper classtimeMapper;
+    private final ClassarrangeMapper classarrangeMapper;
 
     @Autowired
-    public ClassroomServiceImpl(ClassroomMapper classroomMapper) {
+    public ClassroomServiceImpl(ClassroomMapper classroomMapper, ClasstimeMapper classtimeMapper, ClassarrangeMapper classarrangeMapper) {
         this.classroomMapper = classroomMapper;
+        this.classtimeMapper = classtimeMapper;
+        this.classarrangeMapper = classarrangeMapper;
+        updateArranges();
+    }
+
+    private void createArranges(Classroom newClassroom){
+        List<Classtime> classtimeList = classtimeMapper.findAll();
+        for (Classtime classtime : classtimeList){
+            Classarrange classarrange = new Classarrange();
+            classarrange.setClassroom(newClassroom);
+            classarrange.setClasstime(classtime);
+            classarrangeMapper.save(classarrange);
+        }
+    }
+
+    private void deleteArranges(Classroom oldClassroom){
+        List<Classtime> classtimeList = classtimeMapper.findAll();
+        for (Classtime classtime : classtimeList){
+            Classarrange classarrange = classarrangeMapper.findByClassroomAndClasstime(oldClassroom, classtime);
+            classarrangeMapper.delete(classarrange);
+        }
+    }
+
+    private void updateArranges(){
+        List<Classtime> classtimeList = classtimeMapper.findAll();
+        List<Classroom> classroomList = classroomMapper.findAll();
+        for(Classroom classroom : classroomList){
+            for(Classtime classtime:classtimeList){
+                Classarrange arrange = classarrangeMapper.findByClassroomAndClasstime(classroom,classtime);
+                if (arrange == null){
+                    arrange = new Classarrange();
+                    arrange.setClassroom(classroom);
+                    arrange.setClasstime(classtime);
+                    classarrangeMapper.save(arrange);
+                }
+            }
+        }
     }
 
     @Override
@@ -37,6 +80,7 @@ public class ClassroomServiceImpl implements GeneralService<Classroom> {
     @Override
     public String createABean(Classroom bean) {
         classroomMapper.save(bean);
+        createArranges(bean);
         return "Success";
     }
 
@@ -65,6 +109,7 @@ public class ClassroomServiceImpl implements GeneralService<Classroom> {
     private String deleteABean(int id){
         Classroom bean1 = classroomMapper.findByClassroomid(id);
         if (bean1 != null) {
+            deleteArranges(bean1);
             classroomMapper.delete(bean1);
             return "Success";
         } else {

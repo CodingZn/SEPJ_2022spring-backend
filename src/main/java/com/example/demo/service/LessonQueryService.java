@@ -123,7 +123,7 @@ public class LessonQueryService {
 
         int distance = d[sourceLen][targetLen];
         double score = (double) distance / Math.max(source.length(), target.length());
-        return score < 0.4;
+        return score < 0.9;
     }
 
 }

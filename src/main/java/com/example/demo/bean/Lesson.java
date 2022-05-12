@@ -55,8 +55,8 @@ public class Lesson {//changeable
 
     @JsonDeserialize(using = ClassarrangeListDeserializer.class)
     @JsonSerialize(using = ClassarrangeListSerializer.class)
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "lessons_arranges")
+    @OneToMany(mappedBy = "uplesson")
+//    @JoinTable(name = "lessons_arranges")
     private List<Classarrange> arranges;//admin changeable
 
     @Column(name = "capacity")

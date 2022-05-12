@@ -27,15 +27,16 @@ public class Classarrange {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "classtime")
+    @JoinColumn(name = "classtime", nullable = false)
     private Classtime classtime;
 
     @ManyToOne
-    @JoinColumn(name = "classroom")
+    @JoinColumn(name = "classroom", nullable = false)
     private Classroom classroom;
 
     @JsonSerialize(using = LessonSerializer.class)
     @JsonDeserialize(using = LessonDeserializer.class)
     @ManyToOne
+    @JoinColumn(name = "uplesson")
     private Lesson uplesson;
 }
