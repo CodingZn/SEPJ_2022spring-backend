@@ -1,6 +1,8 @@
 package com.example.demo.bean.specialBean;
 
 import com.example.demo.bean.Lesson;
+import com.example.demo.bean.jsonUtils.LessonListSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,8 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 public class LessonQuery {
 
-    private int mode;
-
     private String semester;
 
     private String classroom_name;
@@ -28,8 +28,7 @@ public class LessonQuery {
 
     private String fuzzyLessonTeacherName;
 
+    @JsonSerialize(using = LessonListSerializer.class)
     private List<Lesson> result;
-
-    private boolean is_processed = false;
 
 }

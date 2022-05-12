@@ -87,6 +87,32 @@ public class LessonConductService {
         return "Success";
     }
 
+    //学生查看所有已修课程
+    public List<Lesson> getAllLessonsTaken(String userid){
+        User user = userMapper.findByUserid(userid);
+        return user.getLessonsTaken();
+    }
+
+    //学生查看所有已选课程
+    public List<Lesson> getAllLessonsTaking(String userid){
+        User user = userMapper.findByUserid(userid);
+        return user.getLessonsTaking();
+    }
+
+    //管理员查看选课名单
+    public List<String> getAllStudentIdsTakingLesson(String lessonid){
+        Lesson lesson = lessonMapper.findByLessonid(Integer.parseInt(lessonid));
+        return lesson.getClassmates().stream().map(User::getUserid).toList();
+    }
+
+    //教师查看选课名单，id不匹配时返回null
+    public List<String> getAllStudentIdsTakingLesson(String lessonid, String teacherid){
+        Lesson lesson = lessonMapper.findByLessonid(Integer.parseInt(lessonid));
+        if (!lesson.getTeacher().stream().map(User::getUserid).toList().contains(teacherid))
+            return null;
+        return lesson.getClassmates().stream().map(User::getUserid).toList();
+    }
+
     //管理员通过选课申请时，系统自动给学生选课--此方法返回 "Success" 或提示信息
     public String autoSelectALesson(User user, Lesson lesson) {
         lesson.getClassmates().add(user);
@@ -97,6 +123,7 @@ public class LessonConductService {
         return "Success";
     }
 
+    //一轮结束时，将超出课程容量的人踢掉
     public void kickAllExceededClassmates(){
         List<Lesson> lessonList = lessonMapper.findAll();
 
@@ -105,7 +132,7 @@ public class LessonConductService {
         }
     }
 
-    public void kickExceededClassmates(Lesson lesson) {
+    private void kickExceededClassmates(Lesson lesson) {
         System.out.println(JSON.toJSONString(lesson));System.out.println(1);
         if (!lesson.getMajorallowed().equals("all")) {
             lesson.getClassmates().removeIf(user -> {
