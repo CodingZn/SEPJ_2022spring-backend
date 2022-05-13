@@ -6,6 +6,7 @@ import com.example.demo.bean.User;
 import com.example.demo.service.GeneralService;
 import com.example.demo.service.LessonConductService;
 import com.example.demo.utils.BeanTools;
+import com.example.demo.utils.JWTUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +19,13 @@ import static com.example.demo.utils.JWTUtils.AdminAuthority;
 @RestController
 @CrossOrigin("http://localhost:3000")
 public class LessonrequestController extends BasicController <Lessonrequest> {
+    private final GeneralService<User> userService;
     private final GeneralService<Lessonrequest> lessonreqService;
     private final LessonConductService lessonConductService;
 
     @Autowired
-    public LessonrequestController(GeneralService<Lessonrequest> lessonreqService, LessonConductService lessonConductService) {
+    public LessonrequestController(GeneralService<User> userService, GeneralService<Lessonrequest> lessonreqService, LessonConductService lessonConductService) {
+        this.userService = userService;
         this.lessonreqService = lessonreqService;
         this.lessonConductService = lessonConductService;
     }
@@ -41,6 +44,8 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
     String getBeans() {
         return "lessonrequests";
     }
+
+    /* ****************以下为管理员操作****************** */
 
     /* 1-查--getAllIds--获取所有id*/
     @Override
@@ -70,7 +75,7 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
         Map<String, Object> map = new HashMap<>();
 
         switch (authority){
-            case AdminAuthority, StudentAuthority ->{
+            case AdminAuthority ->{
                 if (lessonreqService.getABean(key) != null){
                     map.put("result", "Success");
                     map.put(getBean() , lessonreqService.getABean(key));
@@ -116,79 +121,21 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
         return super.getAllBeans(authentication);
     }
 
-    /* 4-增--createABean--新增一个实体*/
     @Override
     Map<String, Object> createABean_impl(String authority, String userid, Lessonrequest bean) {
-        Map<String, Object> map = new HashMap<>();
-        switch (authority){
-            case StudentAuthority->{
-                map.put("result", lessonreqService.createABean(bean));
-            }
-            default -> {
-                map.put("result", "NoAuth");
-            }
-        }
-        return map;
+        return null;
     }
 
-    @Override
-    @RequestMapping(value="/lessonrequest", method = RequestMethod.POST)
-    public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
-                                                           @RequestBody Lessonrequest bean){
-        return super.createABean(authentication, bean);
-
-    }
-
-    /* 5-增--createBeans--新增多个实体*/
     @Override
     Map<String, Object> createBeans_impl(String authority, String userid, List<Lessonrequest> beans) {
-//        Map<String, Object> map = new HashMap<>();
-//        switch (authority) {
-//            case AdminAuthority -> {
-//                map.put("result", lessonreqService.createBeans(beans));
-//            }
-//            default -> {
-//                map.put("result", "NoAuth");
-//            }
-//        }
-//        return map;
         return null;
     }
 
-//    @Override
-//    @RequestMapping(value = "/lessonrequests", method = RequestMethod.POST)
-//    public ResponseEntity<Map<String, Object>> createBeans(@RequestHeader(value = "Authentication") String authentication,
-//                                                           @RequestBody JSONArray jsonArray, Class<Lessonrequest> clazz) {
-//        return super.createBeans(authentication, jsonArray, clazz);
-//    }
-
-
-    /* 6-改--rewriteABean--重写一个实体,put*/
     @Override
     Map<String, Object> rewriteABean_impl(String authority, String userid, String key, Lessonrequest bean) {
-//        Map<String, Object> map = new HashMap<>();
-//        switch (authority){
-//            case AdminAuthority->{
-//                map.put("result", lessonreqService.changeABean(key, bean));
-//                return map;
-//            }
-//            default -> {
-//                map.put("result", "NoAuth");
-//            }
-//        }
-//        return map;
         return null;
     }
 
-//    @Override
-//    @RequestMapping(value="/lessonrequest/{lessonrequestid}", method = RequestMethod.PUT)
-//    public ResponseEntity<Map<String, Object>> rewriteABean(@RequestHeader(value = "Authentication") String authentication,
-//                                                            @PathVariable("lessonrequestid") String key,
-//                                                            @RequestBody Lessonrequest bean) {
-//        return super.rewriteABean(authentication, key, bean);
-//    }
-
-    /* 7-改--modifyABean--修改一个实体,patch*/
     @Override
     Map<String, Object> modifyABean_impl(String authority, String userid, String key, Lessonrequest bean) {
         Map<String, Object> map = new HashMap<>();
@@ -218,20 +165,6 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                 map.put("result", lessonreqService.changeABean(key,bean_modified));
                 return map;
             }
-            case StudentAuthority->{
-                Lessonrequest bean_ori = lessonreqService.getABean(key);
-                if (bean_ori == null){
-                    map.put("result", "NotFound");
-                    return map;
-                }
-                map.put("result", "Success");
-                String [] auth = {"requestReason"};
-
-                List<String> changeableList = new ArrayList<>(Arrays.asList(auth));
-                Lessonrequest bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
-                map.put("result", lessonreqService.changeABean(key,bean_modified));
-                return map;
-            }
             default -> {
                 map.put("result", "NoAuth");
                 return map;
@@ -247,55 +180,165 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
         return super.modifyABean(authentication, key, bean);
     }
 
-    /* 8-删--deleteABean--删除一个实体*/
     @Override
     Map<String, Object> delBean_impl(String authority, String userid, String key) {
-        Map<String, Object> map = new HashMap<>();
-        switch (authority){
-            case StudentAuthority->{
-                map.put("result", lessonreqService.deleteABean(key));
-            }
-            default -> {
-                map.put("result", "NoAuth");
-            }
-        }
-        return map;
-    }
-
-    @Override
-    @RequestMapping(value="/lessonrequest/{lessonrequestid}", method = RequestMethod.DELETE)
-    public ResponseEntity<Map<String, Object>> delBean(@RequestHeader(value="Authentication") String authentication,
-                                                       @PathVariable("lessonrequestid") String key) {
-        return super.delBean(authentication, key);
-    }
-
-    /* 9-删--deleteBeans--删除多个实体*/
-    @Override
-    Map<String, Object> delBeans_impl(String authority, String userid, List<?> ids) {
-//        Map<String, Object> map = new HashMap<>();
-//        switch (authority) {
-//            case AdminAuthority -> {
-//                map.put("result", lessonreqService.deleteBeans(ids));
-//            }
-//            default -> {
-//                map.put("result", "NoAuth");
-//            }
-//        }
-//        return map;
         return null;
     }
 
-//    @Override
-//    @RequestMapping(value = "/lessonrequests", method = RequestMethod.DELETE)
-//    public ResponseEntity<Map<String, Object>> delBeans(@RequestHeader(value = "Authentication") String authentication,
-//                                                        @RequestBody JSONArray jsonArray, Class<?> clazz) {
-//        return super.delBeans(authentication, jsonArray, String.class);
-//    }
-
-    /* **************特殊操作**************** */
-
-    /* 修改选课状态后，自动选入课程*/
-    private boolean autoSelectLesson( String lessonid, String studentid){
-        return false;
+    @Override
+    Map<String, Object> delBeans_impl(String authority, String userid, List<?> ids) {
+        return null;
     }
+
+    /* ****************以下为学生本人操作****************** */
+
+    /* 3-查--getAllBeans--获取学生本人的全部实体*/
+    @RequestMapping(value = "/user/{userid}/lessonrequests", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> getAllBeans_Student(@RequestHeader(value="Authentication") String authentication,
+                                                                   @PathVariable (name = "userid") String userid_url) {
+        Map<String, Object> map = new HashMap<>();
+
+        String credit = ControllerOperation.checkAuthentication(authentication);
+        String authority = ControllerOperation.getAuthority(authentication);
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
+
+        if (credit.equals(ValidJWTToken)){
+            String result;
+            switch (authority) {
+                case StudentAuthority -> {
+                    if (!Objects.equals(userid_url, userid)){//申请的学号不对应
+                        result = "NoAuth";
+                    }
+                    else{//只能给自己创建
+                        User user = userService.getABean(userid);
+                        map.put("lessonrequests", user.getLessonrequests());
+                        result = "Success";
+                    }
+                }
+                default ->{
+                    result="NoAuth";
+                }
+            }
+            return ControllerOperation.getConductResponse(result, map);
+        }
+        else return ControllerOperation.getErrorResponse(credit, map);
+    }
+
+
+    /* 4-增--createABean--新增一个实体*/
+    @RequestMapping(value="/user/{userid}/lessonrequest", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
+                                                           @PathVariable (name = "userid") String userid_url,
+                                                           @RequestBody Lessonrequest bean){
+        Map<String, Object> map = new HashMap<>();
+
+        String credit = ControllerOperation.checkAuthentication(authentication);
+        String authority = ControllerOperation.getAuthority(authentication);
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
+
+        if (credit.equals(ValidJWTToken)){
+            String result;
+            switch (authority) {
+                case StudentAuthority -> {
+                    if (!Objects.equals(userid_url, userid)){//申请的学号不对应
+                        result = "NoAuth";
+                    }
+                    else{//只能给自己创建
+                        User user = userService.getABean(userid);
+                        bean.setStudent(user);
+                        result = lessonreqService.createABean(bean);
+                    }
+                }
+                default ->{
+                    result="NoAuth";
+                }
+            }
+            return ControllerOperation.getConductResponse(result, map);
+        }
+        else return ControllerOperation.getErrorResponse(credit, map);
+    }
+
+    /* 7-改--modifyABean--修改一个实体,patch*/
+    @RequestMapping(value="/user/{userid}/lessonrequest/{lessonrequestid}", method = RequestMethod.PATCH)
+    public ResponseEntity<Map<String, Object>> modifyABean_student(@RequestHeader(value = "Authentication") String authentication,
+                                                                   @PathVariable (name = "userid") String userid_url,
+                                                                   @PathVariable(name = "lessonrequestid") String key,
+                                                                   @RequestBody Lessonrequest bean){
+        Map<String, Object> map = new HashMap<>();
+
+        String credit = ControllerOperation.checkAuthentication(authentication);
+        String authority = ControllerOperation.getAuthority(authentication);
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
+
+        if (credit.equals(ValidJWTToken)){
+            String result;
+            switch (authority) {
+                case StudentAuthority -> {
+                    if (!Objects.equals(userid_url, userid)){//申请的学号不对应
+                        result = "NoAuth";
+                    }
+                    else{//只能给自己创建
+                        Lessonrequest bean_ori = lessonreqService.getABean(key);
+                        if (bean_ori == null){
+                            result = "NotFound";
+                        }
+                        else if (!Objects.equals(bean_ori.getStudent().getUserid(), userid)){//申请的学号不对应
+                            result = "NoAuth";
+                        }
+                        else{
+                            map.put("result", "Success");
+                            String [] auth = {"requestReason"};
+
+                            List<String> changeableList = new ArrayList<>(Arrays.asList(auth));
+                            Lessonrequest bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
+                            result = lessonreqService.changeABean(key,bean_modified);
+
+                        }
+                    }
+                }
+                default ->{
+                    result="NoAuth";
+                }
+            }
+            return ControllerOperation.getConductResponse(result, map);
+        }
+        else return ControllerOperation.getErrorResponse(credit, map);
+    }
+
+    /* 8-删--deleteABean--删除一个实体*/
+    @RequestMapping(value="/user/{userid}/lessonrequest/{lessonrequestid}", method = RequestMethod.DELETE)
+    public ResponseEntity<Map<String, Object>> delBean(@RequestHeader(value="Authentication") String authentication,
+                                                       @PathVariable (name = "userid") String userid_url,
+                                                       @PathVariable("lessonrequestid") String key) {
+        Map<String, Object> map = new HashMap<>();
+
+        String credit = ControllerOperation.checkAuthentication(authentication);
+        String authority = ControllerOperation.getAuthority(authentication);
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
+
+        if (credit.equals(ValidJWTToken)){
+            String result;
+            switch (authority) {
+                case StudentAuthority -> {
+                    if (!Objects.equals(userid_url, userid)){//申请的学号不对应
+                        result = "NoAuth";
+                    }
+                    else{//只能给自己创建
+                        Lessonrequest bean = lessonreqService.getABean(key);
+                        if (!Objects.equals(bean.getStudent().getUserid(), userid)){//申请的学号不对应
+                            result = "NoAuth";
+                        }
+                        else
+                            result = lessonreqService.deleteABean(key);
+                    }
+                }
+                default ->{
+                    result="NoAuth";
+                }
+            }
+            return ControllerOperation.getConductResponse(result, map);
+        }
+        else return ControllerOperation.getErrorResponse(credit, map);
+    }
+
 }
