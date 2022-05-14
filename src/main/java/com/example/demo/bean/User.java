@@ -7,10 +7,17 @@ import com.example.demo.bean.jsonUtils.SchoolSerializer;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @Setter
@@ -32,24 +39,30 @@ public class User {//admin|self changeable
     }
 
 
-    @Column(name = "usertype", nullable = false, length = 10)
+    @Column(name = "usertype", nullable = false, length = 10, updatable = false)
     @Enumerated(EnumType.STRING)
     private Type usertype;//unchangeable
 
     @Id
     @GeneratedValue(generator = "usergenerator")
-    @Column(name = "userid", nullable = false, length = 32)
+    @Column(name = "userid", nullable = false, length = 32, unique = true, updatable = false)
     private String userid;//unchangeable
 
+    @NotNull(message = "姓名不能为空！")
+    @Pattern(regexp = "[\u4e00-\u9fa5A-Za-z]+", message = "姓名只能为中英文字符！")
     @Column(name = "name", nullable = false, length = 64)
     private String name;//admin changeable
 
+    @NotNull(message = "身份证号不能为空！")
+    @Pattern(regexp = "^[1-9]\\d{5}[1-2]\\d{3}((0\\d)|(1[0-2]))(([0-2]\\d)|3[0-1])\\d{3}([0-9Xx])$", message = "必须为有效身份证号！")
     @Column(name = "identitynumber", nullable = false, length = 32)
     private String identitynumber;//unchangeable
 
+    @Email(message = "必须为有效格式！")
     @Column(name = "email", length = 64)
     private String email;//changeable
 
+    @Pattern(regexp = "1\\d{10}", message = "必须为有效手机号！")
     @Column(name = "phonenumber", length = 32)
     private String phonenumber;//changeable
 
@@ -57,6 +70,7 @@ public class User {//admin|self changeable
     @Column(name = "password", nullable = false, length = 32)
     private String password;//self-only changeable
 
+    @NotNull(message = "学院不能为空！")
     @JsonSerialize(using = SchoolSerializer.class)
     @JsonDeserialize(using = SchoolDeserializer.class)
     @ManyToOne
@@ -69,6 +83,7 @@ public class User {//admin|self changeable
     @JoinColumn(name = "major")
     private Major major;//admin changeable
 
+    @Pattern(regexp = "[0-9]{2}", message = "必须为两位数字！")
     @Column(name = "grade", length = 5)
     private String grade;//admin changeable
 

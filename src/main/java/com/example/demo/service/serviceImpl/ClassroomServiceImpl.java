@@ -10,6 +10,7 @@ import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -78,14 +79,14 @@ public class ClassroomServiceImpl implements GeneralService<Classroom> {
     }
 
     @Override
-    public String createABean(Classroom bean) {
+    public String createABean(@Valid Classroom bean) {
         classroomMapper.save(bean);
         createArranges(bean);
         return "Success";
     }
 
     @Override
-    public String createBeans(List<Classroom> beans) {
+    public String createBeans(@Valid List<Classroom> beans) {
         beans.removeIf(Objects::isNull);
         for(Classroom bean : beans){
             createABean(bean);
@@ -94,7 +95,7 @@ public class ClassroomServiceImpl implements GeneralService<Classroom> {
     }
 
     @Override
-    public String changeABean(String id, Classroom bean) {
+    public String changeABean(String id,@Valid Classroom bean) {
         Classroom bean1 = getABean(id);
         if (bean1 == null)
             return "NotFound";

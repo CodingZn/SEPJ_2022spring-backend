@@ -14,10 +14,10 @@ public class Classroom {//admin changeable
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, updatable = false)
     private int classroomid;//unchangeable
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, unique = true)
     private String name;//admin changeable
 
     @Enumerated(EnumType.STRING)
@@ -29,7 +29,7 @@ public class Classroom {//admin changeable
     }
 
     @Column
-    private int capacity;//admin changeable
+    private Integer capacity;//admin changeable
 
 
 }

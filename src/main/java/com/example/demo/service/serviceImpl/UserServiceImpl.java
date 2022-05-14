@@ -6,6 +6,7 @@ import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 
@@ -58,7 +59,7 @@ public class UserServiceImpl implements GeneralService<User> {
     }
 
     @Override
-    public String createBeans(List<User> beans) {
+    public String createBeans(@Valid List<User> beans) {
         beans.removeIf(Objects::isNull);
         for(User user : beans){
             createABean(user);
@@ -67,7 +68,7 @@ public class UserServiceImpl implements GeneralService<User> {
     }
 
     @Override
-    public String changeABean(String userid, User user) {
+    public String changeABean(String userid,@Valid User user) {
         User user1 = userMapper.findByUserid(userid);
         if (user1 == null)
             return "NotFound";

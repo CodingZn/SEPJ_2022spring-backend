@@ -8,6 +8,7 @@ import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,14 +43,17 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
 
     @Override
     public String createABean(Lesson lesson) {
-        List<Classarrange> arranges = lesson.getArranges();//此处的arrange无id
-        lessonMapper.save(lesson);
-        for (Classarrange arrange : arranges){
-            Classarrange arrange0 = arrangeMapper.findByClassroomAndClasstime(arrange.getClassroom(),arrange.getClasstime());
-            arrange.setId(arrange0.getId());
-            arrange.setUplesson(lesson);
-            arrangeMapper.save(arrange);
+        List<Classarrange> arranges0 = lesson.getArranges();//此处的arrange无id
+        List<Classarrange> arranges1 = new ArrayList<>();
+        for (Classarrange arrange0 : arranges0){
+            Classarrange arrange1 = arrangeMapper.findByClassroomAndClasstime(arrange0.getClassroom(),arrange0.getClasstime());
+            arrange1.setUplesson(lesson);
+            arranges1.add(arrange1);
         }
+
+        lesson.setArranges(arranges1);
+        lessonMapper.save(lesson);
+        arrangeMapper.saveAll(arranges1);
         return "Success";
     }
 
@@ -70,17 +74,22 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
             return "NotFound";
         else{
             lesson.setLessonid(Integer.parseInt(lessonid));
-            List<Classarrange> arranges1 = lesson1.getArranges();
-            for (Classarrange arrange : arranges1){
+            List<Classarrange> arranges_old = lesson1.getArranges();
+            for (Classarrange arrange : arranges_old){
                 arrange.setUplesson(null);
                 arrangeMapper.save(arrange);
             }
-            List<Classarrange> arranges = lesson.getArranges();
-            for (Classarrange arrange : arranges){
-                arrange.setUplesson(lesson);
-                arrangeMapper.save(arrange);
+            List<Classarrange> arranges0 = lesson.getArranges();
+            List<Classarrange> arranges1 = new ArrayList<>();
+            for (Classarrange arrange0 : arranges0){
+                Classarrange arrange1 = arrangeMapper.findByClassroomAndClasstime(arrange0.getClassroom(),arrange0.getClasstime());
+                arrange1.setUplesson(lesson);
+                arranges1.add(arrange1);
             }
+
+            lesson.setArranges(arranges1);
             lessonMapper.save(lesson);
+            arrangeMapper.saveAll(arranges1);
             return "Success";
         }
     }

@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.example.demo.bean.generators.UseridGenerator;
 import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
@@ -14,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.*;
 
 import static com.example.demo.utils.JWTUtils.*;
@@ -42,13 +42,14 @@ public class UserController extends BasicController <User>{
         now_year = control.findByName("now_year").getStatus();
         UseridGenerator.setNow_year(now_year);
 
-        List<Integer> studentIds = students.stream().map(u -> {
+        List<Integer> studentIds_tmp = students.stream().map(u -> {
             if(u.getUserid().substring(0,2).equals(now_year))
                 return Integer.parseInt(u.getUserid().substring(2));
             else return null;
         }).toList();
+        List<Integer> studentIds = new ArrayList<>(studentIds_tmp);
+        studentIds.removeIf(Objects::isNull);
         try {
-            studentIds.removeIf(Objects::isNull);
             int a = Collections.max(studentIds);
             UseridGenerator.setNextStudentid(1 + a);
 
@@ -56,15 +57,17 @@ public class UserController extends BasicController <User>{
             UseridGenerator.setNextStudentid(1);
         }
 
-        List<Integer> teacherIds = teachers.stream().map(u -> {
+        List<Integer> teacherIds_tmp = teachers.stream().map(u -> {
             if(u.getUserid().substring(0,2).equals(now_year))
                 return Integer.parseInt(u.getUserid().substring(2));
             else return null;
         }).toList();
+        List<Integer> teacherIds = new ArrayList<>(teacherIds_tmp);
+        teacherIds.removeIf(Objects::isNull);
         try{
-            teacherIds.removeIf(Objects::isNull);
             int a = Collections.max(teacherIds);
             UseridGenerator.setNextTeacherid(1+a);
+
         }catch (Exception e){
             UseridGenerator.setNextTeacherid(1);
         }
@@ -85,7 +88,6 @@ public class UserController extends BasicController <User>{
     String getBeans() {
         return "users";
     }
-
 
 
     /***********************************************/

@@ -181,7 +181,7 @@ public class LessonController extends BasicController<Lesson> {
                 map.put("result", lessonService.createABean(lesson));
             }
             case TeacherAuthority -> {
-                /*!!!               lesson.setTeacher(name);*/
+
                 lesson.setStatus(Lesson.Status.pending);
                 map.put("result", lessonService.createABean(lesson));
             }

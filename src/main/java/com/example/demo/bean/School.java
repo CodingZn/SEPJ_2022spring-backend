@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @Getter
@@ -22,6 +23,7 @@ public class School {//admin changeable
     @Column(name="schoolid", nullable = false, length = 5)
     private String schoolid;//unchangeable
 
+    @Pattern(regexp = "[\u4e00-\u9fa5A-Za-z]+", message = "名称只能为中英文字符！")
     @Column(name="name", nullable = false, length = 32)
     private String name;//changeable
 
