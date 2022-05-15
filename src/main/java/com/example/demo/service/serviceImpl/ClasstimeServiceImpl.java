@@ -10,6 +10,8 @@ import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,7 +26,7 @@ public class ClasstimeServiceImpl implements GeneralService<Classtime> {
         this.classtimeMapper = classtimeMapper;
         this.classroomMapper = classroomMapper;
         this.classarrangeMapper = classarrangeMapper;
-        updateArranges();
+//        updateArranges();
     }
 
     private void createArranges(Classtime classtime){
@@ -79,8 +81,16 @@ public class ClasstimeServiceImpl implements GeneralService<Classtime> {
 
     @Override
     public String createABean(Classtime bean) {
+        List<Classroom> classroomList = classroomMapper.findAll();
+        List<Classarrange> classarrangeList = new ArrayList<>();
+        for (Classroom classroom : classroomList){
+            Classarrange classarrange = new Classarrange();
+            classarrange.setClassroom(classroom);
+            classarrange.setClasstime(bean);
+            classarrangeList.add(classarrange);
+        }
+        bean.setClassarranges(classarrangeList);
         classtimeMapper.save(bean);
-        createArranges(bean);
         return "Success";
     }
 
@@ -109,7 +119,7 @@ public class ClasstimeServiceImpl implements GeneralService<Classtime> {
     private String deleteABean(int id){
         Classtime bean1 = classtimeMapper.findByClasstimeid(id);
         if (bean1 != null) {
-            deleteArranges(bean1);
+//            deleteArranges(bean1);
             classtimeMapper.delete(bean1);
             return "Success";
         } else {

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.*;
 
+import static com.example.demo.bean.specialBean.Ultimatectrl.*;
 import static com.example.demo.utils.JWTUtils.*;
 
 @RestController
@@ -39,7 +40,7 @@ public class UserController extends BasicController <User>{
     private void setGeneratorInit() {
         List<User> students = userSpecService.getAllByUsertype(User.Type.student);
         List<User> teachers = userSpecService.getAllByUsertype(User.Type.teacher);
-        now_year = control.findByName("now_year").getStatus();
+        now_year = control.findByName(KEY_YEAR_CONTROL).getValue();
         UseridGenerator.setNow_year(now_year);
 
         List<Integer> studentIds_tmp = students.stream().map(u -> {

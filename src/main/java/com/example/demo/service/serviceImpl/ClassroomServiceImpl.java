@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +26,7 @@ public class ClassroomServiceImpl implements GeneralService<Classroom> {
         this.classroomMapper = classroomMapper;
         this.classtimeMapper = classtimeMapper;
         this.classarrangeMapper = classarrangeMapper;
-        updateArranges();
+//        updateArranges();
     }
 
     private void createArranges(Classroom newClassroom){
@@ -80,8 +81,16 @@ public class ClassroomServiceImpl implements GeneralService<Classroom> {
 
     @Override
     public String createABean(@Valid Classroom bean) {
+        List<Classarrange> classarrangeList = new ArrayList<>();
+        List<Classtime> classtimeList = classtimeMapper.findAll();
+        for (Classtime classtime : classtimeList){
+            Classarrange classarrange = new Classarrange();
+            classarrange.setClassroom(bean);
+            classarrange.setClasstime(classtime);
+            classarrangeList.add(classarrange);
+        }
+        bean.setClassarranges(classarrangeList);
         classroomMapper.save(bean);
-        createArranges(bean);
         return "Success";
     }
 
@@ -110,7 +119,7 @@ public class ClassroomServiceImpl implements GeneralService<Classroom> {
     private String deleteABean(int id){
         Classroom bean1 = classroomMapper.findByClassroomid(id);
         if (bean1 != null) {
-            deleteArranges(bean1);
+//            deleteArranges(bean1);
             classroomMapper.delete(bean1);
             return "Success";
         } else {

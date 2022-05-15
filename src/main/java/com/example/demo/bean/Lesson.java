@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
@@ -24,18 +25,18 @@ public class Lesson {//changeable
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "lessonid", nullable = false)
+    @Column(name = "lessonid", nullable = false, unique = true, updatable = false)
     private int lessonid;//unchangeable
 
-    @Pattern(regexp = "[A-Z]{4}\\d{6}\\.\\d{2}", message = "")
-    @Column(name = "lessonnumber", nullable = false, length = 20)
+    @Pattern(regexp = "[A-Z]{4}\\d{6}\\.\\d{2}", message = "课程序号格式不对！")
+    @Column(name = "lessonnumber", nullable = false, length = 20, updatable = false)
     private String lessonnumber;//unchangeable
 
-    @Pattern(regexp = "[A-Z]{4}\\d{6}\\.\\d{2}", message = "")
-    @Column(name = "lessoncode", nullable = false, length = 15)
+    @Pattern(regexp = "[A-Z]{4}\\d{6}", message = "课程代码格式不对！")
+    @Column(name = "lessoncode", nullable = false, length = 15, updatable = false)
     private String lessoncode;//unchangeable
 
-    @Pattern(regexp = "[\u4e00-\u9fa5A-Za-z]+", message = "")
+    @Pattern(regexp = "[\u4e00-\u9fa5A-Za-z]+", message = "课程名只能包括中英文！")
     @Column(name = "lessonname", nullable = false, length = 32)
     private String lessonname;//admin|teacher_self changeable
 
@@ -54,6 +55,7 @@ public class Lesson {//changeable
     @Column(name = "credit", nullable = false)
     private int credit;//admin changeable
 
+    @Cascade({org.hibernate.annotations.CascadeType.DETACH})
     @JsonDeserialize(using = UserListDeserializer.class)
     @JsonSerialize(using = UserListSerializer.class)
     @ManyToMany
@@ -63,9 +65,12 @@ public class Lesson {//changeable
     @Column(name = "introduction")
     private String introduction;//admin|teacher_self changeable
 
+    @Cascade({org.hibernate.annotations.CascadeType.MERGE,
+            org.hibernate.annotations.CascadeType.DETACH})
     @JsonDeserialize(using = ClassarrangeListDeserializer.class)
     @JsonSerialize(using = ClassarrangeListSerializer.class)
-    @OneToMany(mappedBy = "uplesson")
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "lessons_arranges")
     private List<Classarrange> arranges;//admin changeable
 
     @Column(name = "capacity")
@@ -86,6 +91,7 @@ public class Lesson {//changeable
     public enum Status{
         censored, pending
     }
+
 
     @JsonIgnore
     @ManyToMany

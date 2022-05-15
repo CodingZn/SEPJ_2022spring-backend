@@ -1,5 +1,6 @@
 package com.example.demo.bean;
 
+import com.example.demo.annotations.UserPassword;
 import com.example.demo.bean.jsonUtils.MajorDeserializer;
 import com.example.demo.bean.jsonUtils.MajorSerializer;
 import com.example.demo.bean.jsonUtils.SchoolDeserializer;
@@ -55,7 +56,7 @@ public class User {//admin|self changeable
 
     @NotNull(message = "身份证号不能为空！")
     @Pattern(regexp = "^[1-9]\\d{5}[1-2]\\d{3}((0\\d)|(1[0-2]))(([0-2]\\d)|3[0-1])\\d{3}([0-9Xx])$", message = "必须为有效身份证号！")
-    @Column(name = "identitynumber", nullable = false, length = 32)
+    @Column(name = "identitynumber", nullable = false, length = 32, unique = true)
     private String identitynumber;//unchangeable
 
     @Email(message = "必须为有效格式！")
@@ -66,11 +67,12 @@ public class User {//admin|self changeable
     @Column(name = "phonenumber", length = 32)
     private String phonenumber;//changeable
 
+    @NotNull(message = "密码不能为空！")
+    @UserPassword
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password", nullable = false, length = 32)
     private String password;//self-only changeable
 
-    @NotNull(message = "学院不能为空！")
     @JsonSerialize(using = SchoolSerializer.class)
     @JsonDeserialize(using = SchoolDeserializer.class)
     @ManyToOne

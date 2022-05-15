@@ -14,22 +14,31 @@ import javax.persistence.Table;
 @Entity
 public class Ultimatectrl {
 
-    public static final String CLASS_CONTROL = "classcontrol";
-    public static final String CLASS_CONTROL_DISABLED = "disabled";
-    public static final String CLASS_CONTROL_FIRST = "firstrow";
-    public static final String CLASS_CONTROL_SECOND = "secondrow";
+    public static final String KEY_CLASS_CONTROL = "classControl";
+    public static final String VALUE_CLASS_CONTROL_DISABLED = "disabled";
+    public static final String VALUE_CLASS_CONTROL_FIRST = "first";
+    public static final String VALUE_CLASS_CONTROL_SECOND = "second";
 
-    public static final String SEMESTER_CONTROL = "now_semester";
+    public static final String REGEX_CLASS_CONTROL =
+            VALUE_CLASS_CONTROL_DISABLED + "|" +
+            VALUE_CLASS_CONTROL_FIRST + "|" +
+            VALUE_CLASS_CONTROL_SECOND;
+
+    public static final String KEY_SEMESTER_CONTROL = "semester";
+    public static final String REGEX_SEMESTER_CONTROL = "(19|20)\\d{2}[AB]";
+
+    public static final String KEY_YEAR_CONTROL = "year";
+    public static final String REGEX_YEAR_CONTROL = "\\d{2}";
+
+    public static final String KEY_LATEST_GRADE_CONTROL = "latestGrade";
+    public static final String KEY_OLDEST_GRADE_CONTROL = "oldestGrade";
+    public static final String REGEX_GRADE_CONTROL = "\\d{2}";
 
     @Id
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, updatable = false, unique = true)
     private String name;
 
     @Column(nullable = false, length = 20)
-    private String status;
+    private String value;
 }
-/*
-* allowed properties and values:
-* classcontrol : "disabled", "firstrow", "secondrow"
-* now_semester : "2021A"...
-* */
+

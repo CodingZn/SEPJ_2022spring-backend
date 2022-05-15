@@ -20,7 +20,7 @@ public class School {//admin changeable
 
     @Id
     @GeneratedValue(generator = "schoolidGenerator")
-    @Column(name="schoolid", nullable = false, length = 5)
+    @Column(name="schoolid", nullable = false, length = 5, unique = true, updatable = false)
     private String schoolid;//unchangeable
 
     @Pattern(regexp = "[\u4e00-\u9fa5A-Za-z]+", message = "名称只能为中英文字符！")

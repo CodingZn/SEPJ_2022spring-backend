@@ -8,7 +8,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LessonConstraintValidator implements ConstraintValidator<LessonCapacity, Lesson> {
+public class LessonCapacityConstraintValidator implements ConstraintValidator<LessonCapacity, Lesson> {
 
     @Override
     public boolean isValid(Lesson lesson, ConstraintValidatorContext constraintValidatorContext) {

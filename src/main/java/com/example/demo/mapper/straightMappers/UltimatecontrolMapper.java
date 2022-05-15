@@ -6,5 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UltimatecontrolMapper extends JpaRepository<Ultimatectrl, String> {
-    Ultimatectrl findByName(String name);
+    Ultimatectrl findByName(String key);
+    Ultimatectrl findByNameAndValue(String key, String value);
 }

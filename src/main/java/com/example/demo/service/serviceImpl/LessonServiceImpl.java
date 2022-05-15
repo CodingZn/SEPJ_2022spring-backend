@@ -47,6 +47,9 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
         List<Classarrange> arranges1 = new ArrayList<>();
         for (Classarrange arrange0 : arranges0){
             Classarrange arrange1 = arrangeMapper.findByClassroomAndClasstime(arrange0.getClassroom(),arrange0.getClasstime());
+            if(arrange1.getUplesson() != null){
+                return "Conflict";
+            }
             arrange1.setUplesson(lesson);
             arranges1.add(arrange1);
         }
@@ -83,6 +86,9 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
             List<Classarrange> arranges1 = new ArrayList<>();
             for (Classarrange arrange0 : arranges0){
                 Classarrange arrange1 = arrangeMapper.findByClassroomAndClasstime(arrange0.getClassroom(),arrange0.getClasstime());
+                if(arrange1.getUplesson() != null){
+                    return "Conflict";
+                }
                 arrange1.setUplesson(lesson);
                 arranges1.add(arrange1);
             }

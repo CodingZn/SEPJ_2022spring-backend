@@ -1,8 +1,10 @@
 package com.example.demo.bean;
 
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Setter
 @Getter
@@ -31,5 +33,8 @@ public class Classroom {//admin changeable
     @Column
     private Integer capacity;//admin changeable
 
-
+    @Cascade({org.hibernate.annotations.CascadeType.PERSIST,
+            org.hibernate.annotations.CascadeType.DELETE})
+    @OneToMany(mappedBy = "classroom")
+    private List<Classarrange> classarranges;
 }

@@ -21,7 +21,7 @@ public class Major {//admin changeable
 
     @Id
     @GeneratedValue(generator = "majorgenerator")
-    @Column(name="majorid", nullable = false, length = 5)
+    @Column(name="majorid", nullable = false, length = 5, unique = true, updatable = false)
     private String majorid;//unchangeable
 
     @Pattern(regexp = "[\u4e00-\u9fa5A-Za-z]+", message = "名称只能为中英文字符！")

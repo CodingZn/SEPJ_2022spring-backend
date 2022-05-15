@@ -1,6 +1,6 @@
 package com.example.demo.annotations;
 
-import com.example.demo.annotations.constraintclass.LessonCapacityConstraintValidator;
+import com.example.demo.annotations.constraintclass.PasswordConstraintValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -9,11 +9,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.FIELD, ElementType.TYPE})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = LessonCapacityConstraintValidator.class)
-public @interface LessonCapacity {
-    String message() default "课程容量超过教室容量限制！";
+@Constraint(validatedBy = PasswordConstraintValidator.class)
+public @interface UserPassword {
+    String message() default "密码格式错误！";
 
     Class<?>[] groups() default { };
 

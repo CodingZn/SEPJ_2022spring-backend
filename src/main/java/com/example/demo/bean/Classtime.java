@@ -1,8 +1,10 @@
 package com.example.demo.bean;
 
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Setter
 @Getter
@@ -22,5 +24,10 @@ public class Classtime {//admin changeable
 
     @Column(nullable = false, length = 20)
     private String time;//admin changeable
+
+    @Cascade({org.hibernate.annotations.CascadeType.PERSIST,
+            org.hibernate.annotations.CascadeType.DELETE})
+    @OneToMany(mappedBy = "classtime")
+    private List<Classarrange> classarranges;
 
 }

@@ -48,7 +48,7 @@ public class UseridGenerator extends UUIDGenerator {
             return id;
         }
         else {
-            throw new HibernateException("不能创建管理员！");
+            return user.getUserid();
         }
 
     }

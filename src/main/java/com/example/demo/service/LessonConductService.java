@@ -32,13 +32,13 @@ public class LessonConductService {
     public String selectALesson(String userid, String lessonid) {
         User user = userMapper.findByUserid(userid);
         Lesson lesson = lessonMapper.findByLessonid(Integer.parseInt(lessonid));
-        String now_semester = controls.findByName(SEMESTER_CONTROL).getStatus();
-        String classcontrol = controls.findByName(CLASS_CONTROL).getStatus();
+        String now_semester = controls.findByName(KEY_SEMESTER_CONTROL).getValue();
+        String classcontrol = controls.findByName(KEY_CLASS_CONTROL).getValue();
         if (user == null)
             return "无此用户！";
         if (lesson == null || lesson.getStatus() == Lesson.Status.pending)
             return "课程不存在！";
-        if (classcontrol.equals(CLASS_CONTROL_DISABLED))
+        if (classcontrol.equals(VALUE_CLASS_CONTROL_DISABLED))
             return "选课未开放！";
         if (!Objects.equals(lesson.getSemester(), now_semester))
             return "本学期不开放此课程！";
@@ -52,10 +52,10 @@ public class LessonConductService {
             return "您所在的年级专业不可选此课程！";
 
         switch (classcontrol) {
-            case CLASS_CONTROL_FIRST -> {
+            case VALUE_CLASS_CONTROL_FIRST -> {
 
             }
-            case CLASS_CONTROL_SECOND -> {
+            case VALUE_CLASS_CONTROL_SECOND -> {
                 if (!checkCapacityConstraint(user, lesson))
                     return "课程容量已满，请关注课程余量！";
             }
@@ -72,13 +72,13 @@ public class LessonConductService {
     public String quitALesson(String userid, String lessonid) {
         User user = userMapper.findByUserid(userid);
         Lesson lesson = lessonMapper.findByLessonid(Integer.parseInt(lessonid));
-        String now_semester = controls.findByName(SEMESTER_CONTROL).getStatus();
-        String classcontrol = controls.findByName(CLASS_CONTROL).getStatus();
+        String now_semester = controls.findByName(KEY_SEMESTER_CONTROL).getValue();
+        String classcontrol = controls.findByName(KEY_CLASS_CONTROL).getValue();
         if (user == null)
             return "无此用户！";
         if (lesson == null || lesson.getStatus() == Lesson.Status.pending)
             return "课程不存在！";
-        if (classcontrol.equals(CLASS_CONTROL_DISABLED))
+        if (classcontrol.equals(VALUE_CLASS_CONTROL_DISABLED))
             return "退课未开放！";
         if (!Objects.equals(lesson.getSemester(), now_semester))
             return "本学期不开放此课程！";

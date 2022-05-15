@@ -40,26 +40,17 @@ public class UserServiceImpl implements GeneralService<User> {
     @Override
     public String createABean(User user) {
 
-        User user1;
-        String newidentitynumber = user.getIdentitynumber();
-        user1 = userMapper.findByIdentitynumber(newidentitynumber);//检查身份证号冲突
-
-        if (user1 != null)
-            return "Conflict";
         user.setPassword("fDu666666");//统一设置初始密码
-
-//        if (!user.verifyform()) {//检查数据格式
-//            return "FormError";
-//        }
-//        else{
-            userMapper.save(user);
-            return "Success";
-//        }
+        if (user.getUsertype() == User.Type.admin){
+            return "ConflictAdmin";
+        }
+        userMapper.save(user);
+        return "Success";
 
     }
 
     @Override
-    public String createBeans(@Valid List<User> beans) {
+    public String createBeans(List<User> beans) {
         beans.removeIf(Objects::isNull);
         for(User user : beans){
             createABean(user);
@@ -68,19 +59,14 @@ public class UserServiceImpl implements GeneralService<User> {
     }
 
     @Override
-    public String changeABean(String userid,@Valid User user) {
+    public String changeABean(String userid,User user) {
         User user1 = userMapper.findByUserid(userid);
         if (user1 == null)
             return "NotFound";
 
-        user.setUserid(userid);//保证id不变，是修改而非新增
-//        if (!user.verifyform()) {
-//            return "FormError";
-//        }
-//        else{
-            userMapper.save(user);
-            return "Success";
-//        }
+        user.setUserid(userid);
+        userMapper.save(user);
+        return "Success";
     }
 
     @Override
