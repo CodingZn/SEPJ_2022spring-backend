@@ -3,6 +3,7 @@ package com.example.demo.service.serviceImpl;
 import com.example.demo.bean.User;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.service.GeneralService;
+import com.example.demo.utils.ConstraintsVerify;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,6 +75,8 @@ public class UserServiceImpl implements GeneralService<User> {
         User user = userMapper.findByUserid(userid);
 
         if (user != null) {
+            if (ConstraintsVerify.UserHavingDependency(user))
+                return "DependError";
             userMapper.delete(user);
             return "Success";
         } else {

@@ -5,6 +5,7 @@ import com.example.demo.bean.Lesson;
 import com.example.demo.mapper.ClassarrangeMapper;
 import com.example.demo.mapper.LessonMapper;
 import com.example.demo.service.GeneralService;
+import com.example.demo.utils.ConstraintsVerify;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +54,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
             arrange1.setUplesson(lesson);
             arranges1.add(arrange1);
         }
-
+        lesson.setLessonnumber(lesson.getLessoncode() + "." + lesson.getLessonnumber());
         lesson.setArranges(arranges1);
         lessonMapper.save(lesson);
         arrangeMapper.saveAll(arranges1);
@@ -103,6 +104,8 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     private String deleteABean(int lessonid){
         Lesson lesson = lessonMapper.findByLessonid(lessonid);
         if (lesson != null) {
+            if (ConstraintsVerify.LessonHavingDependency(lesson))
+                return "DependError";
             List<Classarrange> arranges = lesson.getArranges();
             for (Classarrange arrange : arranges){
                 Classarrange arrange0 = arrangeMapper.findByClassroomAndClasstime(arrange.getClassroom(),arrange.getClasstime());

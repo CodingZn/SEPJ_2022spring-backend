@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.bean.Lesson;
 import com.example.demo.bean.Lessonrequest;
 import com.example.demo.bean.User;
+import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
 import com.example.demo.service.GeneralService;
 import com.example.demo.service.LessonConductService;
 import com.example.demo.utils.BeanTools;
@@ -15,6 +16,7 @@ import java.util.*;
 
 import static com.example.demo.utils.JWTUtils.*;
 import static com.example.demo.utils.JWTUtils.AdminAuthority;
+import static com.example.demo.bean.specialBean.Ultimatectrl.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -22,12 +24,14 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
     private final GeneralService<User> userService;
     private final GeneralService<Lessonrequest> lessonreqService;
     private final LessonConductService lessonConductService;
+    private final UltimatecontrolMapper controlMapper;
 
     @Autowired
-    public LessonrequestController(GeneralService<User> userService, GeneralService<Lessonrequest> lessonreqService, LessonConductService lessonConductService) {
+    public LessonrequestController(GeneralService<User> userService, GeneralService<Lessonrequest> lessonreqService, LessonConductService lessonConductService, UltimatecontrolMapper controlMapper) {
         this.userService = userService;
         this.lessonreqService = lessonreqService;
         this.lessonConductService = lessonConductService;
+        this.controlMapper = controlMapper;
     }
 
     @Override
@@ -146,6 +150,10 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                     map.put("result", "NotFound");
                     return map;
                 }
+                else if (bean_ori.getStatus() != Lessonrequest.Status.pending){
+                    map.put("result", "NoAuth");
+                    return map;
+                }
                 map.put("result", "Success");
                 String [] adminauth = {"status"};
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
@@ -246,6 +254,7 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                     else{//只能给自己创建
                         User user = userService.getABean(userid);
                         bean.setStudent(user);
+                        String semester = controlMapper.getById(KEY_SEMESTER_CONTROL).getValue();
                         result = lessonreqService.createABean(bean);
                     }
                 }
@@ -285,6 +294,9 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                         else if (!Objects.equals(bean_ori.getStudent().getUserid(), userid)){//申请的学号不对应
                             result = "NoAuth";
                         }
+                        else if (bean_ori.getStatus() != Lessonrequest.Status.pending){//申请已被审批
+                            result = "NoAuth";
+                        }
                         else{
                             map.put("result", "Success");
                             String [] auth = {"requestReason"};
@@ -320,11 +332,14 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
             String result;
             switch (authority) {
                 case StudentAuthority -> {
+                    Lessonrequest bean = lessonreqService.getABean(key);
                     if (!Objects.equals(userid_url, userid)){//申请的学号不对应
                         result = "NoAuth";
                     }
+                    else if (bean.getStatus() != Lessonrequest.Status.pending){//申请已被审批
+                        result = "NoAuth";
+                    }
                     else{//只能给自己创建
-                        Lessonrequest bean = lessonreqService.getABean(key);
                         if (!Objects.equals(bean.getStudent().getUserid(), userid)){//申请的学号不对应
                             result = "NoAuth";
                         }

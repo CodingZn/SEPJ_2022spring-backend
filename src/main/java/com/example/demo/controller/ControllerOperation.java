@@ -90,12 +90,17 @@ public class ControllerOperation {
             }
             case "DependError" -> {
                 System.out.println("DependError!");
-                map.put("message", "输入信息含有不存在的依赖属性！");
+                map.put("message", "要操作的对象含依赖项无法删除！");
                 return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
             }
             case "Message"-> {//代表 map 里已经存在 "message" 了，即service层方法执行完毕返回自定义message
                 System.out.println("Self-defined message!");
                 return getMessageResponse(map);
+            }
+            case "ConflictAdmin" ->{
+                System.out.println("ConflictAdmin!");
+                map.put("message", "不能创建管理员！");
+                return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
             }
             default -> {
                 System.out.println("Unknown Error");
