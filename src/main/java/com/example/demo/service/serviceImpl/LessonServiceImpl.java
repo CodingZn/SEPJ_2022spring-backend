@@ -59,7 +59,10 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
             arranges1.add(arrange1);
         }
         lesson.setArranges(arranges1);
+
         lesson.setLessonnumber(lesson.getLessoncode() + "." + lesson.getLessonnumber());
+        if (lessonMapper.findByLessonnumberAndSemester(lesson.getLessonnumber(), lesson.getSemester()) != null)
+            return "Conflict";
 
         List<Lesson> lessons_same_code1 = modifySametypeLessons(lesson);
         lessonMapper.save(lesson);

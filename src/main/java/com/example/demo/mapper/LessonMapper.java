@@ -11,4 +11,5 @@ public interface LessonMapper extends JpaRepository <Lesson, String> {
     Lesson findByLessonid(int lessonid);
     void deleteByLessonid(int lessonid);
     List<Lesson> findAllByLessoncode(String lessoncode);
+    Lesson findByLessonnumberAndSemester(String lessonnumber, String semester);
 }
