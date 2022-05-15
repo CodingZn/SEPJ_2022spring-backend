@@ -5,11 +5,14 @@ import com.example.demo.bean.Lesson;
 import com.example.demo.mapper.ClassarrangeMapper;
 import com.example.demo.mapper.LessonMapper;
 import com.example.demo.service.GeneralService;
+import com.example.demo.utils.BeanTools;
 import com.example.demo.utils.ConstraintsVerify;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,6 +47,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
 
     @Override
     public String createABean(Lesson lesson) {
+        //设置课程安排，同时检查冲突
         List<Classarrange> arranges0 = lesson.getArranges();//此处的arrange无id
         List<Classarrange> arranges1 = new ArrayList<>();
         for (Classarrange arrange0 : arranges0){
@@ -54,11 +58,27 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
             arrange1.setUplesson(lesson);
             arranges1.add(arrange1);
         }
-        lesson.setLessonnumber(lesson.getLessoncode() + "." + lesson.getLessonnumber());
         lesson.setArranges(arranges1);
+        lesson.setLessonnumber(lesson.getLessoncode() + "." + lesson.getLessonnumber());
+
+        List<Lesson> lessons_same_code1 = modifySametypeLessons(lesson);
         lessonMapper.save(lesson);
+        lessonMapper.saveAll(lessons_same_code1);
         arrangeMapper.saveAll(arranges1);
         return "Success";
+    }
+
+    @NotNull
+    private List<Lesson> modifySametypeLessons(Lesson lesson) {
+        //同步修改同类课程的通用属性
+        List<Lesson> lessons_same_code = lessonMapper.findAllByLessoncode(lesson.getLessoncode());
+        List<Lesson> lessons_same_code1 = new ArrayList<>();
+        String[] geneproperty = {"lessonname", "school", "hour", "credit", "semester"};
+        List<String> changeableList = new ArrayList<>(Arrays.asList(geneproperty));
+        for (Lesson les:lessons_same_code) {
+            lessons_same_code1.add(BeanTools.modify(les, lesson, changeableList));
+        }
+        return lessons_same_code1;
     }
 
     @Override
@@ -93,9 +113,11 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
                 arrange1.setUplesson(lesson);
                 arranges1.add(arrange1);
             }
-
             lesson.setArranges(arranges1);
+
+            List<Lesson> lessons_same_code1 = modifySametypeLessons(lesson);
             lessonMapper.save(lesson);
+            lessonMapper.saveAll(lessons_same_code1);
             arrangeMapper.saveAll(arranges1);
             return "Success";
         }
