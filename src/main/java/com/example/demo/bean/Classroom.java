@@ -1,5 +1,8 @@
 package com.example.demo.bean;
 
+import com.example.demo.bean.jsonUtils.IntegerToStringSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 
@@ -15,6 +18,7 @@ import java.util.List;
 public class Classroom {//admin changeable
 
     @Id
+    @JsonSerialize(using = IntegerToStringSerializer.class)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true, updatable = false)
     private int classroomid;//unchangeable
@@ -33,6 +37,7 @@ public class Classroom {//admin changeable
     @Column
     private Integer capacity;//admin changeable
 
+    @JsonIgnore
     @Cascade({org.hibernate.annotations.CascadeType.PERSIST,
             org.hibernate.annotations.CascadeType.DELETE})
     @OneToMany(mappedBy = "classroom")

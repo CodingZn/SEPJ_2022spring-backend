@@ -299,9 +299,9 @@ public class LessonConductService {
         List<Classtime> classtimes_required = new ArrayList<>();
         List<Lesson> lessonsTaking = user.getLessonsTaking();
         for (Lesson lesson_taking : lessonsTaking) {
-            classtimes_occupied.addAll(lesson_taking.getArranges().stream().map(Classarrange::getClasstime).toList());
+            classtimes_occupied.addAll(lesson_taking.getClassarrange().stream().map(Classarrange::getClasstime).toList());
         }
-        classtimes_required = lesson.getArranges().stream().map(Classarrange::getClasstime).toList();
+        classtimes_required = lesson.getClassarrange().stream().map(Classarrange::getClasstime).toList();
         return Collections.disjoint(classtimes_occupied, classtimes_required);
     }
 

@@ -35,6 +35,7 @@ public class Classarrange {
     @JoinColumn(name = "classroom", nullable = false)
     private Classroom classroom;
 
+    @Cascade({org.hibernate.annotations.CascadeType.PERSIST, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     @JsonSerialize(using = LessonSerializer.class)
     @JsonDeserialize(using = LessonDeserializer.class)
     @ManyToOne

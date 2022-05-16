@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.example.demo.utils.JWTUtils.*;
@@ -43,7 +44,7 @@ public class UltimateController {
     }
 
     /*获取一个开关状态*/
-    @RequestMapping(value="/controls/{key}", method = RequestMethod.GET)
+    @RequestMapping(value="/control/{key}", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getControlStatus (@RequestHeader("Authentication") String authentication,
                                                               @PathVariable("key") String key) {
         Map<String, Object> map = new HashMap<>();
@@ -61,8 +62,25 @@ public class UltimateController {
             return ControllerOperation.getConductResponse(credit, map);
     }
 
+    /*获取所有开关状态*/
+    @RequestMapping(value="/controls", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> getAllControlsStatus (@RequestHeader("Authentication") String authentication) {
+        Map<String, Object> map = new HashMap<>();
+
+        String credit = ControllerOperation.checkAuthentication(authentication);
+        String authority = ControllerOperation.getAuthority(authentication);
+        if (credit.equals(ValidJWTToken)){
+            List<Ultimatectrl> ultimatectrls = ultimatecontrolMapper.findAll();
+            map.put("controls", ultimatectrls);
+            return ControllerOperation.getConductResponse("Success", map);
+
+        }
+        else
+            return ControllerOperation.getConductResponse(credit, map);
+    }
+
     /*修改一个开关*/
-    @RequestMapping(value="/controls/{key}", method = RequestMethod.PATCH)
+    @RequestMapping(value="/control/{key}", method = RequestMethod.PATCH)
     public ResponseEntity<Map<String, Object>> changeControl (@RequestHeader("Authentication") String authentication,
                                                               @PathVariable("key") String key,
                                                               @RequestBody Ultimatectrl control) {

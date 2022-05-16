@@ -111,7 +111,7 @@ public class SchoolController extends BasicController<School> {
         Map<String, Object> map = new HashMap<>();
 
         switch (authority) {
-            case AdminAuthority -> {
+            case AdminAuthority, TeacherAuthority -> {
                 map.put(getBeans(), schoolService.getAllBeans());
                 map.put("result", "Success");
             }

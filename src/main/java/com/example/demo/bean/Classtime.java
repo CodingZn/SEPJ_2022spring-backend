@@ -1,5 +1,8 @@
 package com.example.demo.bean;
 
+import com.example.demo.bean.jsonUtils.IntegerToStringSerializer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
 
@@ -16,6 +19,7 @@ import java.util.List;
 public class Classtime {//admin changeable
 
     @Id
+    @JsonSerialize(using = IntegerToStringSerializer.class)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true, updatable = false)
     private int classtimeid;//unchangeable
@@ -24,10 +28,11 @@ public class Classtime {//admin changeable
     @Column(nullable = false, length = 5, unique = true)
     private String name;//admin changeable
 
-    @Pattern(regexp = "([01]\\d)|(2[0-3]):[0-5]\\d-([01]\\d)|(2[0-3]):[0-5]\\d", message = "时间格式错误！")
+    @Pattern(regexp = "(([01]\\d)|(2[0-3])):([0-5]\\d)-(([01]\\d)|(2[0-3])):([0-5]\\d)", message = "时间格式错误！")
     @Column(nullable = false, length = 20)
     private String time;//admin changeable
 
+    @JsonIgnore
     @Cascade({org.hibernate.annotations.CascadeType.PERSIST,
             org.hibernate.annotations.CascadeType.DELETE})
     @OneToMany(mappedBy = "classtime")

@@ -48,7 +48,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     @Override
     public String createABean(Lesson lesson) {
         //设置课程安排，同时检查冲突
-        List<Classarrange> arranges0 = lesson.getArranges();//此处的arrange无id
+        List<Classarrange> arranges0 = lesson.getClassarrange();//此处的arrange无id
         List<Classarrange> arranges1 = new ArrayList<>();
         for (Classarrange arrange0 : arranges0){
             Classarrange arrange1 = arrangeMapper.findByClassroomAndClasstime(arrange0.getClassroom(),arrange0.getClasstime());
@@ -58,7 +58,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
             arrange1.setUplesson(lesson);
             arranges1.add(arrange1);
         }
-        lesson.setArranges(arranges1);
+        lesson.setClassarrange(arranges1);
 
         lesson.setLessonnumber(lesson.getLessoncode() + "." + lesson.getLessonnumber());
         if (lessonMapper.findByLessonnumberAndSemester(lesson.getLessonnumber(), lesson.getSemester()) != null)
@@ -67,7 +67,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
         List<Lesson> lessons_same_code1 = modifySametypeLessons(lesson);
         lessonMapper.save(lesson);
         lessonMapper.saveAll(lessons_same_code1);
-        arrangeMapper.saveAll(arranges1);
+
         return "Success";
     }
 
@@ -75,6 +75,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     private List<Lesson> modifySametypeLessons(Lesson lesson) {
         //同步修改同类课程的通用属性
         List<Lesson> lessons_same_code = lessonMapper.findAllByLessoncode(lesson.getLessoncode());
+        lessons_same_code.remove(lesson);
         List<Lesson> lessons_same_code1 = new ArrayList<>();
         String[] geneproperty = {"lessonname", "school", "hour", "credit", "semester"};
         List<String> changeableList = new ArrayList<>(Arrays.asList(geneproperty));
@@ -101,27 +102,20 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
             return "NotFound";
         else{
             lesson.setLessonid(Integer.parseInt(lessonid));
-            List<Classarrange> arranges_old = lesson1.getArranges();
-            for (Classarrange arrange : arranges_old){
-                arrange.setUplesson(null);
-                arrangeMapper.save(arrange);
-            }
-            List<Classarrange> arranges0 = lesson.getArranges();
+            List<Classarrange> arranges0 = lesson.getClassarrange();
             List<Classarrange> arranges1 = new ArrayList<>();
             for (Classarrange arrange0 : arranges0){
                 Classarrange arrange1 = arrangeMapper.findByClassroomAndClasstime(arrange0.getClassroom(),arrange0.getClasstime());
-                if(arrange1.getUplesson() != null){
+                if(arrange1.getUplesson() != null && arrange1.getUplesson().getLessonid() != lesson.getLessonid()){
                     return "Conflict";
                 }
                 arrange1.setUplesson(lesson);
                 arranges1.add(arrange1);
-            }
-            lesson.setArranges(arranges1);
 
-            List<Lesson> lessons_same_code1 = modifySametypeLessons(lesson);
-            lessonMapper.save(lesson);
-            lessonMapper.saveAll(lessons_same_code1);
-            arrangeMapper.saveAll(arranges1);
+            }
+            lesson.setClassarrange(arranges1);
+            lessonMapper.saveAndFlush(lesson);
+
             return "Success";
         }
     }
@@ -131,13 +125,6 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
         if (lesson != null) {
             if (ConstraintsVerify.LessonHavingDependency(lesson))
                 return "DependError";
-            List<Classarrange> arranges = lesson.getArranges();
-            for (Classarrange arrange : arranges){
-                Classarrange arrange0 = arrangeMapper.findByClassroomAndClasstime(arrange.getClassroom(),arrange.getClasstime());
-                arrange.setId(arrange0.getId());
-                arrange.setUplesson(null);
-                arrangeMapper.save(arrange);
-            }
             lessonMapper.delete(lesson);
             return "Success";
         } else {

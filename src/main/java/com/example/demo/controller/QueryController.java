@@ -24,7 +24,7 @@ public class QueryController {
     }
 
     //查询搜索
-    @RequestMapping(value = "/lessons/query", method = RequestMethod.POST)
+    @RequestMapping(value = "/lessonquery", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> queryLessons(@RequestHeader("Authentication") String authentication,
                                                             @RequestBody LessonQuery lessonQuery){
         Map<String, Object> map = new HashMap<>();
@@ -38,7 +38,7 @@ public class QueryController {
             switch (authority) {
                 case AdminAuthority, TeacherAuthority, StudentAuthority -> {
                     LessonQuery lessonQuery_processed = queryService.processAQuery(lessonQuery);
-                    map.put("LessonQuery", lessonQuery_processed);
+                    map.put("lessonquery", lessonQuery_processed);
                     result = "Success";
                 }
                 default ->{

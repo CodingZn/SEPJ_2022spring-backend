@@ -26,10 +26,10 @@ public class LessonQueryService {
         for (Lesson lesson : lessonList) {
             if (query.getSemester() == null || lesson.getSemester().equals(query.getSemester())) {
                 int flag = 0;
-                if(lesson.getArranges() == null || lesson.getArranges().size() == 0)
+                if(lesson.getClassarrange() == null || lesson.getClassarrange().size() == 0)
                     flag = 1;
                 else
-                    for (Classarrange classarrange : lesson.getArranges()) {
+                    for (Classarrange classarrange : lesson.getClassarrange()) {
                         if (query.getClassroom_name() == null ||
                                 classarrange.getClassroom().getName().equals(query.getClassroom_name())) {
                             if (query.getClasstime_name() == null ||

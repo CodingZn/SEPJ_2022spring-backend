@@ -28,7 +28,7 @@ public class LessonQuery {
 
     private String fuzzyLessonTeacherName;
 
-    @JsonSerialize(using = LessonListSerializer.class)
+//    @JsonSerialize(using = LessonListSerializer.class)
     private List<Lesson> result;
 
 }

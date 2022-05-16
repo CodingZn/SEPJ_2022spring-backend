@@ -275,7 +275,7 @@ public class LessonController extends BasicController<Lesson> {
                     map.put("result", "NotFound");
                     return map;
                 }
-                String[] adminauth = {"lessonname", "school", "hour", "credit", "teacher", "introduction", "arranges", "semester" , "majorallowed" , "capacity", "status"};
+                String[] adminauth = {"lessonname", "school", "hour", "credit", "teacher", "introduction", "classarrange", "semester" , "majorallowed" , "capacity", "status"};
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 Lesson bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
@@ -292,7 +292,7 @@ public class LessonController extends BasicController<Lesson> {
                     map.put("result", "NoAuth");
                     return map;
                 }
-                String[] teacherAuth = {"lessonname", "arranges"};
+                String[] teacherAuth = {"lessonname", "classarrange"};
 
                 List<String> changeableList = new ArrayList<>(Arrays.asList(teacherAuth));
                 Lesson bean_modified = BeanTools.modify(lesson_ori, bean, changeableList);

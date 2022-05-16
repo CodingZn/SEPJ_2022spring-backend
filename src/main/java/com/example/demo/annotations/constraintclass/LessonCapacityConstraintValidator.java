@@ -13,9 +13,9 @@ public class LessonCapacityConstraintValidator implements ConstraintValidator<Le
     @Override
     public boolean isValid(Lesson lesson, ConstraintValidatorContext constraintValidatorContext) {
         int lessonCapacity = lesson.getCapacity();
-        List<Integer> capacityList = new ArrayList<>(lesson.getArranges().stream().map(u->u.getClassroom().getCapacity()).toList());
+        List<Integer> capacityList = new ArrayList<>(lesson.getClassarrange().stream().map(u->u.getClassroom().getCapacity()).toList());
         for (Integer c : capacityList){
-            if (lessonCapacity > c)
+            if (c != null && lessonCapacity > c)
                 return false;
         }
         return true;

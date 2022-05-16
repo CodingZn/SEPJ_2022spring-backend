@@ -112,7 +112,7 @@ public class MajorController extends BasicController<Major> {
         Map<String, Object> map = new HashMap<>();
 
         switch (authority) {
-            case AdminAuthority -> {
+            case AdminAuthority, TeacherAuthority -> {
                 map.put(getBeans(), majorService.getAllBeans());
                 map.put("result", "Success");
             }

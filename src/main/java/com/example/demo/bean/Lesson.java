@@ -66,12 +66,13 @@ public class Lesson {//changeable
     private String introduction;//admin|teacher_self changeable
 
     @Cascade({org.hibernate.annotations.CascadeType.MERGE,
-            org.hibernate.annotations.CascadeType.DETACH})
+            org.hibernate.annotations.CascadeType.SAVE_UPDATE,
+            org.hibernate.annotations.CascadeType.REMOVE})
     @JsonDeserialize(using = ClassarrangeListDeserializer.class)
     @JsonSerialize(using = ClassarrangeListSerializer.class)
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "lessons_arranges")
-    private List<Classarrange> arranges;//admin changeable
+    @OneToMany
+    @JoinColumn(name = "uplesson")
+    private List<Classarrange> classarrange;//admin changeable
 
     @Column(name = "capacity")
     private Integer capacity;//admin changeable
