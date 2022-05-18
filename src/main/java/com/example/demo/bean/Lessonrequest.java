@@ -1,7 +1,6 @@
 package com.example.demo.bean;
 
 import com.example.demo.bean.jsonUtils.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
@@ -32,8 +31,8 @@ public class Lessonrequest {//admin|student_self changeable
     @JsonDeserialize(using = UserDeserializer.class)
     @JsonSerialize(using = UserSerializer.class)
     @ManyToOne
-    @JoinColumn(name = "student", updatable = false)
-    private User student;//unchangeable
+    @JoinColumn(name = "applicant", updatable = false)
+    private User applicant;//unchangeable
 
     @Pattern(regexp = "20\\d{2}[ABCD]", message = "学期格式错误！")
     @Column(name = "semester", nullable = false, length = 10, updatable = false)

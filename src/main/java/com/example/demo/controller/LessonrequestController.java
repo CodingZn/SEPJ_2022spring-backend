@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import com.example.demo.bean.Lesson;
 import com.example.demo.bean.Lessonrequest;
 import com.example.demo.bean.User;
-import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
 import com.example.demo.service.GeneralService;
 import com.example.demo.service.LessonConductService;
 import com.example.demo.utils.BeanTools;
@@ -109,6 +108,11 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                 map.put(getBeans(), lessonreqService.getAllBeans());
                 map.put("result", "Success");
             }
+            case TeacherAuthority, StudentAuthority -> {
+                User user = userService.getABean(userid);
+                map.put(getBeans(), user.getLessonrequests());
+                map.put("result", "Success");
+            }
             default -> {
                 map.put("result", "NoAuth");
             }
@@ -122,9 +126,34 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
         return super.getAllBeans(authentication);
     }
 
+    /* 4-增--createABean--新增一个实体*/
+
     @Override
     Map<String, Object> createABean_impl(String authority, String userid, Lessonrequest bean) {
-        return null;
+        Map<String, Object> map = new HashMap<>();
+
+        switch (authority) {
+            case TeacherAuthority, StudentAuthority -> {
+                User user = userService.getABean(userid);
+                bean.setApplicant(user);
+                String message = lessonreqService.createABean(bean);
+                map.put("message", message);
+                map.put("result", "Message");
+
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
+    }
+
+
+    @Override
+    @RequestMapping(value="/lessonrequest", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createABean(@RequestHeader(value = "Authentication") String authentication,
+                                                           @RequestBody Lessonrequest bean) {
+        return super.createABean(authentication, bean);
     }
 
     @Override
@@ -157,9 +186,9 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                 Lessonrequest bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
                 //通过申请时自动选课
                 if(bean_modified.getStatus() == Lessonrequest.Status.accepted){
-                    User student = bean_modified.getStudent();
+                    User applicant = bean_modified.getApplicant();
                     Lesson lesson = bean_modified.getLesson();
-                    String message = lessonConductService.autoSelectALesson(student, lesson);
+                    String message = lessonConductService.autoSelectALesson(applicant, lesson);
                     if (!message.equals("Success")){
                         map.put("message", message);
                         map.put("result", "Message");
@@ -170,11 +199,31 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                 map.put("result", lessonreqService.changeABean(key,bean_modified));
                 return map;
             }
+            case StudentAuthority, TeacherAuthority -> {
+                String result;
+                Lessonrequest bean_ori = lessonreqService.getABean(key);
+                if (bean_ori == null) {
+                    result = "NotFound";
+                } else if (!Objects.equals(bean_ori.getApplicant().getUserid(), userid)) {//申请的学号不对应
+                    result = "NoAuth";
+                } else if (bean_ori.getStatus() != Lessonrequest.Status.pending) {//申请已被审批
+                    result = "NoAuth";
+                } else {
+                    map.put("result", "Success");
+                    String[] auth = {"requestReason"};
+
+                    List<String> changeableList = new ArrayList<>(Arrays.asList(auth));
+                    Lessonrequest bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
+                    result = lessonreqService.changeABean(key, bean_modified);
+
+                }
+                map.put("result", result);
+            }
             default -> {
                 map.put("result", "NoAuth");
-                return map;
             }
         }
+        return map;
     }
 
     @Override
@@ -185,9 +234,38 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
         return super.modifyABean(authentication, key, bean);
     }
 
+    /* 8-删--deleteABean--删除一个实体*/
     @Override
     Map<String, Object> delBean_impl(String authority, String userid, String key) {
-        return null;
+        Map<String, Object> map = new HashMap<>();
+        String result;
+        switch (authority) {
+            case StudentAuthority -> {
+                Lessonrequest bean = lessonreqService.getABean(key);
+                if (bean.getStatus() != Lessonrequest.Status.pending){//申请已被审批
+                    result = "NoAuth";
+                }
+                else{//只能给自己创建
+                    if (!Objects.equals(bean.getApplicant().getUserid(), userid)){//申请的学号不对应
+                        result = "NoAuth";
+                    }
+                    else
+                        result = lessonreqService.deleteABean(key);
+                }
+                map.put("result", result);
+            }
+            default -> {
+                map.put("result", "NoAuth");
+            }
+        }
+        return map;
+    }
+
+    @Override
+    @RequestMapping(value="lessonrequest/{lessonrequestid}", method = RequestMethod.DELETE)
+    public ResponseEntity<Map<String, Object>> delBean(@RequestHeader(value="Authentication") String authentication,
+                                                       @PathVariable("lessonrequestid") String key){
+        return super.delBean(authentication, key);
     }
 
     @Override
@@ -250,7 +328,7 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                     }
                     else{//只能给自己创建
                         User user = userService.getABean(userid);
-                        bean.setStudent(user);
+                        bean.setApplicant(user);
                         String message = lessonreqService.createABean(bean);
                         map.put("message", message);
                         result = "Message";
@@ -289,7 +367,7 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                         if (bean_ori == null){
                             result = "NotFound";
                         }
-                        else if (!Objects.equals(bean_ori.getStudent().getUserid(), userid)){//申请的学号不对应
+                        else if (!Objects.equals(bean_ori.getApplicant().getUserid(), userid)){//申请的学号不对应
                             result = "NoAuth";
                         }
                         else if (bean_ori.getStatus() != Lessonrequest.Status.pending){//申请已被审批
@@ -338,7 +416,7 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                         result = "NoAuth";
                     }
                     else{//只能给自己创建
-                        if (!Objects.equals(bean.getStudent().getUserid(), userid)){//申请的学号不对应
+                        if (!Objects.equals(bean.getApplicant().getUserid(), userid)){//申请的学号不对应
                             result = "NoAuth";
                         }
                         else

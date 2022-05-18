@@ -117,19 +117,29 @@ public class LessonConductService {
         return lesson.getClassmates().stream().map(User::getUserid).toList();
     }
 
-    //管理员通过选课申请时，系统自动给学生选课--此方法返回 "Success" 或提示信息
+    //管理员通过选课申请时，系统自动给学生选课，或将老师加入到某个课程中--此方法返回 "Success" 或提示信息
     public String autoSelectALesson(User user, Lesson lesson) {
-        lesson.getClassmates().add(user);
-        lesson.setCapacity(lesson.getCapacity() + 1);
-        if (!checkTakingConstraint(user, lesson))
-            return "不能重复选择课程代码相同的课程！";
-        if (!checkTakenConstraint(user, lesson))
-            return "不能选择已经修过的课程！";
-        if (!checkTimeArrangeConstraint(user, lesson))
-            return "该课与其他课程存在时间冲突！";
+        if (user.getUsertype() == User.Type.student){//student applicant
+            lesson.getClassmates().add(user);
+            lesson.setCapacity(lesson.getCapacity() + 1);
+            if (!checkTakingConstraint(user, lesson))
+                return "不能重复选择课程代码相同的课程！";
+            if (!checkTakenConstraint(user, lesson))
+                return "不能选择已经修过的课程！";
+            if (!checkTimeArrangeConstraint(user, lesson))
+                return "该课与其他课程存在时间冲突！";
 
-        lessonMapper.save(lesson);
-        return "Success";
+            lessonMapper.save(lesson);
+            return "Success";
+        }
+        else{//teacher applicant
+            List<User> teachers = lesson.getTeacher();
+            if (!teachers.contains(user))
+                teachers.add(user);
+            lesson.setTeacher(teachers);
+            lessonMapper.save(lesson);
+            return "Success";
+        }
     }
 
     //一轮结束时，将超出课程容量的人踢掉
