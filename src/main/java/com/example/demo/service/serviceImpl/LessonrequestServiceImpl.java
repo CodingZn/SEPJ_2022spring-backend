@@ -2,6 +2,7 @@ package com.example.demo.service.serviceImpl;
 
 import com.example.demo.bean.Lessonrequest;
 import com.example.demo.mapper.LessonrequestMapper;
+import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
 import com.example.demo.service.GeneralService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,14 +10,18 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.demo.bean.specialBean.Ultimatectrl.KEY_SEMESTER_CONTROL;
+
 @Service
 public class LessonrequestServiceImpl implements GeneralService<Lessonrequest> {
 
     private final LessonrequestMapper lessonrequestMapper;
+    private final UltimatecontrolMapper controlMapper;
 
     @Autowired
-    public LessonrequestServiceImpl(LessonrequestMapper lessonrequestMapper) {
+    public LessonrequestServiceImpl(LessonrequestMapper lessonrequestMapper, UltimatecontrolMapper controlMapper) {
         this.lessonrequestMapper = lessonrequestMapper;
+        this.controlMapper = controlMapper;
     }
 
     @Override
@@ -37,6 +42,7 @@ public class LessonrequestServiceImpl implements GeneralService<Lessonrequest> {
 
     @Override
     public String createABean(Lessonrequest bean) {
+        bean.setSemester(controlMapper.findByName(KEY_SEMESTER_CONTROL).getValue());
         lessonrequestMapper.save(bean);
         return "Success";
     }

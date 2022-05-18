@@ -99,7 +99,7 @@ public class LessonConductController {
         if (credit.equals(ValidJWTToken)){
             String result;
             switch (authority) {
-                case StudentAuthority, TeacherAuthority -> {
+                case StudentAuthority-> {
                     if(!Objects.equals(userid, userid_url)){
                         result="NoAuth";
                         return ControllerOperation.getConductResponse(result, map);
@@ -130,7 +130,7 @@ public class LessonConductController {
         if (credit.equals(ValidJWTToken)){
             String result;
             switch (authority) {
-                case StudentAuthority, TeacherAuthority -> {
+                case StudentAuthority, TeacherAuthority-> {
                     if(!Objects.equals(userid, userid_url)){
                         result="NoAuth";
                         return ControllerOperation.getConductResponse(result, map);

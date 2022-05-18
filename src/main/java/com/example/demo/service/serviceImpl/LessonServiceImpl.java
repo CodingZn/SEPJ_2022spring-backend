@@ -4,6 +4,7 @@ import com.example.demo.bean.Classarrange;
 import com.example.demo.bean.Lesson;
 import com.example.demo.mapper.ClassarrangeMapper;
 import com.example.demo.mapper.LessonMapper;
+import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
 import com.example.demo.service.GeneralService;
 import com.example.demo.utils.BeanTools;
 import com.example.demo.utils.ConstraintsVerify;
@@ -16,15 +17,19 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.demo.bean.specialBean.Ultimatectrl.*;
+
 @Service
 public class LessonServiceImpl implements GeneralService<Lesson> {
     private final LessonMapper lessonMapper;
     private final ClassarrangeMapper arrangeMapper;
+    private final UltimatecontrolMapper controlMapper;
 
     @Autowired
-    public LessonServiceImpl(LessonMapper lessonMapper, ClassarrangeMapper arrangeMapper) {
+    public LessonServiceImpl(LessonMapper lessonMapper, ClassarrangeMapper arrangeMapper, UltimatecontrolMapper controlMapper) {
         this.lessonMapper = lessonMapper;
         this.arrangeMapper = arrangeMapper;
+        this.controlMapper = controlMapper;
     }
 
     @Override
@@ -59,6 +64,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
             arranges1.add(arrange1);
         }
         lesson.setClassarrange(arranges1);
+        lesson.setSemester(controlMapper.findByName(KEY_SEMESTER_CONTROL).getValue());
 
         lesson.setLessonnumber(lesson.getLessoncode() + "." + lesson.getLessonnumber());
         if (lessonMapper.findByLessonnumberAndSemester(lesson.getLessonnumber(), lesson.getSemester()) != null)

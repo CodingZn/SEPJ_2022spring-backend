@@ -181,7 +181,11 @@ public class LessonController extends BasicController<Lesson> {
                 map.put("result", lessonService.createABean(lesson));
             }
             case TeacherAuthority -> {
-
+                User teacher = new User();
+                teacher.setUserid(userid);
+                List<User> list= new ArrayList<>();
+                list.add(teacher);
+                lesson.setTeacher(list);
                 lesson.setStatus(Lesson.Status.pending);
                 map.put("result", lessonService.createABean(lesson));
             }

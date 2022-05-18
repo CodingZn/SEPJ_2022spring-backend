@@ -26,7 +26,7 @@ public class ClassroomServiceImpl implements GeneralService<Classroom> {
         this.classroomMapper = classroomMapper;
         this.classtimeMapper = classtimeMapper;
         this.classarrangeMapper = classarrangeMapper;
-//        updateArranges();
+        updateArranges();
     }
 
     private void createArranges(Classroom newClassroom){

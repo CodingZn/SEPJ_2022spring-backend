@@ -99,11 +99,14 @@ public class User {//admin|self changeable
 
     @JsonIgnore
     @ManyToMany
-    @JoinTable(name="students_lessons_taken")
+    @JoinTable(name="lessons_students_taken")
     private List<Lesson> lessonsTaken;//admin changeable
 
     @JsonIgnore
     @OneToMany(mappedBy = "student")
     private List<Lessonrequest> lessonrequests;//self-only changeable
 
+    @JsonIgnore
+    @ManyToMany(mappedBy = "teacher")
+    private List<Lesson> lessonsTakingTea;//changeable
 }

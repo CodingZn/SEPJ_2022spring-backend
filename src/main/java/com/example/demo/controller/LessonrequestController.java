@@ -16,7 +16,6 @@ import java.util.*;
 
 import static com.example.demo.utils.JWTUtils.*;
 import static com.example.demo.utils.JWTUtils.AdminAuthority;
-import static com.example.demo.bean.specialBean.Ultimatectrl.*;
 
 @RestController
 @CrossOrigin("http://localhost:3000")
@@ -24,14 +23,12 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
     private final GeneralService<User> userService;
     private final GeneralService<Lessonrequest> lessonreqService;
     private final LessonConductService lessonConductService;
-    private final UltimatecontrolMapper controlMapper;
 
     @Autowired
-    public LessonrequestController(GeneralService<User> userService, GeneralService<Lessonrequest> lessonreqService, LessonConductService lessonConductService, UltimatecontrolMapper controlMapper) {
+    public LessonrequestController(GeneralService<User> userService, GeneralService<Lessonrequest> lessonreqService, LessonConductService lessonConductService) {
         this.userService = userService;
         this.lessonreqService = lessonreqService;
         this.lessonConductService = lessonConductService;
-        this.controlMapper = controlMapper;
     }
 
     @Override
@@ -254,7 +251,7 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                     else{//只能给自己创建
                         User user = userService.getABean(userid);
                         bean.setStudent(user);
-                        String semester = controlMapper.getById(KEY_SEMESTER_CONTROL).getValue();
+
                         result = lessonreqService.createABean(bean);
                     }
                 }

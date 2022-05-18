@@ -93,10 +93,14 @@ public class LessonConductService {
         return user.getLessonsTaken();
     }
 
-    //学生查看所有已选课程
+    //学生和教师查看所有已选/正在上的课程
     public List<Lesson> getAllLessonsTaking(String userid){
         User user = userMapper.findByUserid(userid);
-        return user.getLessonsTaking();
+        if (user.getUsertype() == User.Type.student)
+            return user.getLessonsTaking();
+        else if (user.getUsertype() == User.Type.teacher)
+            return user.getLessonsTakingTea();
+        else return null;
     }
 
     //管理员查看选课名单
@@ -273,6 +277,7 @@ public class LessonConductService {
     }
 
     private boolean checkMajorConstraint(User user, Lesson lesson) {
+        if (lesson.getMajorallowed().contains("all")) return true;
         String user_majorid = user.getMajor().getMajorid();
         String user_grade = user.getGrade();
         String lesson_majorallowed = lesson.getMajorallowed();
