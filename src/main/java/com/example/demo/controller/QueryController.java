@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.bean.Lesson;
+import com.example.demo.bean.User;
 import com.example.demo.bean.specialBean.LessonQuery;
 import com.example.demo.service.LessonQueryService;
 import com.example.demo.utils.JWTUtils;
@@ -8,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.example.demo.utils.JWTUtils.*;
 import static com.example.demo.utils.JWTUtils.StudentAuthority;
@@ -36,8 +40,25 @@ public class QueryController {
         if (credit.equals(ValidJWTToken)){
             String result;
             switch (authority) {
-                case AdminAuthority, TeacherAuthority, StudentAuthority -> {
+                case AdminAuthority -> {
                     LessonQuery lessonQuery_processed = queryService.processAQuery(lessonQuery);
+
+                    map.put("lessonquery", lessonQuery_processed);
+                    result = "Success";
+                }
+                case TeacherAuthority -> {
+                    LessonQuery lessonQuery_processed = queryService.processAQuery(lessonQuery);
+                    List<Lesson> lessonList = lessonQuery_processed.getResult();
+                    lessonList.removeIf(u -> !u.getTeacher().stream().map(User::getUserid).toList().contains(userid)
+                            && !Objects.equals(u.getStatus(), Lesson.Status.censored));
+                    lessonQuery_processed.setResult(lessonList);
+                    map.put("lessonquery", lessonQuery_processed);
+                    result = "Success";
+                }
+                case StudentAuthority -> {
+                    LessonQuery lessonQuery_processed = queryService.processAQuery(lessonQuery);
+                    List<Lesson> lessonList = lessonQuery_processed.getResult();
+                    lessonList.removeIf(u -> !Objects.equals(u.getStatus(), Lesson.Status.censored));
                     map.put("lessonquery", lessonQuery_processed);
                     result = "Success";
                 }

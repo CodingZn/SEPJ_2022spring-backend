@@ -48,9 +48,12 @@ public class LessonrequestServiceImpl implements GeneralService<Lessonrequest> {
     @Override
     public String createABean(Lessonrequest bean) {
         bean.setSemester(controlMapper.findByName(KEY_SEMESTER_CONTROL).getValue());
-        String result = checkLessonrequest(bean);
-        if (!result.equals("Success"))
-            return result;
+        bean.setStatus(Lessonrequest.Status.pending);
+        if (bean.getApplicant().getUsertype() == User.Type.student) {
+            String result = checkLessonrequest(bean);
+            if (!result.equals("Success"))
+                return result;
+        }
         lessonrequestMapper.save(bean);
         return "Success";
     }
