@@ -23,10 +23,10 @@ public class LessonConductController {
     }
 
     //选课
-    @RequestMapping(value = "/user/{userid}/lessonsTaking/{lessonid}", method = RequestMethod.POST)
+    @RequestMapping(value = "/user/{userid}/lessonsTaking", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> selectALesson(@RequestHeader("Authentication") String authentication,
                                                              @PathVariable("userid") String userid_url,
-                                                             @PathVariable("lessonid") String lessonid){
+                                                             @RequestBody Lesson lesson){
         Map<String, Object> map = new HashMap<>();
 
         String credit = ControllerOperation.checkAuthentication(authentication);
@@ -41,6 +41,7 @@ public class LessonConductController {
                         result="NoAuth";
                     }
                     else {
+                        String lessonid = String.valueOf(lesson.getLessonid());
                         String message = lessonConductService.selectALesson(userid, lessonid);
                         map.put("message", message);
                         result = "Message";
@@ -98,7 +99,7 @@ public class LessonConductController {
         if (credit.equals(ValidJWTToken)){
             String result;
             switch (authority) {
-                case StudentAuthority -> {
+                case StudentAuthority, TeacherAuthority -> {
                     if(!Objects.equals(userid, userid_url)){
                         result="NoAuth";
                         return ControllerOperation.getConductResponse(result, map);
@@ -129,7 +130,7 @@ public class LessonConductController {
         if (credit.equals(ValidJWTToken)){
             String result;
             switch (authority) {
-                case StudentAuthority -> {
+                case StudentAuthority, TeacherAuthority -> {
                     if(!Objects.equals(userid, userid_url)){
                         result="NoAuth";
                         return ControllerOperation.getConductResponse(result, map);

@@ -24,7 +24,7 @@ public class ClassarrangeListSerializer extends JsonSerializer {
             Map<String, Object> map = new HashMap<>();
             map.put("classtime", classtimeid);
             map.put("classroom", classroomid);
-            map.put("classarrange", classarrange.getId());
+            map.put("classarrange", String.valueOf(classarrange.getId()));
             arrangeList.add(map);
         }
         jsonGenerator.writeObject(arrangeList);

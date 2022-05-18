@@ -115,6 +115,10 @@ public class SchoolController extends BasicController<School> {
                 map.put(getBeans(), schoolService.getAllBeans());
                 map.put("result", "Success");
             }
+            case StudentAuthority -> {
+                map.put(getBeans(), null);
+                map.put("result", "Success");
+            }
             default -> {
                 map.put("result", "NoAuth");
             }

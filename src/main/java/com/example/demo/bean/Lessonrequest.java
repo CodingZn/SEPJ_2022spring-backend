@@ -1,9 +1,6 @@
 package com.example.demo.bean;
 
-import com.example.demo.bean.jsonUtils.LessonDeserializer;
-import com.example.demo.bean.jsonUtils.LessonSerializer;
-import com.example.demo.bean.jsonUtils.UserDeserializer;
-import com.example.demo.bean.jsonUtils.UserSerializer;
+import com.example.demo.bean.jsonUtils.*;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -21,6 +18,7 @@ import javax.validation.constraints.Pattern;
 public class Lessonrequest {//admin|student_self changeable
 
     @Id
+    @JsonSerialize(using = IntegerToStringSerializer.class)
     @Column(name = "lessonrequestid", nullable = false, updatable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int lessonrequestid;//unchangeable

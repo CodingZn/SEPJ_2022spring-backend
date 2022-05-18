@@ -1,5 +1,6 @@
 package com.example.demo.bean;
 
+import com.example.demo.bean.jsonUtils.IntegerToStringSerializer;
 import com.example.demo.bean.jsonUtils.LessonDeserializer;
 import com.example.demo.bean.jsonUtils.LessonSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -23,6 +24,7 @@ import javax.persistence.*;
 public class Classarrange {
 
     @Id
+    @JsonSerialize(using = IntegerToStringSerializer.class)
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;

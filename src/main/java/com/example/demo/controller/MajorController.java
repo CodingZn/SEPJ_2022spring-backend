@@ -116,6 +116,10 @@ public class MajorController extends BasicController<Major> {
                 map.put(getBeans(), majorService.getAllBeans());
                 map.put("result", "Success");
             }
+            case StudentAuthority -> {
+                map.put(getBeans(), null);
+                map.put("result", "Success");
+            }
             default -> {
                 map.put("result", "NoAuth");
             }

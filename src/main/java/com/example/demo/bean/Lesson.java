@@ -24,6 +24,7 @@ import java.util.List;
 public class Lesson {//changeable
 
     @Id
+    @JsonSerialize(using = IntegerToStringSerializer.class)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "lessonid", nullable = false, unique = true, updatable = false)
     private int lessonid;//unchangeable
