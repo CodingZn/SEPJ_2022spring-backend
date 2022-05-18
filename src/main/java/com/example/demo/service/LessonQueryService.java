@@ -22,7 +22,7 @@ public class LessonQueryService {
         List<Lesson> lessonList = lessonMapper.findAll();
         List<Lesson> lessonList1 = new ArrayList<>();
         List<Lesson> lessonList2 = new ArrayList<>();
-
+        processBlankFields(query);
         for (Lesson lesson : lessonList) {
             if (query.getSemester() == null || lesson.getSemester().equals(query.getSemester())) {
                 int flag = 0;
@@ -126,4 +126,18 @@ public class LessonQueryService {
         return score < 0.9;
     }
 
+    private void processBlankFields(LessonQuery query){
+        if (query.getClassroom_name() != null && query.getClassroom_name().equals(""))
+            query.setClassroom_name(null);
+        if (query.getFuzzyLessonCode() != null && query.getFuzzyLessonCode().equals(""))
+            query.setFuzzyLessonCode(null);
+        if (query.getFuzzyLessonName() != null && query.getFuzzyLessonName().equals(""))
+            query.setFuzzyLessonName(null);
+        if (query.getFuzzyLessonTeacherName() != null && query.getFuzzyLessonTeacherName().equals(""))
+            query.setFuzzyLessonTeacherName(null);
+        if (query.getClasstime_name() != null && query.getClasstime_name().equals(""))
+            query.setClasstime_name(null);
+        if (query.getSemester() != null && query.getSemester().equals(""))
+            query.setSemester(null);
+    }
 }
