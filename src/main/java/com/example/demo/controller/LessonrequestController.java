@@ -156,9 +156,9 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                 List<String> changeableList = new ArrayList<>(Arrays.asList(adminauth));
                 Lessonrequest bean_modified = BeanTools.modify(bean_ori, bean, changeableList);
                 //通过申请时自动选课
-                if(bean_ori.getStatus() == Lessonrequest.Status.pending && bean_modified.getStatus() == Lessonrequest.Status.accepted){
-                    User student = bean.getStudent();
-                    Lesson lesson = bean.getLesson();
+                if(bean_modified.getStatus() == Lessonrequest.Status.accepted){
+                    User student = bean_modified.getStudent();
+                    Lesson lesson = bean_modified.getLesson();
                     String message = lessonConductService.autoSelectALesson(student, lesson);
                     if (!message.equals("Success")){
                         map.put("message", message);
@@ -251,8 +251,9 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
                     else{//只能给自己创建
                         User user = userService.getABean(userid);
                         bean.setStudent(user);
-
-                        result = lessonreqService.createABean(bean);
+                        String message = lessonreqService.createABean(bean);
+                        map.put("message", message);
+                        result = "Message";
                     }
                 }
                 default ->{

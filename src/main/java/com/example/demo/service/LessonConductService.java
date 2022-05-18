@@ -121,9 +121,14 @@ public class LessonConductService {
     public String autoSelectALesson(User user, Lesson lesson) {
         lesson.getClassmates().add(user);
         lesson.setCapacity(lesson.getCapacity() + 1);
-        lessonMapper.save(lesson);
-        //具体逻辑改天再写，有关于选课申请通过时的合法性验证
+        if (!checkTakingConstraint(user, lesson))
+            return "不能重复选择课程代码相同的课程！";
+        if (!checkTakenConstraint(user, lesson))
+            return "不能选择已经修过的课程！";
+        if (!checkTimeArrangeConstraint(user, lesson))
+            return "该课与其他课程存在时间冲突！";
 
+        lessonMapper.save(lesson);
         return "Success";
     }
 

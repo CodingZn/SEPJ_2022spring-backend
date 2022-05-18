@@ -1,6 +1,9 @@
 package com.example.demo.service.serviceImpl;
 
+import com.example.demo.bean.Lesson;
 import com.example.demo.bean.Lessonrequest;
+import com.example.demo.bean.User;
+import com.example.demo.mapper.LessonMapper;
 import com.example.demo.mapper.LessonrequestMapper;
 import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
 import com.example.demo.service.GeneralService;
@@ -16,11 +19,13 @@ import static com.example.demo.bean.specialBean.Ultimatectrl.KEY_SEMESTER_CONTRO
 public class LessonrequestServiceImpl implements GeneralService<Lessonrequest> {
 
     private final LessonrequestMapper lessonrequestMapper;
+    private final LessonMapper lessonMapper;
     private final UltimatecontrolMapper controlMapper;
 
     @Autowired
-    public LessonrequestServiceImpl(LessonrequestMapper lessonrequestMapper, UltimatecontrolMapper controlMapper) {
+    public LessonrequestServiceImpl(LessonrequestMapper lessonrequestMapper, LessonMapper lessonMapper, UltimatecontrolMapper controlMapper) {
         this.lessonrequestMapper = lessonrequestMapper;
+        this.lessonMapper = lessonMapper;
         this.controlMapper = controlMapper;
     }
 
@@ -43,7 +48,28 @@ public class LessonrequestServiceImpl implements GeneralService<Lessonrequest> {
     @Override
     public String createABean(Lessonrequest bean) {
         bean.setSemester(controlMapper.findByName(KEY_SEMESTER_CONTROL).getValue());
+        String result = checkLessonrequest(bean);
+        if (!result.equals("Success"))
+            return result;
         lessonrequestMapper.save(bean);
+        return "Success";
+    }
+
+    //创建时检查选课申请是否合法，返回Success或原因
+    private String checkLessonrequest (Lessonrequest lessonrequest){
+        User student = lessonrequest.getStudent();
+        Lesson lesson = lessonMapper.findByLessonid(lessonrequest.getLesson().getLessonid());
+        if (!Objects.equals(lesson.getSemester(), lessonrequest.getSemester())){
+            return "只能申请本学期的课程！";
+        }
+        if (lesson.getCapacity() > lesson.getClassmates().size()){
+            return "课程还有余量，请在选课界面选入课程！";
+        }
+        if (student.getLessonsTaken().stream().map(Lesson::getLessoncode).toList().contains(lesson.getLessoncode()))
+            return "不能选择已经修过的课程！";
+        if (student.getLessonsTaking().stream().map(Lesson::getLessoncode).toList().contains(lesson.getLessoncode()))
+            return "不能重复选择课程代码相同的课程！";
+
         return "Success";
     }
 
