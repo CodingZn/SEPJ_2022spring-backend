@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.bean.Lesson;
+import com.example.demo.bean.User;
 import com.example.demo.service.LessonConductService;
 import com.example.demo.utils.JWTUtils;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class LessonConductController {
         this.lessonConductService = lessonConductService;
     }
 
-    //选课
+    //学生选课
     @RequestMapping(value = "/user/{userid}/lessonsTaking", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> selectALesson(@RequestHeader("Authentication") String authentication,
                                                              @PathVariable("userid") String userid_url,
@@ -56,7 +57,7 @@ public class LessonConductController {
         else return ControllerOperation.getErrorResponse(credit, map);
     }
 
-    //退课
+    //学生退课
     @RequestMapping(value = "/user/{userid}/lessonsTaking/{lessonid}", method = RequestMethod.DELETE)
     public ResponseEntity<Map<String, Object>> quitALesson(@RequestHeader("Authentication") String authentication,
                                                            @PathVariable("userid") String userid_url,
@@ -86,7 +87,7 @@ public class LessonConductController {
         else return ControllerOperation.getErrorResponse(credit, map);
     }
 
-    //查看所有已修课程
+    //学生查看所有已修课程
     @RequestMapping(value = "/user/{userid}/lessonsTaken", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllLessonsTaken(@RequestHeader("Authentication") String authentication,
                                                                   @PathVariable("userid") String userid_url){
@@ -117,7 +118,7 @@ public class LessonConductController {
         else return ControllerOperation.getErrorResponse(credit, map);
     }
 
-    //查看所有已选课程
+    //学生和老师 查看所有已选、正在上的课程
     @RequestMapping(value = "/user/{userid}/lessonsTaking", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllLessonsTaking(@RequestHeader("Authentication") String authentication,
                                                                   @PathVariable("userid") String userid_url){
@@ -148,7 +149,7 @@ public class LessonConductController {
         else return ControllerOperation.getErrorResponse(credit, map);
     }
 
-    //查看某门课的选课名单
+    //管理员和老师查看某门课的选课名单
     @RequestMapping(value = "/lesson/{lessonid}/classmates", method = RequestMethod.GET)
     public ResponseEntity<Map<String, Object>> getAllStudentsTakingLesson(@RequestHeader("Authentication") String authentication,
                                                                    @PathVariable("lessonid") String lessonid){
@@ -185,7 +186,7 @@ public class LessonConductController {
         else return ControllerOperation.getErrorResponse(credit, map);
     }
 
-    //踢人
+    //管理员一轮后踢人
     @RequestMapping(value = "/roundFinishRequest/1", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> kickOffAllExceededStudent(@RequestHeader("Authentication") String authentication){
         Map<String, Object> map = new HashMap<>();
@@ -200,6 +201,32 @@ public class LessonConductController {
                 case AdminAuthority -> {
                     result = "Success";
                     lessonConductService.kickAllExceededClassmates();
+                }
+                default ->{
+                    result="NoAuth";
+                }
+            }
+            return ControllerOperation.getConductResponse(result, map);
+        }
+        else return ControllerOperation.getErrorResponse(credit, map);
+    }
+
+    //老师pass学生们
+    @RequestMapping(value = "lesson/{lessonid}/pass", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> passStudents(@RequestHeader("Authentication") String authentication,
+                                                            @PathVariable("lessonid") String lessonid,
+                                                            @RequestBody List<String> studentids){
+        Map<String, Object> map = new HashMap<>();
+
+        String credit = ControllerOperation.checkAuthentication(authentication);
+        String authority = ControllerOperation.getAuthority(authentication);
+        String userid = JWTUtils.decodeToGetValue(authentication.substring(7), "userid");
+
+        if (credit.equals(ValidJWTToken)){
+            String result;
+            switch (authority) {
+                case TeacherAuthority -> {
+                    result = lessonConductService.passStudents(lessonid, userid, studentids);
                 }
                 default ->{
                     result="NoAuth";
