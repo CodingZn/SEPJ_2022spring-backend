@@ -1,5 +1,6 @@
 package com.example.demo.bean;
 
+import com.example.demo.annotations.UserInfo;
 import com.example.demo.annotations.UserPassword;
 import com.example.demo.bean.jsonUtils.MajorDeserializer;
 import com.example.demo.bean.jsonUtils.MajorSerializer;
@@ -18,6 +19,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 
+@UserInfo
 @Setter
 @Getter
 @NoArgsConstructor

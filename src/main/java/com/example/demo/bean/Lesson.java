@@ -50,11 +50,11 @@ public class Lesson {//changeable
 
     @Range(min = 1, message = "必须为正整数")
     @Column(name = "hour", nullable = false)
-    private int hour;//admin changeable
+    private Integer hour;//admin changeable
 
     @Range(min = 1, message = "必须为正整数")
     @Column(name = "credit", nullable = false)
-    private int credit;//admin changeable
+    private Integer credit;//admin changeable
 
     @Cascade({org.hibernate.annotations.CascadeType.DETACH})
     @JsonDeserialize(using = UserListDeserializer.class)

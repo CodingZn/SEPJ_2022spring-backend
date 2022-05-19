@@ -62,6 +62,8 @@ public class LessonrequestServiceImpl implements GeneralService<Lessonrequest> {
     private String checkLessonrequest (Lessonrequest lessonrequest){
         User student = lessonrequest.getApplicant();
         Lesson lesson = lessonMapper.findByLessonid(lessonrequest.getLesson().getLessonid());
+        if (lesson == null)
+            return "无此课程！";
         if (!Objects.equals(lesson.getSemester(), lessonrequest.getSemester())){
             return "只能申请本学期的课程！";
         }
