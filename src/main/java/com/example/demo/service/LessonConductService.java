@@ -154,9 +154,9 @@ public class LessonConductService {
     //pass掉指定的学生
     public String passStudents(String lessonid, String teacherid, List<String> studentids){
         Lesson lesson = lessonMapper.findByLessonid(Integer.parseInt(lessonid));
-        if (!lesson.getTeacher().contains(teacherid))
+        if (!lesson.getTeacher().stream().map(t -> t.getUserid()).toList().contains(teacherid))
             return "NoAuth";
-        List<User> students_to_pass = studentids.stream().map(id -> userMapper.findByUserid(id)).toList();
+        List<User> students_to_pass = new ArrayList<>(studentids.stream().map(id -> userMapper.findByUserid(id)).toList());
         students_to_pass.removeIf(Objects::isNull);
         for (User student : students_to_pass){
             if (lesson.getClassmates().contains(student) && !student.getLessonsTaken().contains(lesson)){
