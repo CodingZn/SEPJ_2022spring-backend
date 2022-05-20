@@ -11,4 +11,6 @@ import java.util.List;
 @Repository
 public interface ClassarrangeMapper extends JpaRepository <Classarrange, Integer> {
     Classarrange findByClassroomAndClasstime(Classroom classroom, Classtime classtime);
+    List<Classarrange> findAllByClassroom(Classroom classroom);
+    List<Classarrange> findAllByClasstime(Classtime classtime);
 }

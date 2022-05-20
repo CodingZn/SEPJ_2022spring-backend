@@ -3,6 +3,7 @@ package com.example.demo.service.serviceImpl;
 import com.example.demo.bean.Classarrange;
 import com.example.demo.bean.Classroom;
 import com.example.demo.bean.Classtime;
+import com.example.demo.exceptions.MyException;
 import com.example.demo.mapper.ClassarrangeMapper;
 import com.example.demo.mapper.ClassroomMapper;
 import com.example.demo.mapper.ClasstimeMapper;
@@ -119,7 +120,11 @@ public class ClasstimeServiceImpl implements GeneralService<Classtime> {
     private String deleteABean(int id){
         Classtime bean1 = classtimeMapper.findByClasstimeid(id);
         if (bean1 != null) {
-
+            List<Classarrange> arranges= classarrangeMapper.findAllByClasstime(bean1);
+            for(Classarrange classarrange : arranges){
+                if (classarrange.getUplesson()!=null)
+                    throw new MyException("有依赖此时间段的课程！不能删除！");
+            }
             classtimeMapper.delete(bean1);
             return "Success";
         } else {

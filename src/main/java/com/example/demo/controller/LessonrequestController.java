@@ -240,6 +240,10 @@ public class LessonrequestController extends BasicController <Lessonrequest> {
         Map<String, Object> map = new HashMap<>();
         String result;
         switch (authority) {
+            case AdminAuthority -> {
+                result = lessonreqService.deleteABean(key);
+                map.put("result", result);
+            }
             case StudentAuthority -> {
                 Lessonrequest bean = lessonreqService.getABean(key);
                 if (bean.getStatus() != Lessonrequest.Status.pending){//申请已被审批

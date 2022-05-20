@@ -67,8 +67,7 @@ public class Lesson {//changeable
     private String introduction;//admin|teacher_self changeable
 
     @Cascade({org.hibernate.annotations.CascadeType.MERGE,
-            org.hibernate.annotations.CascadeType.SAVE_UPDATE,
-            org.hibernate.annotations.CascadeType.REMOVE})
+            org.hibernate.annotations.CascadeType.SAVE_UPDATE})
     @JsonDeserialize(using = ClassarrangeListDeserializer.class)
     @JsonSerialize(using = ClassarrangeListSerializer.class)
     @OneToMany

@@ -2,6 +2,7 @@ package com.example.demo.service.serviceImpl;
 
 import com.example.demo.bean.Classarrange;
 import com.example.demo.bean.Lesson;
+import com.example.demo.exceptions.MyException;
 import com.example.demo.mapper.ClassarrangeMapper;
 import com.example.demo.mapper.LessonMapper;
 import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
@@ -58,7 +59,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
         for (Classarrange arrange0 : arranges0){
             Classarrange arrange1 = arrangeMapper.findByClassroomAndClasstime(arrange0.getClassroom(),arrange0.getClasstime());
             if(arrange1.getUplesson() != null){
-                return "Conflict";
+                throw new MyException("课程安排与已有课程冲突！");
             }
             arrange1.setUplesson(lesson);
             arranges1.add(arrange1);
@@ -68,7 +69,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
 
         lesson.setLessonnumber(lesson.getLessoncode() + "." + lesson.getLessonnumber());
         if (lessonMapper.findByLessonnumberAndSemester(lesson.getLessonnumber(), lesson.getSemester()) != null)
-            return "Conflict";
+            throw new MyException("该学期已存在相同序号的课程！");
 
         List<Lesson> lessons_same_code1 = modifySametypeLessons(lesson);
         lessonMapper.save(lesson);

@@ -84,6 +84,8 @@ public class LessonConductService {
             return "本学期不开放此课程！";
         if (!user.getLessonsTaking().contains(lesson))
             return "您没有选上此课程！";
+        lesson.getClassmates().remove(user);
+        lessonMapper.save(lesson);
         return "Success";
     }
 

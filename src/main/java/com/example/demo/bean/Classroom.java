@@ -38,7 +38,8 @@ public class Classroom {//admin changeable
     private Integer capacity;//admin changeable
 
     @JsonIgnore
-    @Cascade({org.hibernate.annotations.CascadeType.PERSIST})
+    @Cascade({org.hibernate.annotations.CascadeType.PERSIST,
+    org.hibernate.annotations.CascadeType.DELETE})
     @OneToMany(mappedBy = "classroom")
     private List<Classarrange> classarranges;
 }
