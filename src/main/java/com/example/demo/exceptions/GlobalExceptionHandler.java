@@ -34,12 +34,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
     }
 
-//    @ExceptionHandler(NullPointerException.class)
-//    public ResponseEntity<Map<String, Object>> handle3(NullPointerException e){
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("message", "缺少必要的信息条目！");
-//        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
-//    }
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<Map<String, Object>> handle3(NullPointerException e){
+        Map<String, Object> map = new HashMap<>();
+        map.put("message", "缺少必要的信息条目！");
+        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler()
     public ResponseEntity<Map<String, Object>> handle4(MissingRequestHeaderException e){
@@ -72,7 +72,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handle7(ConstraintViolationException e){
         Map<String, Object> map = new HashMap<>();
         String msg = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining("; "));
-        map.put("message", "输入格式错误！" + msg);
+        if (msg.length() == 0)
+            msg = "输入格式错误！";
+        map.put("message", msg);
         return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(EntityNotFoundException.class)

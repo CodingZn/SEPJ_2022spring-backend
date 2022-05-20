@@ -1,5 +1,6 @@
 package com.example.demo.bean;
 
+import com.example.demo.annotations.ClassroomCapacity;
 import com.example.demo.bean.jsonUtils.IntegerToStringSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -9,6 +10,7 @@ import org.hibernate.annotations.Cascade;
 import javax.persistence.*;
 import java.util.List;
 
+@ClassroomCapacity
 @Setter
 @Getter
 @NoArgsConstructor
@@ -39,7 +41,7 @@ public class Classroom {//admin changeable
 
     @JsonIgnore
     @Cascade({org.hibernate.annotations.CascadeType.PERSIST,
-    org.hibernate.annotations.CascadeType.DELETE})
+            org.hibernate.annotations.CascadeType.DELETE})
     @OneToMany(mappedBy = "classroom")
     private List<Classarrange> classarranges;
 }
