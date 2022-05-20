@@ -1,6 +1,7 @@
 package com.example.demo.service.serviceImpl;
 
 import com.example.demo.bean.User;
+import com.example.demo.exceptions.MyException;
 import com.example.demo.mapper.UserMapper;
 import com.example.demo.service.GeneralService;
 import com.example.demo.utils.ConstraintsVerify;
@@ -43,7 +44,7 @@ public class UserServiceImpl implements GeneralService<User> {
 
         user.setPassword("fDu666666");//统一设置初始密码
         if (user.getUsertype() == User.Type.admin){
-            return "ConflictAdmin";
+            throw new MyException("不能创建管理员！");
         }
         userMapper.save(user);
         return "Success";
@@ -75,8 +76,7 @@ public class UserServiceImpl implements GeneralService<User> {
         User user = userMapper.findByUserid(userid);
 
         if (user != null) {
-            if (ConstraintsVerify.UserHavingDependency(user))
-                return "DependError";
+            ConstraintsVerify.UserHavingDependency(user);
             userMapper.delete(user);
             return "Success";
         } else {

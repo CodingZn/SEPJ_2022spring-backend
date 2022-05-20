@@ -114,7 +114,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
             for (Classarrange arrange0 : arranges0){
                 Classarrange arrange1 = arrangeMapper.findByClassroomAndClasstime(arrange0.getClassroom(),arrange0.getClasstime());
                 if(arrange1.getUplesson() != null && arrange1.getUplesson().getLessonid() != lesson.getLessonid()){
-                    return "Conflict";
+                    throw new MyException("课程安排与已有课程冲突！");
                 }
                 arrange1.setUplesson(lesson);
                 arranges1.add(arrange1);
@@ -130,8 +130,7 @@ public class LessonServiceImpl implements GeneralService<Lesson> {
     private String deleteABean(int lessonid){
         Lesson lesson = lessonMapper.findByLessonid(lessonid);
         if (lesson != null) {
-            if (ConstraintsVerify.LessonHavingDependency(lesson))
-                return "DependError";
+            ConstraintsVerify.LessonHavingDependency(lesson);
             lessonMapper.delete(lesson);
             return "Success";
         } else {

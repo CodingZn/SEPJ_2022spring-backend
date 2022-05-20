@@ -81,7 +81,7 @@ public class ClassroomServiceImpl implements GeneralService<Classroom> {
     }
 
     @Override
-    public String createABean(@Valid Classroom bean) {
+    public String createABean(Classroom bean) {
         List<Classarrange> classarrangeList = new ArrayList<>();
         List<Classtime> classtimeList = classtimeMapper.findAll();
         for (Classtime classtime : classtimeList){
@@ -96,7 +96,7 @@ public class ClassroomServiceImpl implements GeneralService<Classroom> {
     }
 
     @Override
-    public String createBeans(@Valid List<Classroom> beans) {
+    public String createBeans(List<Classroom> beans) {
         beans.removeIf(Objects::isNull);
         for(Classroom bean : beans){
             createABean(bean);
@@ -105,7 +105,7 @@ public class ClassroomServiceImpl implements GeneralService<Classroom> {
     }
 
     @Override
-    public String changeABean(String id,@Valid Classroom bean) {
+    public String changeABean(String id, Classroom bean) {
         Classroom bean1 = getABean(id);
         if (bean1 == null)
             return "NotFound";
