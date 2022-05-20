@@ -12,7 +12,7 @@ import static com.example.demo.utils.JWTUtils.*;
 
 //Control层，与前端联系
 @RestController
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("http://121.37.100.255:3000")
 public abstract class BasicController <T>{
 
     /* 根据 Controller 层共同属性控制出来的抽象类，

@@ -17,7 +17,7 @@ import static com.example.demo.utils.JWTUtils.*;
 import static com.example.demo.utils.JWTUtils.AdminAuthority;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("http://121.37.100.255:3000")
 public class LessonrequestController extends BasicController <Lessonrequest> {
     private final GeneralService<User> userService;
     private final GeneralService<Lessonrequest> lessonreqService;

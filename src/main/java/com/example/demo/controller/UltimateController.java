@@ -14,7 +14,7 @@ import static com.example.demo.utils.JWTUtils.*;
 import static com.example.demo.bean.specialBean.Ultimatectrl.*;
 
 @RestController
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin("http://121.37.100.255:3000")
 public class UltimateController {
 
     private final UltimatecontrolMapper ultimatecontrolMapper;
