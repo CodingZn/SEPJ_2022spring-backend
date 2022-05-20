@@ -119,7 +119,7 @@ public class ClasstimeServiceImpl implements GeneralService<Classtime> {
     private String deleteABean(int id){
         Classtime bean1 = classtimeMapper.findByClasstimeid(id);
         if (bean1 != null) {
-//            deleteArranges(bean1);
+
             classtimeMapper.delete(bean1);
             return "Success";
         } else {

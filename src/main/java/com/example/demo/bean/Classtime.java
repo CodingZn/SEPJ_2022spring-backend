@@ -33,8 +33,7 @@ public class Classtime {//admin changeable
     private String time;//admin changeable
 
     @JsonIgnore
-    @Cascade({org.hibernate.annotations.CascadeType.PERSIST,
-            org.hibernate.annotations.CascadeType.DELETE})
+    @Cascade({org.hibernate.annotations.CascadeType.PERSIST})
     @OneToMany(mappedBy = "classtime")
     private List<Classarrange> classarranges;
 
