@@ -30,24 +30,6 @@ public class ClasstimeServiceImpl implements GeneralService<Classtime> {
         updateArranges();
     }
 
-    private void createArranges(Classtime classtime){
-        List<Classroom> classroomList = classroomMapper.findAll();
-        for (Classroom classroom : classroomList){
-            Classarrange classarrange = new Classarrange();
-            classarrange.setClassroom(classroom);
-            classarrange.setClasstime(classtime);
-            classarrangeMapper.save(classarrange);
-        }
-    }
-
-    private void deleteArranges(Classtime classtime){
-        List<Classroom> classroomList = classroomMapper.findAll();
-        for (Classroom classroom : classroomList){
-            Classarrange classarrange = classarrangeMapper.findByClassroomAndClasstime(classroom, classtime);
-            classarrangeMapper.delete(classarrange);
-        }
-    }
-
     private void updateArranges(){
         List<Classtime> classtimeList = classtimeMapper.findAll();
         List<Classroom> classroomList = classroomMapper.findAll();
