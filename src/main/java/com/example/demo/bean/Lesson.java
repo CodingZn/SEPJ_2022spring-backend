@@ -94,8 +94,8 @@ public class Lesson {//changeable
         censored, pending
     }
 
-
-    @JsonIgnore
+    @JsonDeserialize(using = UserListDeserializer.class)
+    @JsonSerialize(using = UserListSerializer.class)
     @ManyToMany
     @JoinTable(name="lessons_students_taking")
     private List<User> classmates;//admin|student_self changeable
