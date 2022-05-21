@@ -4,6 +4,7 @@ import com.example.demo.bean.Classarrange;
 import com.example.demo.bean.Lesson;
 import com.example.demo.bean.User;
 import com.example.demo.bean.specialBean.LessonQuery;
+import com.example.demo.exceptions.MyException;
 import com.example.demo.mapper.LessonMapper;
 import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class LessonQueryService {
 
     public LessonQuery processAQuery(LessonQuery query) {
         if (Objects.equals(controlMapper.findByName(KEY_CLASS_CONTROL).getValue(), VALUE_CLASS_CONTROL_DISABLED)){
-            return query;
+            throw new MyException("现在未到选课时间！无法选课！");
         }
         List<Lesson> lessonList = lessonMapper.findAll();
         List<Lesson> lessonList1 = new ArrayList<>();
