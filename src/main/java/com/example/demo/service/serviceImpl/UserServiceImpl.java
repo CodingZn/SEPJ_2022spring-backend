@@ -77,6 +77,8 @@ public class UserServiceImpl implements GeneralService<User> {
 
         if (user != null) {
             ConstraintsVerify.UserHavingDependency(user);
+            if (userid.equals("10001"))
+                throw new MyException("不能删除管理员！");
             userMapper.delete(user);
             return "Success";
         } else {
