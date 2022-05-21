@@ -48,11 +48,11 @@ public class Lesson {//changeable
     @JoinColumn(name = "school")
     private School school;//admin changeable
 
-    @Range(min = 1, message = "必须为正整数")
+    @Range(min = 1, message = "学时必须为正整数")
     @Column(name = "hour", nullable = false)
     private Integer hour;//admin changeable
 
-    @Range(min = 1, message = "必须为正整数")
+    @Range(min = 1, message = "学分必须为正整数")
     @Column(name = "credit", nullable = false)
     private Integer credit;//admin changeable
 
@@ -81,7 +81,7 @@ public class Lesson {//changeable
     @Column(name = "semester", length = 10)
     private String semester;//unchangeable
 
-    @Pattern(regexp = "((((0\\d)|(1\\d)|(2[0-2]))-\\d{3},)*(((0\\d)|(1\\d)|(2[0-2]))-\\d{3}))|all", message = "格式错误！")
+    @Pattern(regexp = "((((0\\d)|(1\\d)|(2[0-2]))-\\d{3},)*(((0\\d)|(1\\d)|(2[0-2]))-\\d{3}))|all", message = "允许专业格式错误！")
     @Column(name = "majorallowed")
     private String majorallowed;//admin changeable
 
