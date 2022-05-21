@@ -18,7 +18,7 @@ import static com.example.demo.utils.JWTUtils.*;
 import static com.example.demo.utils.JWTUtils.StudentAuthority;
 
 @RestController
-@CrossOrigin("http://121.37.100.255:3000")
+@CrossOrigin
 public class QueryController {
     private final LessonQueryService queryService;
 

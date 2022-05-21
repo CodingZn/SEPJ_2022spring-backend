@@ -1,0 +1,429 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+class LessonQuery
+{
+-semester
+-classroom_name
+-classtime_name
+-fuzzyLessonCode
+-fuzzyLessonName
+-fuzzyLessonTeacherName
+-result
+}
+class Ultimatectrl
+{
+-name
+-status
+}
+class Classarrange
+{
+-id
+-classtime
+-classroom
+-uplesson
+}
+class Classroom
+{
+-classroom_id
+-name
+-status
+-capacity
+}
+class Classtime
+{
+- classtime_id
+- name
+- time
+}
+
+class Lesson
+{
+- lessonid
+- lessonnumber
+- lessoncode
+- lessonname
+- school
+- hour
+- credit
+- teacher
+- introduction
+- arranges
+- capacity
+- semester
+- majorallowed
+- status
+- classmates
+}
+class Lessonrequest
+{
+- lessonrequestid
+- lesson
+- student
+- semester
+- requestReason
+- status
+}
+class Mjaor
+{
+- majorid
+- name
+- school
+}
+class School
+{
+- schoolid
+- name
+- status
+}
+class User
+{
+- usertype
+- userid
+- name
+- identitynumber
+- email
+- phonenumber
+- password
+- school
+- major
+- grade
+- status
+- lessonsTaking
+- lessonsTaken
+- lessonrequests
+}
+
+
+
+abstract class BasicController
+{
++ getAllIds()
++ getABean()
++ getAllBeans()
++ createABean()
++ createBeans()
++ rewriteABean()
++ modifyABean()
++ delBean()
++ delBeans()
+}
+class ClassroomController
+{
++ getAllIds()
++ getABean()
++ getAllBeans()
++ createABean()
++ createBeans()
++ rewriteABean()
++ modifyABean()
++ delBean()
++ delBeans()
+}
+class ClasstimeController
+{
++ getAllIds()
++ getABean()
++ getAllBeans()
++ createABean()
++ createBeans()
++ rewriteABean()
++ modifyABean()
++ delBean()
++ delBeans()
+}
+class ControllerOperation
+{
++ checkAuthentication()
++ getAuthority()
++ getErrorResponse()
++ getConductResponse()
++ getMessageResponse()
+}
+class LessonConductController
+{
++ selectALesson()
++ quitALesson()
++ getAllLessonsTaken()
++ getAllLessonsTaking()
++ getAllStudentsTakingLesson()
++ kickOffAllExceededStudent()
+}
+class LessonController
+{
++ getAllIds()
++ getABean()
++ getAllBeans()
++ createABean()
++ createBeans()
++ rewriteABean()
++ modifyABean()
++ delBean()
++ delBeans()
+}
+class LessonrequestController
+{
++ getAllIds()
++ getABean()
++ getAllBeans()
++ modifyABean()
++ getAllBeans_Student()
++ createABean()
++ modifyABean_student()
++ delBean()
+}
+class MjaorController
+{
++ getAllIds()
++ getABean()
++ getAllBeans()
++ createABean()
++ createBeans()
++ rewriteABean()
++ modifyABean()
++ delBean()
++ delBeans()
+}
+class QueryController
+{
++ queryLessons()
+}
+class SchoolController
+{
++ getAllIds()
++ getABean()
++ getAllBeans()
++ createABean()
++ createBeans()
++ rewriteABean()
++ modifyABean()
++ delBean()
++ delBeans()
+}
+class UltimateController
+{
++ getControlStatus()
++ changeControl()
+}
+class UserController
+{
+- setGeneratorInit()
++ getAllIds()
++ getABean()
++ getAllBeans()
++ createABean()
++ createBeans()
++ rewriteABean()
++ modifyABean()
++ delBean()
++ delBeans()
++ login()
+}
+
+
+
+interface UltimatecontrolMapper
+{
++ getter(...)
++ setter(...)
+}
+interface ClassarrangeMapper
+{
++ getter(...)
++ setter(...)
+}
+interface ClassroomMapper
+{
++ getter(...)
++ setter(...)
+}
+interface ClasstimeMapper
+{
++ getter(...)
++ setter(...)
+}
+interface LessonMapper
+{
++ getter(...)
++ setter(...)
+}
+interface LessonrequestMapper
+{
++ getter(...)
++ setter(...)
+}
+interface MjaorMapper
+{
++ getter(...)
++ setter(...)
+}
+interface SchoolMapper
+{
++ getter(...)
++ setter(...)
+}
+interface UserMapper
+{
++ getter(...)
++ setter(...)
+}
+
+class ClassroomSeviceImpl
+{
++ implements...(...)
+}
+class ClasstimeSeviceImpl
+{
++ implements...(...)
+}
+class LessonrequestSeviceImpl
+{
++ implements...(...)
+}
+class LessonSeviceImpl
+{
++ implements...(...)
+}
+class MjaorSeviceImpl
+{
++ implements...(...)
+}
+class SchoolSeviceImpl
+{
++ implements...(...)
+}
+class UserSeviceImpl
+{
++ implements...(...)
+}
+class UserSpecSeviceImpl
+{
++ implements...(...)
+}
+interface GeneralSevice
+{
++ getAllIds()
++ getABean()
++ getAllBeans()
++ createABean()
++ createBeans()
++ changeABean()
++ deleteABean()
++ deleteBeans()
+}
+class LessonConductSevice
+{
++ implements...(...)
+}
+class LessonQuerySevice
+{
++ implements...(...)
+}
+interface UserSpecSevice
+{
++ createAdmin()
++ login()
++ getAllByUsertype()
+}
+class BeanTools
+{
++ modify
+}
+class JWTUtils
+{
++ generateToken()
++ decodeToGetValue()
+}
+
+ClassroomController -up-|> BasicController
+ClasstimeController -up-|> BasicController
+LessonController -up-|> BasicController
+LessonrequestController -up-|> BasicController
+MjaorControllerr -up-|> BasicController
+SchoolController -up-|> BasicController
+UserController -up-|> BasicController
+
+BasicController .up.>ControllerOperation
+LessonConductController .up.>ControllerOperation
+LessonrequestController .up.>ControllerOperation
+QueryController .up.>ControllerOperation
+UltimateController .up.>ControllerOperation
+
+UserController ..> BeanTools
+LessonController ..> BeanTools
+MajorController ..> BeanTools
+SchoolController ..> BeanTools
+LessonrequestController ..> BeanTools
+ClassroomController ..> BeanTools
+ClasstimeController ..> BeanTools
+
+UserController ..> JWTUtils
+BasicController ..> JWTUtils
+ControllerOperation ..> JWTUtils
+LessonConductController ..> JWTUtils
+LessonrequestController ..> JWTUtils
+QueryController ..> JWTUtils
+
+UserController ..* UserSpecSevice
+ClassroomController ..* GeneralSevice
+ClasstimeController ..* GeneralSevice
+LessonController ..* GeneralSevice
+LessonrequestController ..* GeneralSevice
+MjaorController ..* GeneralSevice
+SchoolController ..* GeneralSevice
+UserController ..* GeneralSevice
+
+GeneralSevice ..|> UserSeviceImpl
+GeneralSevice ..|> ClassroomServiceImpl
+GeneralSevice ..|> ClasstimeSeviceImpl
+GeneralSevice ..|> LessonrequestSeviceImpl
+GeneralSevice ..|> LessonSeviceImpl
+GeneralSevice ..|> MjaorSeviceImpl
+GeneralSevice ..|>SchoolSeviceImpl
+UserSpecSevice  ..|> UserSpecSeviceImpl
+
+UserServiceImpl --* UserMapper
+UserSpecSeviceImpl --* UserMapper
+SchoolSeviceImpl --* SchoolMapper
+MjaorSeviceImpl --* MjaorMapper
+LessonSeviceImpl --* LessonMapper
+LessonSeviceImpl --* ClassarrangeMapper
+LessonrequestSeviceImpl --* LessonrequestMapper
+ClasstimeSeviceImpl --* ClasstimeMapper
+ClasstimeSeviceImpl --* ClassroomMapper
+ClasstimeSeviceImpl --* ClassarrangeMapper
+ClassroomSeviceImpl --* ClasstimeMapper
+ClassroomSeviceImpl --* ClassroomMapper
+ClassroomSeviceImpl --* ClassarrangeMapper
+LessonConductSevice --* UltimatecontrolMapper
+LessonConductSevice --* UserMapper
+LessonConductSevice --* LessonMapper
+LessonQuerySevice --* LessonMapper
+UltimateController --* UltimatecontrolMapper
+UserController --* UltimatecontrolMapper
+
+UltimatecontrolMapper --> Ultimatectrl
+ClassarrangeMapper --> Classarrange
+ClassroomMapper --> Classroom
+ClasstimeMapper --> Classtime
+LessonMapper --> Lesson
+LessonrequestMapper --> Lessonrequest
+MjaorMapper --> Mjaor
+SchoolMapper --> School
+UserMapper --> User
+
+Classarrange ..> Classroom
+Classarrange ..> Classtime
+Lesson ..>School
+Lesson ..> User
+Lesson ..> Classarrange
+Lessonrequest ..> Lesson
+Lessonrequest ..> User
+Mjaor ..> School
+School ..> Mjaor
+User ..> School
+User ..> Mjaor
+User ..> Lesson
+User ..> Lessonrequest
+
+@enduml

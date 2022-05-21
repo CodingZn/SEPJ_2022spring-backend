@@ -14,7 +14,7 @@ import java.util.*;
 import static com.example.demo.utils.JWTUtils.*;
 
 @RestController
-@CrossOrigin("http://121.37.100.255:3000")
+@CrossOrigin
 public class MajorController extends BasicController<Major> {
     private final GeneralService<Major> majorService;
 
