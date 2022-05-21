@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.bean.specialBean.Ultimatectrl;
+import com.example.demo.exceptions.MyException;
 import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -119,15 +120,16 @@ public class UltimateController {
                 switch (control.getName()){
                     case KEY_CLASS_CONTROL->{
                         if(!control.getValue().matches(REGEX_CLASS_CONTROL))
-                            return ControllerOperation.getConductResponse("FormError", map);
+                            throw new MyException("必须为"+VALUE_CLASS_CONTROL_DISABLED+"、"+VALUE_CLASS_CONTROL_FIRST+"、"
+                            +VALUE_CLASS_CONTROL_SECOND+"之一！");
                     }
                     case KEY_SEMESTER_CONTROL->{
                         if (!control.getValue().matches(REGEX_SEMESTER_CONTROL))
-                            return ControllerOperation.getConductResponse("FormError", map);
+                            throw new MyException("格式错误！请输入四位年份+A或B。");
                     }
                     case KEY_YEAR_CONTROL, KEY_LATEST_GRADE_CONTROL, KEY_OLDEST_GRADE_CONTROL->{
                         if (!control.getValue().matches(REGEX_YEAR_CONTROL))
-                            return ControllerOperation.getConductResponse("FormError", map);
+                            throw new MyException("格式错误！请输入两位年份。");
                     }
                     default -> {
                         return ControllerOperation.getConductResponse("NotFound", map);
