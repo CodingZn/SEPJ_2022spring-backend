@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = LessonCapacityConstraintValidator.class)
 public @interface LessonCapacity {
-    String message() default "课程容量超过教室容量限制！";
+    String message() default "课程容量不能超过教室容量，也不能小于学生数量！";
 
     Class<?>[] groups() default { };
 

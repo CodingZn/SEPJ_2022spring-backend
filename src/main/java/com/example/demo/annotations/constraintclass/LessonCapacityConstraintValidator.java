@@ -18,6 +18,7 @@ public class LessonCapacityConstraintValidator implements ConstraintValidator<Le
             if (c != null && lessonCapacity > c)
                 return false;
         }
+        if (lesson.getClassmates() != null && lessonCapacity < lesson.getClassmates().size()) return false;
         return true;
     }
 }
