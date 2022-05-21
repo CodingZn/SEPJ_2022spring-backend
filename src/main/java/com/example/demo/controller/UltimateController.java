@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,28 @@ public class UltimateController {
 
             Ultimatectrl ultimatectrl = ultimatecontrolMapper.findByName(key);
             map.put("control", ultimatectrl);
+            return ControllerOperation.getConductResponse("Success", map);
+
+        }
+        else
+            return ControllerOperation.getConductResponse(credit, map);
+    }
+
+    //获取选课开关的选项
+    /*获取一个开关状态*/
+    @RequestMapping(value="/control/classControl/values", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> getClassControl (@RequestHeader("Authentication") String authentication) {
+        Map<String, Object> map = new HashMap<>();
+
+        String credit = ControllerOperation.checkAuthentication(authentication);
+        String authority = ControllerOperation.getAuthority(authentication);
+        if (credit.equals(ValidJWTToken)){
+
+            List<String> values = new ArrayList<>();
+            values.add(VALUE_CLASS_CONTROL_DISABLED);
+            values.add(VALUE_CLASS_CONTROL_FIRST);
+            values.add(VALUE_CLASS_CONTROL_SECOND);
+            map.put("values", values);
             return ControllerOperation.getConductResponse("Success", map);
 
         }
