@@ -81,7 +81,7 @@ public class Lesson {//changeable
     @Column(name = "semester", length = 10)
     private String semester;//unchangeable
 
-    @Pattern(regexp = "((((0\\d)|(1\\d)|(2[0-2]))-\\d{3},)*(((0\\d)|(1\\d)|(2[0-2]))-\\d{3}))|all", message = "允许专业格式错误！")
+    @Pattern(regexp = "(\\d{2}-(\\d{3}|all),)*(\\d{2}-(\\d{3}|all))", message = "允许专业格式错误！")
     @Column(name = "majorallowed")
     private String majorallowed;//admin changeable
 

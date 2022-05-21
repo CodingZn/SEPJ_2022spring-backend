@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.example.demo.bean.generators.MajoridGenerator;
+import com.example.demo.exceptions.MyException;
 import com.example.demo.utils.BeanTools;
 import com.example.demo.bean.Major;
 import com.example.demo.service.GeneralService;
@@ -22,16 +23,30 @@ public class MajorController extends BasicController<Major> {
     public MajorController(GeneralService<Major> majorService) {
         this.majorService = majorService;
         setGenerator(majorService);
+        createSpecMajor();
     }
 
     private void setGenerator(GeneralService<Major> majorService) {
         List<Major> majors = majorService.getAllBeans();
+        majors.removeIf(major -> Objects.equals(major.getMajorid(), "all"));
+        if (majorService.getABean("all") == null){
+            MajoridGenerator.setNextMajorid(0);
+            return;
+        }
         Optional<Major> max_major = majors.stream().max(Comparator.comparing(u -> Integer.parseInt(u.getMajorid())));
         if (max_major.isPresent()){
             MajoridGenerator.setNextMajorid(Integer.parseInt(max_major.get().getMajorid()) + 1);
         }
         else{
-            MajoridGenerator.setNextMajorid(1);
+            MajoridGenerator.setNextMajorid(0);
+        }
+    }
+
+    private void createSpecMajor(){
+        if (majorService.getABean("all") == null){
+            Major major = new Major();
+            major.setName("all");
+            majorService.createABean(major);
         }
     }
 
@@ -244,6 +259,9 @@ public class MajorController extends BasicController<Major> {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
+                if (Objects.equals(key, "all")){
+                    throw new MyException("不能改动默认配置！");
+                }
                 map.put("result", majorService.deleteABean(key));
             }
             default -> {

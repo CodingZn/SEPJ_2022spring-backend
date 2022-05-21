@@ -310,12 +310,13 @@ public class LessonConductService {
     }
 
     private boolean checkMajorConstraint(User user, Lesson lesson) {
-        if (lesson.getMajorallowed().contains("all")) return true;
         String user_majorid = user.getMajor().getMajorid();
         String user_grade = user.getGrade();
         String lesson_majorallowed = lesson.getMajorallowed();
-        String user_info = user_grade + "-" + user_majorid;
-        return lesson_majorallowed.contains(user_info);
+        String user_grademajor = user_grade + "-" + user_majorid;
+        String user_gradeall = user_grade + "-all";
+        return (lesson_majorallowed.contains(user_grademajor)
+                || lesson_majorallowed.contains(user_gradeall));
     }
 
     private boolean checkCapacityConstraint(User user, Lesson lesson) {
