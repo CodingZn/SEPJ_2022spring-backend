@@ -5,20 +5,29 @@ import com.example.demo.bean.Lesson;
 import com.example.demo.bean.User;
 import com.example.demo.bean.specialBean.LessonQuery;
 import com.example.demo.mapper.LessonMapper;
+import com.example.demo.mapper.straightMappers.UltimatecontrolMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import static com.example.demo.bean.specialBean.Ultimatectrl.*;
 
 @Service
 public class LessonQueryService {
     private final LessonMapper lessonMapper;
+    private final UltimatecontrolMapper controlMapper;
 
-    public LessonQueryService(LessonMapper lessonMapper) {
+    public LessonQueryService(LessonMapper lessonMapper, UltimatecontrolMapper controlMapper) {
         this.lessonMapper = lessonMapper;
+        this.controlMapper = controlMapper;
     }
 
     public LessonQuery processAQuery(LessonQuery query) {
+        if (Objects.equals(controlMapper.findByName(KEY_CLASS_CONTROL).getValue(), VALUE_CLASS_CONTROL_DISABLED)){
+            return query;
+        }
         List<Lesson> lessonList = lessonMapper.findAll();
         List<Lesson> lessonList1 = new ArrayList<>();
         List<Lesson> lessonList2 = new ArrayList<>();
