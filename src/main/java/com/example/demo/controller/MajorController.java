@@ -154,6 +154,9 @@ public class MajorController extends BasicController<Major> {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
+                if (Objects.equals(bean.getName(), "all")){
+                    throw new MyException("不能改动默认配置！");
+                }
                 map.put("result", majorService.createABean(bean));
             }
             default -> {
@@ -201,6 +204,9 @@ public class MajorController extends BasicController<Major> {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
+                if (Objects.equals(key, "all")){
+                    throw new MyException("不能改动默认配置！");
+                }
                 map.put("result", majorService.changeABean(key, bean));
                 return map;
             }
@@ -225,6 +231,9 @@ public class MajorController extends BasicController<Major> {
         Map<String, Object> map = new HashMap<>();
         switch (authority){
             case AdminAuthority->{
+                if (Objects.equals(key, "all")){
+                    throw new MyException("不能改动默认配置！");
+                }
                 Major bean_ori = majorService.getABean(key);
                 if (bean_ori == null){
                     map.put("result", "NotFound");
